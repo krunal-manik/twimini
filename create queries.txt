@@ -30,18 +30,19 @@ CREATE TABLE Tweets(
 
 CREATE TABLE Follower_Following(
 	follower INT NOT NULL,
-	following INT NOT NULL,
-	PRIMARY KEY( follower , following ),
+	followed INT NOT NULL,
+	PRIMARY KEY( follower , followed ),
 	FOREIGN KEY (follower) REFERENCES User(user_id),
-	FOREIGN KEY (following) REFERENCES User(user_id)
+	FOREIGN KEY (followed) REFERENCES User(user_id)
 );
+
 
 CREATE TABLE Follow(
 	follower INT NOT NULL,
-	following INT NOT NULL,
+	followed INT NOT NULL,
 	start_time DATETIME NOT NULL,
 	end_time DATETIME,
-	PRIMARY KEY( follower , following, start_time ),
+	PRIMARY KEY( follower , followed, start_time ),
 	FOREIGN KEY (follower) REFERENCES User(user_id),
-	FOREIGN KEY (following) REFERENCES User(user_id)
+	FOREIGN KEY (followed) REFERENCES User(user_id)
 );
