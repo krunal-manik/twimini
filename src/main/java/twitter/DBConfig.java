@@ -1,3 +1,5 @@
+package twitter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -19,6 +21,7 @@ public class DBConfig {
     public static final String JDBC_URL = "jdbc:mysql://localhost/twimini";
     public static final String USERNAME = "root";
     public static final String PASSWORD = "";
+
     @Bean
     public SimpleJdbcTemplate simpleJdbcTemplate(){
         DataSource dataSource = getDataSource();
