@@ -87,11 +87,4 @@ public class UserController {
         mv.setViewName("redirect:/login");
         return mv;
     }
-
-    @RequestMapping("/tweet")
-    public ModelAndView newsFeed(){
-        return new ModelAndView("/tweet");
-    }
-
-
 }
