@@ -4,6 +4,6 @@
 <html>
     <body>
     <h4>Tweet</h4><br>
-        ${message}
+        Hello ${sessionScope.username}  <a href="/logout">Log out</a>
     </body>
 </html>
