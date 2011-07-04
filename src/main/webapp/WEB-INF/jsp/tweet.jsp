@@ -2,7 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
 
     <script type="text/javascript">
@@ -17,6 +17,7 @@
                    url : "tweet/addTweet",
                    data : "tweetContent=" + tweetContent,
                    success : function( data ){
+                        alert(data);
                         var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
                         var tweetHTML = $(html);
                         $("#tweetsList").prepend(tweetHTML);
@@ -36,6 +37,8 @@
 
         <br>
         <a href="/followed">People u r following !!! </a>
+        <br>
+        <a href="/follower">People who r following u!!! </a>
         <br>
         <a href="/all_users">All Users !!! </a>
 

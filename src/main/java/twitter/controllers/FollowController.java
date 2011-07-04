@@ -33,14 +33,18 @@ public class FollowController {
 
     @RequestMapping("/all_users")
     public ModelAndView allUserGet(HttpSession session) {
-        List<Map<String, Object>> l = db.queryForList("SELECT user_id, username, name from user");
+        List<Map<String, Object>> l = db.queryForList("SELECT user_id, username, name from user " +
+                                                      "where user_id not in (select followed from follower_followed " +
+                                                      "where follower = ?) and user_id != ?",
+                                                      session.getAttribute("userId"), session.getAttribute("userId"));
         ModelAndView mv = new ModelAndView();
         mv.addObject("userList", l);
         return mv;
     }
 
     @RequestMapping(value="/all_users", method= RequestMethod.POST)
-    public ModelAndView followedAddedPost(HttpSession session, @RequestParam final int userId) {
+    public ModelAndView followedAddedPost(HttpSession session, @RequestParam final String userId) {
+        System.out.println("USERID -> " + userId);
         db.update("INSERT INTO follower_followed (followed, follower) values (?, ?)", userId, session.getAttribute("userId"));
         ModelAndView mv = new ModelAndView();
         return mv;
