@@ -2,22 +2,19 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
-    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
 
     <script type="text/javascript">
         function addTweet(){
-            alert('here');
             var tweetContent = document.getElementById("tweet").value;
             if( tweetContent == null || tweet == '' )return;
             if( tweetContent.length > 140 )alert( 'You cannot tweet more than 140 characters' );
-            alert( 'passed all tests' );
             $.ajax({
                    type : "POST",
                    url : "tweet/addTweet",
                    data : "tweetContent=" + tweetContent,
                    success : function( data ){
-                        alert(data);
                         var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
                         var tweetHTML = $(html);
                         $("#tweetsList").prepend(tweetHTML);
@@ -47,7 +44,7 @@
         <div id="tweetsList">
             <c:forEach var='item' items='${tweetsList}'>
                 <script type="text/javascript">
-                    prependTweet({ID:${item.id}, USER_ID:${item.USER_ID} , TWEET:'${item.TWEET}' , TIMESTAMP:'${item.TIMESTAMP}'})
+                    prependTweet({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
                 </script>
             </c:forEach>
         </div>

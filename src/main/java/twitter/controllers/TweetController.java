@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import twitter.models.Tweet;
+import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -24,36 +26,23 @@ import java.util.Map;
  */
 @Controller
 public class TweetController {
-    public final SimpleJdbcTemplate db;
 
-    @Autowired
-    public TweetController(SimpleJdbcTemplate db){
-        this.db = db;
+    public TweetController(){
     }
 
-    @RequestMapping(value = "/tweet/addTweet" , method = RequestMethod.POST ) @ResponseBody
-    public Map<String,Object> addTweet(@RequestParam String tweetContent,HttpSession session){
 
-        System.out.println( "here : " + tweetContent );
-        db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,session.getAttribute("userId").toString() , tweetContent  );
-        System.out.println( "inserted into db" );
-        int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
-        System.out.println( "Tweet id : " + tweetId );
-        List< Map<String,Object> > tweetObj = db.queryForList("SELECT tweet_id as ID ,tweeted_by as USER_ID,tweet as TWEET,timestamp as TIMESTAMP FROM tweets WHERE tweet_id = ?", tweetId);
-        System.out.println( tweetObj.get(0) );
-        return tweetObj.get(0);
+
+    @RequestMapping( value = "/tweet/addTweet" , method = RequestMethod.POST ) @ResponseBody
+    public Tweet addTweet( @RequestParam String tweetContent , HttpSession session ){
+        Tweet t = UserTweetList.addTweet( tweetContent , session.getAttribute("userId").toString() );
+        return t;
     }
+
 
     @RequestMapping("/tweet")
-    public ModelAndView newsFeedGet(HttpSession session){
-        System.out.println( "In news feed" );
-        List< Map<String,Object> > tweetsForNewsFeeds = db.queryForList("SELECT tweet_id as ID, tweeted_by as USER_ID, " +
-                "tweet as TWEET, timestamp as TIMESTAMP FROM tweets" +
-                " where tweeted_by = ? ORDER BY TIMESTAMP", session.getAttribute("userId"));
+    public ModelAndView tweetsList(HttpSession session) {
         ModelAndView mv = new ModelAndView();
-        mv.addObject( "tweetsList" , tweetsForNewsFeeds );
-        System.out.println( tweetsForNewsFeeds );
-        System.out.println( "Success" );
+        mv.addObject( "tweetsList" , UserTweetList.userTweetList( session.getAttribute("userId").toString() ) );
         return mv;
     }
 }

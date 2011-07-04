@@ -28,7 +28,7 @@ CREATE TABLE Tweets(
 	FOREIGN KEY (retweeted_from) REFERENCES User(user_id)
 );
 
-CREATE TABLE Follower_Following(
+CREATE TABLE Follower_Followed(
 	follower INT NOT NULL,
 	followed INT NOT NULL,
 	PRIMARY KEY( follower , followed ),
