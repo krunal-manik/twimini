@@ -53,4 +53,17 @@ public class UserTweetList {
         return ret;
     }
 
+    public static List<Tweet> userTweetList_o( String userId ){
+        List<Tweet> ret = null;
+        try{
+            ret = db.query("SELECT tweet_id ,tweeted_by ,tweet ,timestamp FROM tweets WHERE tweeted_by " +
+                    "in (select followed from follower_followed where follower = ?) ORDER BY timestamp",
+                Tweet.rowMapper, userId );
+        }
+        catch( Exception ex ){
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
 }
