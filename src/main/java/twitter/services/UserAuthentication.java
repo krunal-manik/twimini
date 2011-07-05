@@ -34,8 +34,8 @@ public class UserAuthentication {
                         public User mapRow(ResultSet rs, int i) throws SQLException {
                             User ret = new User();
                             ret.setUserId( rs.getInt("user_id"));
-                            ret.setUsername( rs.getString("username"));
-                            ret.setPassword( rs.getString("password"));
+                            ret.setUsername(rs.getString("username"));
+                            ret.setPassword(rs.getString("password"));
                             return ret;
                         }
                     }, username );
@@ -49,7 +49,13 @@ public class UserAuthentication {
     }
 
     public static void registerUser( String username , String password , String name , String email ){
-        db.update("INSERT INTO User(username,password,name,email) VALUES ( ? , ? , ? , ? )", username, password, name, email);
+        try{
+            db.update("INSERT INTO User(username,password,name,email) VALUES ( ? , ? , ? , ? )", username, password, name, email);
+        }
+        catch( Exception ex ){
+            System.out.println( "Register User Exception :((((((" );
+            ex.printStackTrace();
+        }
     }
 
 

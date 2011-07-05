@@ -23,11 +23,8 @@ import java.util.Map;
  */
 @Controller
 public class UserController {
-    public final SimpleJdbcTemplate db;
 
-    @Autowired
-    public UserController(SimpleJdbcTemplate db) {
-        this.db = db;
+    public UserController() {
     }
 
     @RequestMapping("/login")

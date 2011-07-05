@@ -38,7 +38,7 @@
             <c:forEach var='item' items='${userList}' varStatus='status'>
 
                 <script type="text/javascript">
-                    load_data({'user_id':${item.user_id}, 'name':'${item.name}'});
+                    load_data({'user_id':${item.userId}, 'name':'${item.name}'});
                 </script>
 
             </c:forEach>

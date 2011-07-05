@@ -1,6 +1,5 @@
 package twitter.controllers;
 
-import org.hsqldb.rights.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -8,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import twitter.models.User;
+import twitter.services.Follow;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -24,49 +25,37 @@ import java.util.Map;
 @Controller
 public class FollowController {
 
-    public final SimpleJdbcTemplate db;
-
-    @Autowired
-    public FollowController(SimpleJdbcTemplate db) {
-        this.db = db;
+    public FollowController(){
     }
 
     @RequestMapping("/all_users")
     public ModelAndView allUserGet(HttpSession session) {
-        List<Map<String, Object>> l = db.queryForList("SELECT user_id, username, name from user " +
-                                                      "where user_id not in (select followed from follower_followed " +
-                                                      "where follower = ?) and user_id != ?",
-                                                      session.getAttribute("userId"), session.getAttribute("userId"));
+        List<User> ret = Follow.allUsersList( session.getAttribute("userId").toString() );
         ModelAndView mv = new ModelAndView();
-        mv.addObject("userList", l);
+        mv.addObject("userList",  ret);
         return mv;
     }
 
-    @RequestMapping(value="/all_users", method= RequestMethod.POST)
-    public ModelAndView followedAddedPost(HttpSession session, @RequestParam final String userId) {
-        System.out.println("USERID -> " + userId);
-        db.update("INSERT INTO follower_followed (followed, follower) values (?, ?)", userId, session.getAttribute("userId"));
+    @RequestMapping(value="/all_users", method= RequestMethod.POST) // Ajax call
+    public ModelAndView followedAddedPost(HttpSession session, @RequestParam String userId) {
+        Follow.addFollowing( userId , session.getAttribute("userId").toString() );
         ModelAndView mv = new ModelAndView();
         return mv;
     }
 
     @RequestMapping("/followed")
-    public ModelAndView FollowedGet(HttpSession session) {
-        List<Map<String, Object>> l = db.queryForList("SELECT user_id, username, name from user " +
-                                                      "where user_id in (SELECT followed from follower_followed " +
-                                                      "where follower = ?)", session.getAttribute("userId"));
+    public ModelAndView followedList(HttpSession session) {
+        List<User> followedList = Follow.getFollowedList( session.getAttribute("userId").toString() );
         ModelAndView mv = new ModelAndView();
-        mv.addObject("followedList", l);
+        mv.addObject("followedList", followedList );
         return mv;
     }
 
     @RequestMapping("/follower")
-    public ModelAndView FollowerGet(HttpSession session) {
-        List<Map<String, Object>> l = db.queryForList("SELECT user_id, username, name from user " +
-                                                      "where user_id in (SELECT follower from follower_followed " +
-                                                      "where followed = ?)", session.getAttribute("userId"));
+    public ModelAndView followerList(HttpSession session) {
+        List<User> followerList = Follow.getFollowerList( session.getAttribute("userId").toString() );
         ModelAndView mv = new ModelAndView();
-        mv.addObject("followedList", l);
+        mv.addObject("followerList", followerList );
         return mv;
     }
 

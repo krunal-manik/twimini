@@ -7,7 +7,7 @@
 
         <ul>
 
-            <c:forEach var='item' items='${followedList}' varStatus='status'>
+            <c:forEach var='item' items='${followerList}' varStatus='status'>
 
                 <li>
                     ${item.name}

@@ -30,7 +30,7 @@ public class TweetController {
     public TweetController(){
     }
 
-    @RequestMapping( value = "/tweet/addTweet" , method = RequestMethod.POST ) @ResponseBody
+    @RequestMapping( value = "/tweet/addTweet" , method = RequestMethod.POST ) @ResponseBody // Ajax call
     public Tweet addTweet( @RequestParam String tweetContent , HttpSession session ){
         Tweet t = UserTweetList.addTweet( tweetContent , session.getAttribute("userId").toString() );
         return t;
