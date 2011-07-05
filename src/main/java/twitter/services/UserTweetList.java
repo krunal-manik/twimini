@@ -6,8 +6,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
 import twitter.models.Tweet;
+import twitter.models.User;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +48,7 @@ public class UserTweetList {
         List<Tweet> ret = null;
         try{
             ret = db.query("SELECT tweet_id ,tweeted_by ,tweet ,timestamp FROM tweets WHERE tweeted_by = ? ORDER BY timestamp",
-                Tweet.rowMapper, userId );
+                    Tweet.rowMapper, userId);
         }
         catch( Exception ex ){
             ex.printStackTrace();
@@ -63,6 +66,17 @@ public class UserTweetList {
         catch( Exception ex ){
             ex.printStackTrace();
         }
+        return ret;
+    }
+
+    public static Hashtable<String,Object> getUserProfileInfo( String userId ){
+        List<User> followerList = Follow.getFollowerList( userId );
+        List<User> followedList = Follow.getFollowedList( userId );
+        List<Tweet> userTweets = UserTweetList.userTweetList( userId );
+        Hashtable<String,Object> ret = new Hashtable<String,Object>();
+        ret.put( "followerList" , followerList );
+        ret.put( "followedList" , followedList );
+        ret.put( "userTweets" , userTweets );
         return ret;
     }
 

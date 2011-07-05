@@ -2,21 +2,13 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
-
     <body>
-
         <ul>
-
-            <c:forEach var='item' items='${followedList}' varStatus='status'>
-
+            <c:forEach var='item' items='${followedList}'>
                 <li>
-                    ${item.name}
+                    <a href="/profile?userId=${item.userId}">${item.name}</a>
                 </li>
-
             </c:forEach>
-
         </ul>
-
     </body>
-
 </html>

@@ -3,6 +3,7 @@ package twitter.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,7 @@ import twitter.models.User;
 import twitter.services.Follow;
 
 import javax.servlet.http.HttpSession;
+import javax.swing.plaf.multi.MultiViewportUI;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +61,20 @@ public class FollowController {
         return mv;
     }
 
+    @RequestMapping("/profile/follower")
+    public ModelAndView getSpecificUsersFollowers(String userId){
+        List<User> ret = Follow.getFollowerList( userId );
+        ModelAndView mv = new ModelAndView("/follower");
+        mv.addObject( "followerList" , ret );
+        return mv;
+    }
 
+    @RequestMapping("/profile/followed")
+    public ModelAndView getSpecificUsersFollowed(String userId){
+        List<User> ret = Follow.getFollowedList( userId );
+        ModelAndView mv = new ModelAndView("/followed");
+        mv.addObject( "followedList" , ret );
+        return mv;
+    }
 
 }

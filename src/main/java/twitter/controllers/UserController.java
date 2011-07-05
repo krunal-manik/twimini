@@ -6,11 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
 import twitter.services.UserAuthentication;
+import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +74,17 @@ public class UserController {
         session.invalidate();
         ModelAndView mv = new ModelAndView();
         mv.setViewName("redirect:/login");
+        return mv;
+    }
+
+    @RequestMapping("/profile")
+    public ModelAndView getUserProfile(String userId){
+        Hashtable<String,Object> ret = UserTweetList.getUserProfileInfo( userId );
+        ModelAndView mv = new ModelAndView();
+        mv.addObject( "userTweets" , ret.get("userTweets") );
+        mv.addObject( "followedList" , ret.get("followedList") );
+        mv.addObject( "followerList" , ret.get("followerList") );
+        mv.addObject( "currentUserId" , userId );
         return mv;
     }
 }
