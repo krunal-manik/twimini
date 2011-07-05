@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import twitter.models.User;
+import twitter.services.UserAuthentication;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -24,7 +26,9 @@ public class UserController {
     public final SimpleJdbcTemplate db;
 
     @Autowired
-    public UserController(SimpleJdbcTemplate db) { this.db = db; }
+    public UserController(SimpleJdbcTemplate db) {
+        this.db = db;
+    }
 
     @RequestMapping("/login")
     public ModelAndView loginGet(){
@@ -35,26 +39,15 @@ public class UserController {
     public ModelAndView login(@RequestParam("username") String username,
                               @RequestParam("password") String password ,
                                HttpSession session ){
+
         ModelAndView mv = new ModelAndView("/login");
-        System.out.println("username" + username );
-        System.out.println("password" + password );
-        Integer userId = null;
-        try{
-            System.out.println( "Just before query" );
-            List < Map<String,Object> > userData = db.queryForList("SELECT user_id,username,password from user where username = ?", username);
-            System.out.println( "Query success" );
-            if( userData.size() == 0 || !(userData.get(0).get("password").toString().equals(password)) ){
-                mv.addObject( "message" , "Invalid password" );
-                return mv;
-            }
-            userId = (Integer)userData.get(0).get("user_id");
-            username = (String)userData.get(0).get("username");
-        }catch( Exception e ){
-            System.out.println( "Exception :(((((((" );
-            e.printStackTrace();
+        User currentUser = UserAuthentication.authenticateUser( username , password );
+        if( currentUser == null ){
+            mv.addObject( "message" , "Invalid password" );
+            return mv;
         }
-        session.setAttribute( "username" , username );
-        session.setAttribute( "userId" , userId );
+        session.setAttribute( "username" , currentUser.getUsername() );
+        session.setAttribute( "userId" , currentUser.getUserId() );
         mv.addObject( "message" , "Login successful");
         mv.setViewName("redirect:/tweet");
         return mv;
@@ -62,19 +55,15 @@ public class UserController {
 
     @RequestMapping( value = "/register" , method = RequestMethod.GET )
     public String registerGet(){
-        System.out.println( "In get" );
         return "register";
     }
 
     @RequestMapping(value = "/register" , method = RequestMethod.POST )
     public ModelAndView register( @RequestParam("username") String username ,
                                 @RequestParam("password") String password ,
-                                @RequestParam("password2") String password2 ,
                                 @RequestParam("name") String name ,
                                 @RequestParam("email") String email ){
-        System.out.println( "In post" );
-        db.update( "INSERT INTO User(username,password,name,email) VALUES ( ? , ? , ? , ? )" , username , password, name, email );
-        System.out.println( "insert done" );
+        UserAuthentication.registerUser( username , password , name ,email );
         ModelAndView mv = new ModelAndView();
         mv.setViewName("redirect:/login");
         return mv;

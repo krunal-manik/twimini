@@ -13,7 +13,7 @@
             $.ajax({
                    type : "POST",
                    url : "tweet/addTweet",
-                   data : "tweetContent=" + tweetContent,
+                   data : "tweetContent=" + tweetContent ,
                    success : function( data ){
                         var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
                         var tweetHTML = $(html);
