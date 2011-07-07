@@ -5,8 +5,45 @@
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
 
+    <link rel="stylesheet" href="/static/css/basestyle.css" />
+
     <script type="text/javascript">
-        var status = 1;
+        function return_followers_onpane() {
+            document.getElementById("sidepane").innerHTML = '';
+            $.ajax({
+                   type : "GET",
+                   url : "follower_onpane",
+                   success : function( data ){
+                        for(i=0;i<data.length;i++){
+                            arr = JSON.parse( JSON.stringify(data[i]));
+                            var html = new EJS( {url:'/static/ejs_templates/follower.ejs'} ).render(arr);
+                            var todoItemList = $(html);
+                            $("#sidepane").append(todoItemList);
+                        }
+                   }
+            });
+        }
+
+        function return_followings_onpane() {
+            document.getElementById("sidepane").innerHTML = '';
+            $.ajax({
+                   type : "GET",
+                   url : "following_onpane",
+                   success : function( data ){
+                        for(i=0;i<data.length;i++){
+                            arr = JSON.parse( JSON.stringify(data[i]));
+                            var html = new EJS( {url:'/static/ejs_templates/follower.ejs'} ).render(arr);
+                            var todoItemList = $(html);
+                            $("#sidepane").append(todoItemList);
+                        }
+                   }
+            });
+        }
+
+    </script>
+
+
+    <script type="text/javascript">
         function addTweet(){
             var tweetContent = document.getElementById("tweet").value;
             if( tweetContent == null || tweet == '' )return;
@@ -18,7 +55,7 @@
                    success : function( data ){
                         var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
                         var tweetHTML = $(html);
-                        $("#tweetsList").prepend(tweetHTML);
+                        $("#sidepane").prepend(tweetHTML);
                    }
 
             });
@@ -39,15 +76,25 @@
         }
     </script>
     <body>
+
+    <div class="header">
+            <div class="banner">
+                <img src="/static/images/tweet_banner.jpg" style="width:130; height:45;"/>
+            </div>
+            <div class="taskbar">
+                <div class="taskbar_item"> Hello ${sessionScope.username} </div>
+                <div class="taskbar_item"> <a href="#" onclick="return_followings_onpane()"> Following (${followedLength})</a> </div>
+                <div class="taskbar_item"> <a href="#" onclick="return_followers_onpane()"> Followers (${followerLength})</a> </div>
+                <div class="taskbar_item"> <a href="/all_users">All Users !!! </a> </div>
+                <div class="taskbar_item"><a href="/logout">Log out</a> </div>
+            </div>
+    </div>
+
+    <div id="sidepane">
+    </div>
+
     <h4>Tweet</h4><br>
-        Hello ${sessionScope.username}  <a href="/logout">Log out</a>
-        <br>
-        <br>
-        <a href="/followed">People u r following : ${followedLength}</a>
-        <br>
-        <a href="/follower">People who r following u : ${followerLength}</a>
-        <br>
-        <a href="/all_users">All Users !!! </a>
+
 
         <input type = "text" id = "tweet" name = "tweetContent" value = "" length = "150"/>
         <input type = "button" value = "Tweet" onclick="addTweet()" />
