@@ -7,12 +7,18 @@
      left:0;
 }
 
+.empty_box {
+    float:left;
+    height:7px;
+    width:100%;
+}
+
 .banner {
     float:left;
     height:50px;
     width:50%;
     border-style:solid;
-    border-width:2px;
+    border-width:0px;
     border-color:#000000;
 }
 
