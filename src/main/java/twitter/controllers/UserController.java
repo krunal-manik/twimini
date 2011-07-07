@@ -48,7 +48,7 @@ public class UserController {
         }
         session.setAttribute( "username" , currentUser.getUsername() );
         session.setAttribute( "userId" , currentUser.getUserId() );
-        mv.addObject( "message" , "Login successful");
+        //mv.addObject( "message" , "Login successful");
         mv.setViewName("redirect:/tweet");
         return mv;
     }

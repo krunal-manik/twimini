@@ -20,6 +20,7 @@ public class User {
     String email;
     boolean emailNotifications;
     String aboutMe;
+    String followStatus;
 
     public User(){}
 
@@ -62,6 +63,10 @@ public class User {
         return aboutMe;
     }
 
+    public String getFollowStatus() {
+        return followStatus;
+    }
+
     public void setUserId( int userId ){
         this.userId = userId;
     }
@@ -76,5 +81,9 @@ public class User {
 
     public void setName( String name ){
         this.name = name;
+    }
+
+    public void setFollowStatus( String followStatus ) {
+        this.followStatus = followStatus;
     }
 }

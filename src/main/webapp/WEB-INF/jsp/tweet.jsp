@@ -21,7 +21,7 @@
                         $("#tweetsList").prepend(tweetHTML);
                    }
 
-             });
+            });
         }
         function prependTweet(data){
             var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;

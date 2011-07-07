@@ -41,13 +41,25 @@ public class Follow {
         List<User> userList = null;
         try{
             userList = db.query("SELECT user_id, username, name from user " +
-                    "where user_id not in (select followed from follower_followed " +
-                    "where follower = ?) and user_id != ?",
+                    "where user_id != ? and user_id not in (select followed from follower_followed " +
+                    "where follower = ?)",
                      Follow.rowMapperForFollow,  userId , userId );
+            for(int i=0;i<userList.size();i++)
+                    userList.get(i).setFollowStatus( "Follow" );
+            List<User> followers =  db.query("SELECT user_id, username, name from user " +
+                    "where user_id != ? and user_id IN (select followed from follower_followed " +
+                    "where follower = ?)",
+                     Follow.rowMapperForFollow,  userId , userId );
+            for(int i=0;i<followers.size();i++)
+                    followers.get(i).setFollowStatus( "Unfollow" );
+            for(int i=0;i<followers.size();i++)
+                userList.add( followers.get(i) );
         }
         catch( Exception ex ){
             ex.printStackTrace();
         }
+        for(int i=0;i<userList.size();i++)
+            System.out.println( userList.get(i) );
         return userList;
     }
 
@@ -56,7 +68,17 @@ public class Follow {
             db.update("INSERT INTO follower_followed (followed, follower) values (?, ?)", userId, currentUser );
         }
         catch ( Exception ex ){
-            System.out.println( "Following-Followers Exception :((((((" );
+            System.out.println( "Add Following-Followers Exception :((((((" );
+            ex.printStackTrace();
+        }
+    }
+
+    public static void removeFollowing( String userId , String currentUser ){
+        try{
+            db.update("DELETE FROM follower_followed where followed = ? and follower = ?", userId, currentUser );
+        }
+        catch ( Exception ex ){
+            System.out.println( "Remove Following-Followers Exception :((((((" );
             ex.printStackTrace();
         }
     }

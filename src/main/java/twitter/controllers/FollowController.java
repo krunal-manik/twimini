@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
 import twitter.services.Follow;
@@ -38,11 +39,14 @@ public class FollowController {
         return mv;
     }
 
-    @RequestMapping(value="/all_users", method= RequestMethod.POST) // Ajax call
-    public ModelAndView followedAddedPost(HttpSession session, @RequestParam String userId) {
+    @RequestMapping(value="/all_users/addFollowing", method= RequestMethod.POST) @ResponseBody // Ajax call
+    public void addFollowing(HttpSession session, @RequestParam String userId) {
         Follow.addFollowing( userId , session.getAttribute("userId").toString() );
-        ModelAndView mv = new ModelAndView();
-        return mv;
+    }
+
+    @RequestMapping(value="/all_users/removeFollowing", method= RequestMethod.POST) @ResponseBody // Ajax call
+    public void removeFollowingPost(HttpSession session, @RequestParam String userId) {
+        Follow.removeFollowing(userId, session.getAttribute("userId").toString());
     }
 
     @RequestMapping("/followed")

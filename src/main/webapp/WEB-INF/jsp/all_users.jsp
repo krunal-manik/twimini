@@ -2,24 +2,41 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
-
     <head>
-
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
 
         <script type="text/javascript">
 
-            function addFollower(id) {
-                $.ajax({
-                   type : "POST",
-                   url : "/all_users",
-                   data : "userId=" + id,
-                   success : function() {
-                    $('#abc'+id).remove();
-                    }
-                });
-            };
+            function changeFollowStatus(userId) {
+                alert( 'hereee' );
+                var buttonName = "follow_" + userId;
+                if( document.getElementById(buttonName).value == "Follow" ){
+                    $.ajax({
+                       type : "POST",
+                       url : "/all_users/addFollowing",
+                       data : "userId=" + userId ,
+                       success : function() {
+                           alert( 'success in add' );
+                            document.getElementById(buttonName).value = "Unfollow";
+                           alert( 'final success in add' );
+                       }
+                    });
+                }
+                else {
+                    alert( "In remove js" );
+                    $.ajax({
+                       type : "POST",
+                       url : "/all_users/removeFollowing",
+                       data : "userId=" + userId ,
+                       success : function() {
+                           alert( 'success in remove' );
+                            document.getElementById(buttonName).value = "Follow";
+                           alert( 'final success in remove' );
+                       }
+                    });
+                }
+            }
 
             function load_data(data) {
                 alert(data.user_id);
@@ -32,19 +49,12 @@
     </head>
 
     <body>
-
-        <ul id="user_list">
-
+        <div id="user_list">
             <c:forEach var='item' items='${userList}' varStatus='status'>
-
                 <script type="text/javascript">
-                    load_data({'user_id':${item.userId}, 'name':'${item.name}'});
+                    load_data({'userId':${item.userId}, 'name':'${item.name}', 'followStatus': '${item.followStatus}' });
                 </script>
-
             </c:forEach>
-
-        </ul>
-
+        </div>
     </body>
-
 </html>
