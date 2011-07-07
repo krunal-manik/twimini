@@ -1,0 +1,36 @@
+.header {
+     position:absolute;
+     width:100%;
+     background-color:#777777;
+     height:60px;
+     top:0;
+     left:0;
+}
+
+.banner {
+    float:left;
+    height:50px;
+    width:60%;
+    border-style:solid;
+    border-width:2px;
+    border-color:#000000;
+}
+
+.login_box {
+    float:right;
+    height:50px;
+    width:35%;
+    border-style:solid;
+    border-width:2px;
+    border-color:#FFFFFF;
+}
+
+.input {
+    width:70px;
+    height:20px;
+}
+
+.sign_up {
+    align:center;
+    width:40%;
+}
