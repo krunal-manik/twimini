@@ -31,11 +31,11 @@
                             </td>
                         </tr>
                      </form>
-                <table>
+                </table>
             </div>
         </div>
 
-        <div class="sign_up">
+        <div class="main_body">
             <form action="/register" method=post>
                 <fieldset>
                     <legend> SIGN UP</legend>

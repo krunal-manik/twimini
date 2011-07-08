@@ -40,6 +40,48 @@
             });
         }
 
+        function all_users_onpane() {
+            document.getElementById("sidepane").innerHTML = '';
+            $.ajax({
+                   type : "GET",
+                   url : "all_users_onpane",
+                   success : function( data ){
+                        for(i=0;i<data.length;i++){
+                            arr = JSON.parse( JSON.stringify(data[i]));
+                            var html = new EJS( {url:'/static/ejs_templates/add_new_followers.ejs'} ).render(arr);
+                            var todoItemList = $(html);
+                            $("#sidepane").append(todoItemList);
+                        }
+                   }
+            });
+        }
+
+        function changeFollowStatus(userId) {
+                var buttonName = "follow_" + userId;
+                if( document.getElementById(buttonName).value == "Follow" ){
+                    $.ajax({
+                       type : "POST",
+                       url : "/all_users/addFollowing",
+                       data : "userId=" + userId ,
+                       success : function() {
+                            document.getElementById(buttonName).value = "Unfollow";
+                       }
+                    });
+                }
+                else {
+                    $.ajax({
+                       type : "POST",
+                       url : "/all_users/removeFollowing",
+                       data : "userId=" + userId ,
+                       success : function() {
+                           alert( 'success in remove' );
+                            document.getElementById(buttonName).value = "Follow";
+                           alert( 'final success in remove' );
+                       }
+                    });
+                }
+            }
+
     </script>
 
 
@@ -55,9 +97,8 @@
                    success : function( data ){
                         var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
                         var tweetHTML = $(html);
-                        $("#sidepane").prepend(tweetHTML);
+                        $("#tweetsList").prepend(tweetHTML);
                    }
-
             });
         }
         function prependTweet(data){
@@ -85,7 +126,7 @@
                 <div class="taskbar_item"> Hello ${sessionScope.username} </div>
                 <div class="taskbar_item"> <a href="#" onclick="return_followings_onpane()"> Following (${followedLength})</a> </div>
                 <div class="taskbar_item"> <a href="#" onclick="return_followers_onpane()"> Followers (${followerLength})</a> </div>
-                <div class="taskbar_item"> <a href="/all_users">All Users !!! </a> </div>
+                <div class="taskbar_item"> <a href="#" onclick="all_users_onpane()">All Users !!! </a> </div>
                 <div class="taskbar_item"><a href="/logout">Log out</a> </div>
             </div>
     </div>
@@ -93,38 +134,40 @@
     <div id="sidepane">
     </div>
 
-    <h4>Tweet</h4><br>
+    <div class = "main_body">
+
+        <h4>Tweet</h4><br>
 
 
-        <input type = "text" id = "tweet" name = "tweetContent" value = "" length = "150"/>
-        <input type = "button" value = "Tweet" onclick="addTweet()" />
-        <br>
-        <input type = "button" value = "Toggle" onclick = "toggle_show();">
-        <br>
-        <div id="userTweetsContainer">
-            Your Tweets :
-            <div id="tweetsList">
-                <c:forEach var='item' items='${tweetsList}'>
-                    <script type="text/javascript">
-                        prependTweet({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
-                    </script>
-                </c:forEach>
+            <input type = "text" id = "tweet" name = "tweetContent" value = "" length = "150"/>
+            <input type = "button" value = "Tweet" onclick="addTweet()" />
+            <br>
+            <input type = "button" value = "Toggle" onclick = "toggle_show();">
+            <br>
+            <div id="userTweetsContainer">
+                Your Tweets :
+                <div id="tweetsList">
+                    <c:forEach var='item' items='${tweetsList}'>
+                        <script type="text/javascript">
+                            prependTweet({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
+                        </script>
+                    </c:forEach>
+                </div>
+            </div>
+            <br>
+            <div id="newsFeedContainer">
+                Newsfeed :
+                <div id="tweetsList_o">
+                    <c:forEach var='item' items='${tweetsList_o}'>
+                        <script type="text/javascript">
+                            prependTweet_o({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
+                        </script>
+                    </c:forEach>
+                </div>
+                <script type="text/javascript">
+                    $("#newsFeedContainer").hide();
+                </script>
             </div>
         </div>
-        <br>
-        <div id="newsFeedContainer">
-            Newsfeed :
-            <div id="tweetsList_o">
-                <c:forEach var='item' items='${tweetsList_o}'>
-                    <script type="text/javascript">
-                        prependTweet_o({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
-                    </script>
-                </c:forEach>
-            </div>
-            <script type="text/javascript">
-                $("#newsFeedContainer").hide();
-            </script>
-        </div>
-
     </body>
 </html>

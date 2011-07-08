@@ -32,6 +32,7 @@
 }
 
 #sidepane {
+    overflow:hidden;
     position:absolute;
     right:0;
     top:60;
@@ -61,7 +62,9 @@
     height:20px;
 }
 
-.sign_up {
+.main_body {
+    position:absolute;
+    top:100px;
     align:center;
     width:40%;
 }

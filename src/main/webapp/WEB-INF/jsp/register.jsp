@@ -25,7 +25,7 @@
                 <td> <input type = "text" name = "name" value = "" /> </td>
             </tr>
             <tr>
-                <td> Name : </td>
+                <td> Username : </td>
                 <td> <input type = "text" name = "username" value = "" /> </td>
             </tr>
             <tr>
