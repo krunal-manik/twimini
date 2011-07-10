@@ -1,69 +1,61 @@
 <html>
     <head>
+    <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print">
+    <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
         <link rel="stylesheet" type="text/css" href="/static/css/basestyle.css" />
     </head>
 
     <body>
-        <div class="header">
-            <div class="banner">
-                <img src="/static/images/tweet_banner.jpg" style="width:130; height:45;"/>
+    <div class="header">
+            <div class="container">
+                <div class="empty_box"></div>
+                <div class="span-5 append-8">
+                    <img src="/static/images/Twitter-Logo.png" style="width:130; height:45;"/>
+                </div>
+                <div class="span-11 last" style="padding-top:1" >
+                    <form action="/login" method=post >
+                        <div class="span-3 append-2"> Email </div>
+                        <div class="span-6 last"> Password </div>
+                        <div class="span-3 append-2"> <input type="text" /> </div>
+                        <div class="span-3 append-2"> <input type="text"> </div>
+                        <div class="span-1 last"> <input type = "Submit" class="button" value="Login" /> </div>
+                    </form>
+                </div>
             </div>
-            <div class="input">
-                <table>
-                     <form action="/login" method=post>
-                        <tr>
-                            <td>
-                                Login :
-                            </td>
-                            <td>
-                                Password :
-                            </td>
-                            <td colspan="2">
-                                <input type="submit" value="login">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="text" class="input">
-                            </td>
-                            <td>
-                                <input type="passsword" class="input">
-                            </td>
-                        </tr>
-                     </form>
-                </table>
-            </div>
-        </div>
 
-        <div class="main_body">
-            <form action="/register" method=post>
-                <fieldset>
-                    <legend> SIGN UP</legend>
-                        <table>
-                        <tr>
-                            <td class="label_sup"> Name : </td>
-                            <td> <input type = "text" name = "name" value = "" /> </td>
-                        </tr>
-                        <tr>
-                            <td class="label_sup"> UserName : </td>
-                            <td> <input type = "text" name = "username" value = "" /> </td>
-                        </tr>
-                        <tr>
-                            <td class="label_sup"> Email : </td>
-                            <td> <input type = "text" name = "email" value = "" /> </td>
-                        </tr>
-                        <tr>
-                            <td class="label_sup"> Password : </td>
-                            <td> <input type = "password" name = "password" value = "" /> </td>
-                        </tr>
-                        <tr>
-                            <td class="label_sup"> Confirm Password : </td>
-                            <td> <input type = "password" name = "password2" value = "" /> </td>
-                        </tr>
-                        <tr><input type = "submit" /></tr>
-                    </table>
-                </fieldset>
+    </div>
+    <div class="container body">
+        <div class="span-6 append-2">
+             <div class="empty_box" style="height:150px; width=100%"></div>
+             <img src="/static/images/twitter_bird.gif" />
+        </div>
+     <div class="prepend-8 span-8 last">
+            <div class="empty_box" style="height:100px; width=100%"></div>
+            Want to Tweet? Join us.<br>
+            <form action="/register" method="post" style="padding-top: 10px;">
+                <div class="span-3 append-1"> Full Name </div>
+                <div class="span-4 last"> <input type="text" class="textbox" /> </div>
+                <div class="span-3 append-1"> Username </div>
+                <div class="span-4 last"> <input type="text" class="textbox" /> </div>
+                <div class="span-3 append-1"> Email address </div>
+                <div class="span-4 last"> <input type="text" class="textbox" /> </div>
+                <div class="span-3 append-1"> Password </div>
+                <div class="span-4 last"> <input type="text" class="textbox" /> </div>
+                <div class="span-3 append-1"> Confirm password </div>
+                <div class="span-4 last"> <input type="text" class="textbox" /> </div>
+                <div class="span-3 prepend-5 last"> <input type="Submit" value="Sign up" class="signup_button"/> </div>
             </form>
         </div>
+    </div>
+
+      <div class="container footer">
+          <div class="span-24-last">
+                <a href="#">About Us</a> |
+                <a href="#">Contact Us</a> |
+                <a href="#">Terms of Service</a> |
+                <a href="#">Privacy Policy</a>
+          </div>
+      </div>
     </body>
 </html>
