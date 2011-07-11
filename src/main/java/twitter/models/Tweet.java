@@ -102,6 +102,8 @@ public class Tweet {
         ret.put( "tweet" , tweet );
         ret.put( "tweetedBy" , "" + tweetedBy );
         ret.put( "timestamp" , timestamp );
+        ret.put("name", name);
+        ret.put("username", username);
         return ret.toString();
     }
 }

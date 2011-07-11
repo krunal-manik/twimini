@@ -42,6 +42,7 @@ public class TweetController {
     public ModelAndView tweetsList(HttpSession session) {
         ModelAndView mv = new ModelAndView();
         mv.addObject("tweetsList", UserTweetList.userTweetList(session.getAttribute("userId").toString()));
+        System.out.println("HAHAHA" + UserTweetList.userTweetList(session.getAttribute("userId").toString()));
         mv.addObject("tweetsList_o", UserTweetList.userTweetList_o(session.getAttribute("userId").toString()));
         mv.addObject("followerLength", Follow.getFollowerList(session.getAttribute("userId").toString()).size());
         mv.addObject("followedLength", Follow.getFollowedList(session.getAttribute("userId").toString()).size());

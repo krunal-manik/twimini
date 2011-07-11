@@ -176,6 +176,20 @@ label{
     color:#FFFFFF;
 }
 
+.tweeter_name {
+    font-size:18px;
+    color:#0000FF;
+}
+
+.tweet_content {
+
+}
+
+.tweet_time {
+    font-size:10px;
+    color:#AAAAAA;
+}
+
 a{
     text-decoration: none;
 }

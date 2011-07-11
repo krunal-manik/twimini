@@ -165,17 +165,16 @@
                                 <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
                                 <jsp:param name="tweet" value="${item.tweet}" />
                                 <jsp:param name="timestamp" value="${item.timestamp}" />
-                                <jsp:param name="timestamp" value="${item.timestamp}" />
+                                <jsp:param name="name" value="${item.name}" />
+                                <jsp:param name="username" value="${item.username}" />
                             </jsp:include>
                         </c:forEach>
                     </div>
                 </div>
-                <br>
                 <div id="newsFeedContainer">
                     Newsfeed :
                     <div id="tweetsList_o">
                         <c:forEach var='item' items='${tweetsList_o}'>
-                            <div class = "prepend-1 span-14 append-1">
                                 <!--
                                 <script type="text/javascript">
                                     prependTweet_o({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
@@ -186,8 +185,9 @@
                                 <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
                                 <jsp:param name="tweet" value="${item.tweet}" />
                                 <jsp:param name="timestamp" value="${item.timestamp}" />
+                                <jsp:param name="name" value="${item.name}" />
+                                <jsp:param name="username" value="${item.username}" />
                             </jsp:include>
-                            </div>
                         </c:forEach>
                     </div>
                     <script type="text/javascript">

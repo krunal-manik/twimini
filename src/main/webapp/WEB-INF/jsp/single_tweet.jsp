@@ -3,11 +3,10 @@
         <img src="/static/images/def_user.jpg" />
     </div>
     <div class= "span-14 last tweet_box">
-        <img src="/static/images/comment_arrow.png" class="comment_arrow">
-        tweet id : <%= request.getParameter("tweetId") %><br>
-        tweet: <%= request.getParameter("tweet") %><br>
-        user id: <%= request.getParameter("tweetedBy") %><br>
-        timestamp<%= request.getParameter("timestamp") %><br>
+        <img src="/static/images/comment_arrow.png" class="comment_arrow" />
+        <div class = "tweeter_name"> <%= request.getParameter("name") %> posted </div>
+        <div class = "tweet_content"> <%= request.getParameter("tweet") %> </div>
+        <div class = "tweet_time">at <%= request.getParameter("timestamp") %> </div>
         <div class = "span-3"><a href="#"> <img src = "/static/images/empty_star.png" />Favorite</a> </div>
         <div class = "span-3"><a href="#"><img src = "/static/images/empty_star.png" />Reply</a> </div>
         <div class = "span-3"><a href="#"><img src = "/static/images/empty_star.png" />Retweet</a> </div>
