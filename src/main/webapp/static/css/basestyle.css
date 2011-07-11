@@ -19,7 +19,10 @@ body{
 .header a{
     text-decoration: none;
     font-size: 15px;
-    color: #FFFFFF;
+    color: #bbe4e4;
+}
+.header a:hover{
+       color: #FFFFFF;
 }
 .empty_box {
     position: relative;

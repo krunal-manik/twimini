@@ -21,6 +21,10 @@ public class Tweet {
     String timestamp;
     int retweetedFrom;
 
+    String userId;
+    String username;
+    String name;
+
     public static final RowMapper<Tweet> rowMapper = new RowMapper<Tweet>() {
         @Override public Tweet mapRow( ResultSet rs , int i ) throws SQLException {
             return new Tweet(rs);
@@ -50,6 +54,46 @@ public class Tweet {
 
     public String getTimestamp(){
         return timestamp;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setTweetId( int tweetId ) {
+        this.tweetId = tweetId;
+    }
+
+    public void setTweet( String tweet ) {
+        this.tweet = tweet;
+    }
+
+    public void setTweetedBy( int tweetedBy ) {
+        this.tweetedBy = tweetedBy;
+    }
+
+    public void setUserId( String userId ) {
+        this.userId = userId;
+    }
+
+    public void setTimestamp( String timestamp ) {
+        this.timestamp = timestamp;
+    }
+
+    public void setUsername( String username ) {
+        this.username = username;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
     }
 
     public String toString(){

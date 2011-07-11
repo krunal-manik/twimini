@@ -3,11 +3,13 @@ package twitter.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
 import twitter.models.Tweet;
 import twitter.models.User;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -24,6 +26,20 @@ import java.util.Map;
 @Service
 public class UserTweetList {
     public static SimpleJdbcTemplate db;
+
+    public static final RowMapper<Tweet> newsFeedMapper = new RowMapper<Tweet>() {
+        @Override public Tweet mapRow( ResultSet rs , int i ) throws SQLException {
+            Tweet ret = new Tweet();
+            ret.setTweetId( rs.getInt( "tweet_id" ) );
+            ret.setName( rs.getString( "name" ) );
+            ret.setTweet( rs.getString( "tweet" ) );
+            ret.setTimestamp( rs.getString( "timestamp" ) );
+            ret.setUserId( rs.getString( "user_id" ) );
+            ret.setTweetedBy( rs.getInt( "tweeted_by" ) );
+            ret.setUsername( rs.getString( "username" ) );
+            return ret;
+        }
+    };
 
     @Autowired
     public UserTweetList( SimpleJdbcTemplate db ) {
@@ -47,8 +63,10 @@ public class UserTweetList {
     public static List<Tweet> userTweetList( String userId ){
         List<Tweet> ret = null;
         try{
-            ret = db.query("SELECT tweet_id ,tweeted_by ,tweet ,timestamp FROM tweets WHERE tweeted_by = ? ORDER BY timestamp",
-                    Tweet.rowMapper, userId);
+            ret = db.query("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp" ,
+                    UserTweetList.newsFeedMapper , userId );
         }
         catch( Exception ex ){
             ex.printStackTrace();
@@ -59,9 +77,15 @@ public class UserTweetList {
     public static List<Tweet> userTweetList_o( String userId ){
         List<Tweet> ret = null;
         try{
-            ret = db.query("SELECT tweet_id ,tweeted_by ,tweet ,timestamp FROM tweets WHERE tweeted_by " +
-                    "in (select followed from follower_followed where follower = ?) ORDER BY timestamp",
-                Tweet.rowMapper, userId );
+            ret = db.query("SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
+                    "U.name as name ,U.username as username, U.user_id as user_id " +
+                    "FROM tweets as T INNER JOIN user as U ON T.tweeted_by = U.user_id " +
+                    "WHERE T.tweeted_by in (" +
+                    "select followed from follower_followed where follower = ?" +
+                    "UNION " +
+                    "select user_id from user where user_id = ? ) " +
+                    "ORDER BY timestamp",
+                Tweet.rowMapper, userId , userId );
         }
         catch( Exception ex ){
             ex.printStackTrace();
