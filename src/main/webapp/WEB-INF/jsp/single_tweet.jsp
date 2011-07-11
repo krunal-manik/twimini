@@ -8,5 +8,8 @@
         tweet: <%= request.getParameter("tweet") %><br>
         user id: <%= request.getParameter("tweetedBy") %><br>
         timestamp<%= request.getParameter("timestamp") %><br>
+        <div class = "span-3"><a href="#"> <img src = "/static/images/empty_star.png" />Favorite</a> </div>
+        <div class = "span-3"><a href="#"><img src = "/static/images/empty_star.png" />Reply</a> </div>
+        <div class = "span-3"><a href="#"><img src = "/static/images/empty_star.png" />Retweet</a> </div>
     </div>
 </div>

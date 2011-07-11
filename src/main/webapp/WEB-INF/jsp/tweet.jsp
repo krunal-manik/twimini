@@ -165,6 +165,7 @@
                                 <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
                                 <jsp:param name="tweet" value="${item.tweet}" />
                                 <jsp:param name="timestamp" value="${item.timestamp}" />
+                                <jsp:param name="timestamp" value="${item.timestamp}" />
                             </jsp:include>
                         </c:forEach>
                     </div>

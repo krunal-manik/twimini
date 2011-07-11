@@ -144,6 +144,7 @@ label{
 }
 
 .tweet_container {
+    font-family: "Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif;
     background-color:#FFFFFF;
     border-style:solid;
     border-color:#999999;
@@ -162,12 +163,24 @@ label{
 .tweet_box {
     position:relative;
     background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
-    height:100px;
+    text-wrap:suppress;
+    font-size:14px;
+}
+
+.tweet_box a {
+    text-decoration: none;
+    color:#666666;
+}
+
+.tweet_box a:hover {
+    color:#FFFFFF;
 }
 
 a{
     text-decoration: none;
 }
+
+
 
 .comment_arrow {
     left: -17px;
