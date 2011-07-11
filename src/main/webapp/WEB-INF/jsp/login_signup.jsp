@@ -3,15 +3,15 @@
     <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection">
     <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print">
     <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
-        <link rel="stylesheet" type="text/css" href="/static/css/basestyle.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
     </head>
 
     <body>
     <div class="header">
             <div class="container">
-                <div class="empty_box"></div>
+
                 <div class="span-5 append-8">
-                    <img src="/static/images/Twitter-Logo.png" style="width:130; height:45;"/>
+                    <img src="/static/images/Twitter-Logo.png" style="width:130px; height:45px;"/>
                 </div>
                 <div class="span-11 last" style="padding-top:1" >
                     <form action="/login" method=post >
