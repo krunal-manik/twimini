@@ -5,7 +5,11 @@
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
 
-    <link rel="stylesheet" href="/static/css/basestyle.css" />
+    <link href='/static/images/twitter_favicon.png' rel='shortcut icon' type='image/x-icon'/>
+    <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print">
+    <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+        <link rel="stylesheet" type="text/css" href="/static/css/basestyle.css" />
 
     <script type="text/javascript">
         function return_followers_onpane() {
@@ -117,7 +121,8 @@
         }
     </script>
     <body>
-
+        <%@include file="/WEB-INF/jsp/header.jsp" %>
+    <!--
     <div class="header">
             <div class="banner">
                 <img src="/static/images/tweet_banner.jpg" style="width:130; height:45;"/>
@@ -130,11 +135,14 @@
                 <div class="taskbar_item"><a href="/logout">Log out</a> </div>
             </div>
     </div>
-
+    -->
+    <!--
     <div id="sidepane">
     </div>
+     -->
 
-    <div class = "main_body">
+
+    <div class = "body">
 
         <h4>Tweet</h4><br>
 
@@ -169,5 +177,6 @@
                 </script>
             </div>
         </div>
+
     </body>
 </html>
