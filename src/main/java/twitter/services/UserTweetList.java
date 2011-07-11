@@ -85,7 +85,7 @@ public class UserTweetList {
                     "UNION " +
                     "select user_id from user where user_id = ? ) " +
                     "ORDER BY timestamp",
-                Tweet.rowMapper, userId , userId );
+                UserTweetList.newsFeedMapper, userId , userId );
         }
         catch( Exception ex ){
             ex.printStackTrace();
