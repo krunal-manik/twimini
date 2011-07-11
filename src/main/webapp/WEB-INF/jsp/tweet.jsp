@@ -135,48 +135,70 @@
                 <div class="taskbar_item"><a href="/logout">Log out</a> </div>
             </div>
     </div>
-    -->
-    <!--
     <div id="sidepane">
     </div>
      -->
 
 
     <div class = "body">
-
-        <h4>Tweet</h4><br>
+    <div class = "container">
+        <div class = "span-24">
+            <div class = "span-16">
+                <h4>Tweet</h4><br>
 
 
             <input type = "text" id = "tweet" name = "tweetContent" value = "" length = "150"/>
             <input type = "button" value = "Tweet" onclick="addTweet()" />
-            <br>
-            <input type = "button" value = "Toggle" onclick = "toggle_show();">
-            <br>
-            <div id="userTweetsContainer">
-                Your Tweets :
-                <div id="tweetsList">
-                    <c:forEach var='item' items='${tweetsList}'>
-                        <script type="text/javascript">
-                            prependTweet({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
-                        </script>
-                    </c:forEach>
+                <input type = "button" value = "Toggle" onclick = "toggle_show();">
+                <br>
+                <div id="userTweetsContainer">
+                    Your Tweets :
+                    <div id="tweetsList">
+                        <c:forEach var='item' items='${tweetsList}'>
+                            <!--
+                            <script type="text/javascript">
+                                prependTweet({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
+                            </script>
+                            -->
+                            <jsp:include page="single_tweet.jsp">
+                                <jsp:param name="tweetId" value="${item.tweetId}" />
+                                <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
+                                <jsp:param name="tweet" value="${item.tweet}" />
+                                <jsp:param name="timestamp" value="${item.timestamp}" />
+                            </jsp:include>
+                        </c:forEach>
+                    </div>
+                </div>
+                <br>
+                <div id="newsFeedContainer">
+                    Newsfeed :
+                    <div id="tweetsList_o">
+                        <c:forEach var='item' items='${tweetsList_o}'>
+                            <div class = "prepend-1 span-14 append-1">
+                                <!--
+                                <script type="text/javascript">
+                                    prependTweet_o({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
+                                </script>
+                                -->
+                            <jsp:include page="single_tweet.jsp">
+                                <jsp:param name="tweetId" value="${item.tweetId}" />
+                                <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
+                                <jsp:param name="tweet" value="${item.tweet}" />
+                                <jsp:param name="timestamp" value="${item.timestamp}" />
+                            </jsp:include>
+                            </div>
+                        </c:forEach>
+                    </div>
+                    <script type="text/javascript">
+                        $("#newsFeedContainer").hide();
+                    </script>
                 </div>
             </div>
-            <br>
-            <div id="newsFeedContainer">
-                Newsfeed :
-                <div id="tweetsList_o">
-                    <c:forEach var='item' items='${tweetsList_o}'>
-                        <script type="text/javascript">
-                            prependTweet_o({tweetId:${item.tweetId}, tweetedBy:${item.tweetedBy} , tweet:'${item.tweet}' , timestamp:'${item.timestamp}'})
-                        </script>
-                    </c:forEach>
-                </div>
-                <script type="text/javascript">
-                    $("#newsFeedContainer").hide();
-                </script>
+            <div class = "span-8 last" style="background-color:#FFFFFF; height:200px">
             </div>
         </div>
+    </div>
+    </div>
 
     </body>
 </html>

@@ -7,6 +7,7 @@ body{
     padding-top: 20px;
     padding-bottom: 50px;
 }
+
 .header {
      background:#042aa1;
      font-family: "Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif;
@@ -139,8 +140,36 @@ label{
     width:40%;
 }
 
+.tweet_container {
+    background-color:#FFFFFF;
+    border-style:solid;
+    border-color:#999999;
+    border-bottom-width:1px;
+}
+
+.block {
+    width:25px;
+    height:25px;
+}
+
+.usr_image_box {
+
+}
+
+.tweet_box {
+    position:relative;
+    background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
+    height:100px;
+}
+
 a{
     text-decoration: none;
+}
+
+.comment_arrow {
+    left: -17px;
+    position: absolute;
+    top: 20px;
 }
 
 .footer {
