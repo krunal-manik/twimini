@@ -1,6 +1,7 @@
 body{
     background: #b8c9fd;
     font-size: 15px;
+    font-family: "Arial Rounded MT Bold","Trebuchet MS",Arial,sans-serif;
 }
 
 .body{
@@ -96,6 +97,7 @@ label{
     text-decoration: none;
     vertical-align: middle;
 }
+
 .taskbar {
     float:right;
     height:50px;
@@ -145,10 +147,10 @@ label{
 
 .tweet_container {
     font-family: "Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif;
-    background-color:#FFFFFF;
     border-style:solid;
     border-color:#999999;
-    border-bottom-width:1px;
+    border-top-width:1px;
+    border-right-width:1px;
 }
 
 .block {
@@ -157,14 +159,13 @@ label{
 }
 
 .usr_image_box {
-
 }
 
 .tweet_box {
     position:relative;
     background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
     text-wrap:suppress;
-    font-size:14px;
+    font-size:16px;
 }
 
 .tweet_box a {
@@ -177,12 +178,12 @@ label{
 }
 
 .tweeter_name {
-    font-size:18px;
+    font-size:16px;
     color:#0000FF;
 }
 
 .tweet_content {
-
+    word-wrap:break-word;
 }
 
 .tweet_time {
@@ -193,7 +194,6 @@ label{
 a{
     text-decoration: none;
 }
-
 
 
 .comment_arrow {
@@ -208,4 +208,8 @@ a{
   text-align: right;
   font-size: 16px;
   color:#43783F;
+}
+
+.padding{
+    padding:10px;
 }

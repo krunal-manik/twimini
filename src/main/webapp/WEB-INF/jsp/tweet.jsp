@@ -119,6 +119,10 @@
             var tweetHTML = $(html);
             $("#tweetsList_o").prepend(tweetHTML);
         }
+
+        function imposeMaxLength(Event, Object, MaxLen) {
+                return (Object.value.length <= MaxLen)||(Event.keyCode == 8 ||Event.keyCode==46||(Event.keyCode>=35&&Event.keyCode<=40))
+        }
     </script>
     <body>
         <%@include file="/WEB-INF/jsp/header.jsp" %>
@@ -143,11 +147,11 @@
     <div class = "body">
     <div class = "container">
         <div class = "span-24">
-            <div class = "span-16">
-                <h4>Tweet</h4><br>
-
-
-            <input type = "text" id = "tweet" name = "tweetContent" value = "" length = "150"/>
+            <div class = "span-16" style="">
+            <h4>TWEET</h4>
+            <textarea id = "tweet" onkeypress="return imposeMaxLength(event, this, 140);"
+            name = "tweetContent" value = "" class="span-16" placeholder="tweet !!!"
+            style="resize:none; height:40px;"></textarea>
             <input type = "button" value = "Tweet" onclick="addTweet()" />
                 <input type = "button" value = "Toggle" onclick = "toggle_show();">
                 <br>
