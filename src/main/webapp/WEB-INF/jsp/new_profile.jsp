@@ -34,10 +34,10 @@
                     style="resize:none; height:60px;"></textarea>
                     <input type = "button" value = "Tweet" onclick="addTweet()" />
                 </form>
-                    <div id="newsFeedContainer">
-                        Newsfeed :
-                        <div id="tweetsList_o">
-                            <c:forEach var='item' items='${tweetsList_o}'>
+                    <div id="userTweetsContainer">
+                        Your Tweets :
+                        <div id="tweetsList">
+                            <c:forEach var='item' items='${tweetsList}'>
                                 <jsp:include page="single_tweet.jsp">
                                     <jsp:param name="tweetId" value="${item.tweetId}" />
                                     <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
@@ -50,38 +50,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class = "span-8 last sidebar">
-                    <div class = "padding">
-                        <ul>
-                            Followers :
-                            <c:forEach var='item' items='${followerList}'>
-                                <jsp:include page="sidebar_elem.jsp">
-                                    <jsp:param name="name" value="${item.name}" />
-                                    <jsp:param name="userId" value="${item.userId}" />
-                                </jsp:include>
-                            </c:forEach>
-                        </ul>
-                        <ul>
-                            U are following :
-                            <c:forEach var='item' items='${followedList}'>
-                                <jsp:include page="sidebar_elem.jsp">
-                                    <jsp:param name="name" value="${item.name}" />
-                                    <jsp:param name="userId" value="${item.userId}" />
-                                </jsp:include>
-                            </c:forEach>
-                        </ul>
-                        <ul>
-                            All Users:
-                            <c:forEach var='item' items='${allUserList}'>
-                                <jsp:include page="sidebar_elem_all_users.jsp">
-                                    <jsp:param name="name" value="${item.name}" />
-                                    <jsp:param name="userId" value="${item.userId}" />
-                                    <jsp:param name="followStatus" value="${item.followStatus}" />
-                                </jsp:include>
-                            </c:forEach>
-                        </ul>
-                    </div>
+                <div class = "span-8 last" style="background-color:#FFFFFF; height:200px">
                 </div>
             </div>
         </div>

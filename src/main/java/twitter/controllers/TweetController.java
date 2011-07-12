@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.Tweet;
+import twitter.models.User;
 import twitter.services.Follow;
 import twitter.services.UserTweetList;
 
@@ -41,11 +42,21 @@ public class TweetController {
     @RequestMapping("/tweet")
     public ModelAndView tweetsList(HttpSession session) {
         ModelAndView mv = new ModelAndView();
-        mv.addObject("tweetsList", UserTweetList.userTweetList(session.getAttribute("userId").toString()));
         //System.out.println("HAHAHA" + UserTweetList.userTweetList(session.getAttribute("userId").toString()));
         mv.addObject("tweetsList_o", UserTweetList.userTweetList_o(session.getAttribute("userId").toString()));
-        mv.addObject("followerLength", Follow.getFollowerList(session.getAttribute("userId").toString()).size());
-        mv.addObject("followedLength", Follow.getFollowedList(session.getAttribute("userId").toString()).size());
+        mv.addObject("followerList", Follow.getFollowerList(session.getAttribute("userId").toString()));
+        mv.addObject("followedList", Follow.getFollowedList(session.getAttribute("userId").toString()));
+        mv.addObject("allUserList", Follow.allUsersList( session.getAttribute("userId").toString()));
+        return mv;
+    }
+
+    @RequestMapping("/new_profile")
+    public ModelAndView profile_data(HttpSession session) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("tweetsList", UserTweetList.userTweetList(session.getAttribute("userId").toString()));
+        //System.out.println("HAHAHA" + UserTweetList.userTweetList(session.getAttribute("userId").toString()));
+        mv.addObject("followerList", Follow.getFollowerList(session.getAttribute("userId").toString()));
+        mv.addObject("followedList", Follow.getFollowedList(session.getAttribute("userId").toString()));
         return mv;
     }
 }

@@ -9,10 +9,10 @@
                         <a href="#">Hello <%= session.getAttribute("username") %></a>
                     </div>
                     <div class="span-2 prepend-1">
-                        <a href="#"> <img src="/static/images/home.png"/> Home</a>
+                        <a href="/tweet"> <img src="/static/images/home.png"/> Home</a>
                     </div>
                     <div class="span-2 prepend-1">
-                        <a href="#"> <img src="/static/images/profile.png"> Profile</a>
+                        <a href="/new_profile"> <img src="/static/images/profile.png"> Profile</a>
                     </div>
                     <div class="span-2 prepend-1 last">
                         <a href="/logout">Logout</a>
