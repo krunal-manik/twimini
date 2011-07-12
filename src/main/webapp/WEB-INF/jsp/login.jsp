@@ -3,15 +3,26 @@
 
 <html>
     <head>
-    <link href='/static/images/twitter_favicon.png' rel='shortcut icon' type='image/x-icon'/>
-    <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print">
-    <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+        <!-- jQuery and ejs scripts -->
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
+        <script type="text/javascript" src="/static/js/functions.js"></script>
+
+        <!-- favicon -->
+        <link href='/static/images/twitter_favicon.png' rel='shortcut icon' type='image/x-icon'/>
+
+        <!-- blueprint css -->
+        <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection">
+        <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print">
+        <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+        <!-- base css -->
         <link rel="stylesheet" type="text/css" href="/static/css/basestyle.css" />
     </head>
 
     <body>
     <%@include file="/WEB-INF/jsp/signin_header.jsp" %>
+
     <div class="container body">
         <div class="span-6 append-2">
              <div class="empty_box" style="height:150px; width=100%"></div>

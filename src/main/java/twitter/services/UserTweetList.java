@@ -51,8 +51,14 @@ public class UserTweetList {
         try{
             db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,userId , tweet  );
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
-            ret = db.queryForObject( "SELECT tweet_id ,tweeted_by ,tweet ,timestamp FROM tweets WHERE tweet_id = ?",
-                    Tweet.rowMapper , tweetId );
+
+            ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ? " ,
+                    UserTweetList.newsFeedMapper , userId , tweetId );
+
+            /*ret = db.queryForObject( "SELECT tweet_id ,tweeted_by ,tweet ,timestamp FROM tweets WHERE tweet_id = ?",
+                    Tweet.rowMapper , tweetId );*/
         }
         catch( EmptyResultDataAccessException ex ){
             ex.printStackTrace();
@@ -65,7 +71,7 @@ public class UserTweetList {
         try{
             ret = db.query("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
                     "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
-                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp" ,
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp DESC" ,
                     UserTweetList.newsFeedMapper , userId );
         }
         catch( Exception ex ){
@@ -84,7 +90,7 @@ public class UserTweetList {
                     "select followed from follower_followed where follower = ?" +
                     "UNION " +
                     "select user_id from user where user_id = ? ) " +
-                    "ORDER BY timestamp",
+                    "ORDER BY timestamp DESC",
                 UserTweetList.newsFeedMapper, userId , userId );
         }
         catch( Exception ex ){
