@@ -112,4 +112,34 @@ public class Follow {
         }
         return followerList;
     }
+
+    public static List<User> getFollowedListByUsername( String username ){
+        List<User> followedList = null;
+        try{
+            followedList = db.query("SELECT user_id, username, name from user " +
+                                    "where user_id in (SELECT followed from follower_followed " +
+                                    "where follower = (SELECT user_id from user where username = ? ) )"
+                    , Follow.rowMapperForFollow , username );
+        }
+        catch( Exception ex ){
+            System.out.println( "getFollowedListByUsername Exception :((((((" );
+            ex.printStackTrace();
+        }
+        return followedList;
+    }
+
+    public static List<User> getFollowerListByUsername( String username ){
+        List<User> followerList = null;
+        try{
+            followerList = db.query("SELECT user_id, username, name from user " +
+                                    "where user_id in (SELECT follower from follower_followed " +
+                                    "where followed = ( SELECT user_id from user where username = ? ) )"
+                    , Follow.rowMapperForFollow , username );
+        }
+        catch( Exception ex ){
+            System.out.println( "getFollowerListByUsername Exception :(((((" );
+            ex.printStackTrace();
+        }
+        return followerList;
+    }
 }

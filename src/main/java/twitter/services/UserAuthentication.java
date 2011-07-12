@@ -58,5 +58,25 @@ public class UserAuthentication {
         }
     }
 
-
+    public static boolean userExists( String username ) {
+        User data = null;
+        try{
+            data = db.queryForObject( "SELECT user_id, username , password from user where username = ?",
+                    new RowMapper<User>() {
+                        @Override
+                        public User mapRow(ResultSet rs, int i) throws SQLException {
+                            User ret = new User();
+                            ret.setUserId( rs.getInt("user_id"));
+                            ret.setUsername(rs.getString("username"));
+                            ret.setPassword(rs.getString("password"));
+                            return ret;
+                        }
+                    }, username );
+        }
+        catch( Exception ex ){
+            System.out.println( "Bug in userExists:((" );
+            ex.printStackTrace();
+        }
+        return !( data == null );
+    }
 }

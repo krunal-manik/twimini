@@ -6,7 +6,7 @@
         <ul>
             <c:forEach var='item' items='${followedList}'>
                 <li>
-                    <a href="/profile?userId=${item.userId}">${item.name}</a>
+                    <a href="/${item.username}">${item.name}</a>
                 </li>
             </c:forEach>
         </ul>

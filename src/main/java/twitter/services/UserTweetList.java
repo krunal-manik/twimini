@@ -80,6 +80,20 @@ public class UserTweetList {
         return ret;
     }
 
+    public static List<Tweet> userTweetListByUsername( String username ){
+        List<Tweet> ret = null;
+        try{
+            ret = db.query("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ( SELECT user_id from user where username = ? ) ORDER BY timestamp DESC" ,
+                    UserTweetList.newsFeedMapper , username );
+        }
+        catch( Exception ex ){
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
     public static List<Tweet> userTweetList_o( String userId ){
         List<Tweet> ret = null;
         try{
@@ -99,10 +113,10 @@ public class UserTweetList {
         return ret;
     }
 
-    public static Hashtable<String,Object> getUserProfileInfo( String userId ){
-        List<User> followerList = Follow.getFollowerList( userId );
-        List<User> followedList = Follow.getFollowedList( userId );
-        List<Tweet> userTweets = UserTweetList.userTweetList( userId );
+    public static Hashtable<String,Object> getUserProfileInfo( String username ){
+        List<User> followerList = Follow.getFollowerListByUsername( username );
+        List<User> followedList = Follow.getFollowedListByUsername( username );
+        List<Tweet> userTweets = UserTweetList.userTweetListByUsername( username );
         Hashtable<String,Object> ret = new Hashtable<String,Object>();
         ret.put( "followerList" , followerList );
         ret.put( "followedList" , followedList );

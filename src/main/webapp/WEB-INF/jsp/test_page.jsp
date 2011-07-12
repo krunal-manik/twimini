@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
     <head>
         <!-- jQuery and ejs scripts -->

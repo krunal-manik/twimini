@@ -3,10 +3,7 @@ package twitter.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
 import twitter.services.UserAuthentication;
@@ -77,14 +74,21 @@ public class UserController {
         return mv;
     }
 
-    @RequestMapping("/profile")
-    public ModelAndView getUserProfile(String userId){
-        Hashtable<String,Object> ret = UserTweetList.getUserProfileInfo( userId );
-        ModelAndView mv = new ModelAndView();
+    @RequestMapping("/{username}")
+    public ModelAndView getUserProfile(@PathVariable String username){
+        boolean isValidUser = UserAuthentication.userExists( username );
+
+        if( !isValidUser ) {
+            ModelAndView mv = new ModelAndView("/error404");
+            return mv;
+        }
+
+        Hashtable<String,Object> ret = UserTweetList.getUserProfileInfo( username );
+        ModelAndView mv = new ModelAndView("/profile");
         mv.addObject( "userTweets" , ret.get("userTweets") );
         mv.addObject( "followedList" , ret.get("followedList") );
         mv.addObject( "followerList" , ret.get("followerList") );
-        mv.addObject( "currentUserId" , userId );
+        mv.addObject( "currentUsername" , username );
         return mv;
     }
 
