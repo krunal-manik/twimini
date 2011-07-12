@@ -81,6 +81,7 @@ function addTweet(){
            url : "tweet/addTweet",
            data : "tweetContent=" + tweetContent ,
            success : function( data ){
+               document.getElementById("tweet").value = "";
                 var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
                 var tweetHTML = $(html);
                 $("#tweetsList").prepend(tweetHTML.hide().fadeIn( 'slow' ) );

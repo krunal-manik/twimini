@@ -87,4 +87,10 @@ public class UserController {
         mv.addObject( "currentUserId" , userId );
         return mv;
     }
+
+    @RequestMapping( "/test" )
+    public ModelAndView getTestPage(){
+        ModelAndView mv = new ModelAndView("test_page");
+        return mv;
+    }
 }
