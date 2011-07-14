@@ -39,7 +39,7 @@ public class UserController {
     public ModelAndView login(@RequestParam("username") String username,
                               @RequestParam("password") String password ,
                                HttpSession session ){
-        System.out.println( "Here : " +  session );
+
         if( session.getAttribute( "username" ) != null )
             return TweetController.tweetsList( session );
 
@@ -51,7 +51,6 @@ public class UserController {
         }
         session.setAttribute( "username" , currentUser.getUsername() );
         session.setAttribute( "userId" , currentUser.getUserId() );
-        //mv.addObject( "message" , "Login successful");
         mv.setViewName("redirect:/");
         return mv;
     }
@@ -81,19 +80,23 @@ public class UserController {
 
     @RequestMapping("/{username}")
     public ModelAndView getUserProfile(@PathVariable String username, HttpSession session){
-        boolean isValidUser = UserAuthentication.userExists( username );
+        User urlMappedUser = UserAuthentication.getUserByUsername(username);
 
-        if( !isValidUser ) {
+        if( urlMappedUser == null ) {
             ModelAndView mv = new ModelAndView("/error404");
             return mv;
         }
 
-        Hashtable<String,Object> ret = UserTweetList.getUserProfileInfo( username );
         ModelAndView mv = new ModelAndView("/profile");
-        mv.addObject("allUserList", Follow.allUsersList(session.getAttribute("userId").toString()));
-        mv.addObject( "userTweets" , ret.get("userTweets") );
-        mv.addObject( "followedList" , ret.get("followedList") );
-        mv.addObject( "followerList" , ret.get("followerList") );
+        String userId = String.valueOf( urlMappedUser.getUserId() );
+        mv.addObject("userTweets", UserTweetList.userTweetList( userId ));
+        mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
+        mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
+        mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
+        mv.addObject("followingCount", Follow.getFollowedList( userId ).size() );
+        if( session.getAttribute("userId") != null )
+            mv.addObject("allUserList", Follow.allUsersList(session.getAttribute("userId").toString()));
+
         mv.addObject( "currentUsername" , username );
         return mv;
     }

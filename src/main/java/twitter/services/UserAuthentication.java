@@ -1,6 +1,7 @@
 package twitter.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,8 @@ public class UserAuthentication {
                         }
                     }, username );
         }
+        catch( EmptyResultDataAccessException ex ){
+        }
         catch( Exception ex ){
             System.out.println( "Bug in user authentication :((" );
             ex.printStackTrace();
@@ -58,7 +61,7 @@ public class UserAuthentication {
         }
     }
 
-    public static boolean userExists( String username ) {
+    public static User getUserByUsername( String username ) {
         User data = null;
         try{
             data = db.queryForObject( "SELECT user_id, username , password from user where username = ?",
@@ -73,10 +76,12 @@ public class UserAuthentication {
                         }
                     }, username );
         }
-        catch( Exception ex ){
-            System.out.println( "Bug in userExists:((" );
+        catch( EmptyResultDataAccessException ex ){
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in user exists :(( " );
             ex.printStackTrace();
         }
-        return !( data == null );
+        return data;
     }
 }

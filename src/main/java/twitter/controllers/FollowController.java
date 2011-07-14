@@ -28,13 +28,6 @@ public class FollowController {
     public FollowController(){
     }
 
-    @RequestMapping("/all_users_onpane")
-    @ResponseBody
-    public List<User> allUserGetOnPane(HttpSession session) {
-        List<User> ret = Follow.allUsersList( session.getAttribute("userId").toString() );
-        return ret;
-    }
-
     @RequestMapping("/all_users")
     public ModelAndView allUserGet(HttpSession session) {
         List<User> ret = Follow.allUsersList( session.getAttribute("userId").toString() );
@@ -67,20 +60,6 @@ public class FollowController {
         ModelAndView mv = new ModelAndView();
         mv.addObject("followerList", followerList );
         return mv;
-    }
-
-    @RequestMapping("/follower_onpane") @ResponseBody
-    public List<User> followerListOnPane(HttpSession session) {
-        System.out.println("HAHA");
-        List<User> followerList = Follow.getFollowerList( session.getAttribute("userId").toString() );
-        return followerList;
-    }
-
-    @RequestMapping("/following_onpane") @ResponseBody
-    public List<User> followingListOnPane(HttpSession session) {
-        System.out.println("HAHA");
-        List<User> followerList = Follow.getFollowedList( session.getAttribute("userId").toString() );
-        return followerList;
     }
 
     @RequestMapping("/profile/follower")

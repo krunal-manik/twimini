@@ -42,11 +42,13 @@ public class TweetController {
     @RequestMapping("/tweet")
     public static ModelAndView tweetsList(HttpSession session) {
         ModelAndView mv = new ModelAndView( "/tweet" );
-        //System.out.println("HAHAHA" + UserTweetList.userTweetList(session.getAttribute("userId").toString()));
-        mv.addObject("tweetsList_o", UserTweetList.userTweetList_o(session.getAttribute("userId").toString()));
-        mv.addObject("followerList", Follow.getFollowerList(session.getAttribute("userId").toString()));
-        mv.addObject("followedList", Follow.getFollowedList(session.getAttribute("userId").toString()));
-        mv.addObject("allUserList", Follow.allUsersList( session.getAttribute("userId").toString()));
+        String userId = session.getAttribute( "userId" ).toString();
+        mv.addObject("newsFeed", UserTweetList.newsFeed( userId ));
+        mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
+        mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
+        mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
+        mv.addObject("followingCount", Follow.getFollowedList( userId ).size() );
+        mv.addObject("allUserList", Follow.allUsersList( userId ));
         return mv;
     }
 
@@ -54,7 +56,6 @@ public class TweetController {
     public ModelAndView profile_data(HttpSession session) {
         ModelAndView mv = new ModelAndView();
         mv.addObject("tweetsList", UserTweetList.userTweetList(session.getAttribute("userId").toString()));
-        //System.out.println("HAHAHA" + UserTweetList.userTweetList(session.getAttribute("userId").toString()));
         mv.addObject("followerList", Follow.getFollowerList(session.getAttribute("userId").toString()));
         mv.addObject("followedList", Follow.getFollowedList(session.getAttribute("userId").toString()));
         return mv;

@@ -111,31 +111,34 @@ public class Follow {
         return followerList;
     }
 
-    public static List<User> getFollowedListByUsername( String username ){
+
+
+    //Redundant functions, clean this up later
+    public static List<User> getFollowedListLimited( String userId ){
         List<User> followedList = null;
         try{
             followedList = db.query("SELECT user_id, username, name from user " +
                                     "where user_id in (SELECT followed from follower_followed " +
-                                    "where follower = (SELECT user_id from user where username = ? ) )"
-                    , Follow.rowMapperForFollow , username );
+                                    "where follower = ?) LIMIT 0,7"
+                    , Follow.rowMapperForFollow , userId );
         }
         catch( Exception ex ){
-            System.out.println( "getFollowedListByUsername Exception :((((((" );
+            System.out.println( "Followed List Limited Exception :((((((" );
             ex.printStackTrace();
         }
         return followedList;
     }
-
-    public static List<User> getFollowerListByUsername( String username ){
+     //Redundant functions, clean this up later
+    public static List<User> getFollowerListLimited( String userId ){
         List<User> followerList = null;
         try{
             followerList = db.query("SELECT user_id, username, name from user " +
                                     "where user_id in (SELECT follower from follower_followed " +
-                                    "where followed = ( SELECT user_id from user where username = ? ) )"
-                    , Follow.rowMapperForFollow , username );
+                                    "where followed = ?) LIMIT 0,7"
+                    , Follow.rowMapperForFollow , userId );
         }
         catch( Exception ex ){
-            System.out.println( "getFollowerListByUsername Exception :(((((" );
+            System.out.println( "Follower List Limited Exception :(((((" );
             ex.printStackTrace();
         }
         return followerList;

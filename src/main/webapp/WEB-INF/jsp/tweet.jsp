@@ -3,21 +3,7 @@
 
 <html>
     <head>
-        <!-- jQuery and ejs scripts -->
-        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
-        <script type="text/javascript" src="/static/js/functions.js"></script>
-
-        <!-- favicon -->
-        <link href='/static/images/twitter_favicon.png' rel='shortcut icon' type='image/x-icon'/>
-
-        <!-- blueprint css -->
-        <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection">
-        <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print">
-        <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
-
-        <!-- base css -->
-        <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+    <%@include file="/static/includes.txt" %>
     </head>
 
     <body>
@@ -37,7 +23,7 @@
                     <div id="newsFeedContainer">
                         Newsfeed :
                         <div id="tweetsList_o">
-                            <c:forEach var='item' items='${tweetsList_o}'>
+                            <c:forEach var='item' items='${newsFeed}'>
                                 <jsp:include page="single_tweet.jsp">
                                     <jsp:param name="tweetId" value="${item.tweetId}" />
                                     <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
