@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
+import twitter.services.Follow;
 import twitter.services.UserAuthentication;
 import twitter.services.UserTweetList;
 
@@ -75,7 +76,7 @@ public class UserController {
     }
 
     @RequestMapping("/{username}")
-    public ModelAndView getUserProfile(@PathVariable String username){
+    public ModelAndView getUserProfile(@PathVariable String username, HttpSession session){
         boolean isValidUser = UserAuthentication.userExists( username );
 
         if( !isValidUser ) {
@@ -85,6 +86,7 @@ public class UserController {
 
         Hashtable<String,Object> ret = UserTweetList.getUserProfileInfo( username );
         ModelAndView mv = new ModelAndView("/profile");
+        mv.addObject("allUserList", Follow.allUsersList(session.getAttribute("userId").toString()));
         mv.addObject( "userTweets" , ret.get("userTweets") );
         mv.addObject( "followedList" , ret.get("followedList") );
         mv.addObject( "followerList" , ret.get("followerList") );

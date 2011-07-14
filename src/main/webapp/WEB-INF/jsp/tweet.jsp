@@ -51,38 +51,8 @@
                     </div>
                 </div>
 
-                <div class = "span-8 last sidebar">
-                    <div class = "padding">
-                        <ul>
-                            Followers :
-                            <c:forEach var='item' items='${followerList}'>
-                                <jsp:include page="sidebar_elem.jsp">
-                                    <jsp:param name="name" value="${item.name}" />
-                                    <jsp:param name="userId" value="${item.userId}" />
-                                </jsp:include>
-                            </c:forEach>
-                        </ul>
-                        <ul>
-                            U are following :
-                            <c:forEach var='item' items='${followedList}'>
-                                <jsp:include page="sidebar_elem.jsp">
-                                    <jsp:param name="name" value="${item.name}" />
-                                    <jsp:param name="userId" value="${item.userId}" />
-                                </jsp:include>
-                            </c:forEach>
-                        </ul>
-                        <ul>
-                            All Users:
-                            <c:forEach var='item' items='${allUserList}'>
-                                <jsp:include page="sidebar_elem_all_users.jsp">
-                                    <jsp:param name="name" value="${item.name}" />
-                                    <jsp:param name="userId" value="${item.userId}" />
-                                    <jsp:param name="followStatus" value="${item.followStatus}" />
-                                </jsp:include>
-                            </c:forEach>
-                        </ul>
-                    </div>
-                </div>
+                <%@ include file="sidebar.jsp" %>
+
             </div>
         </div>
         </div>

@@ -65,7 +65,7 @@ function changeFollowStatus(userId) {
                data : "userId=" + userId ,
                success : function() {
                    alert( 'success in remove' );
-                    document.getElementById(buttonName).value = "Follow";
+                   document.getElementById(buttonName).value = "Follow";
                    alert( 'final success in remove' );
                }
             });

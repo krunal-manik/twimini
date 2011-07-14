@@ -181,7 +181,7 @@ label{
 
 .tweeter_name {
     font-size:16px;
-    color:#0000FF;
+    color:#BBE4E4;
 }
 
 .tweet_content {
@@ -216,16 +216,34 @@ a{
     padding:10px;
 }
 
+.border {
+    border-width:1px;
+    border-style:solid;
+    border-color:#AAAAAA;
+}
+
 
 .sidebar {
-    background-color:#FFFFFF;
 }
 
 .sidebar ul {
-    padding-left:0;
-    display:inline;
+    padding:10px;
+    background-color:#FFFFFF;
+    background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
+}
+
+.sidebar_heading {
+    background:color:#AAAAAA;
 }
 
 .sidebar li {
-list-style:none;
+    list-style:none;
+}
+
+.btn {
+    width : 80px;
+    height : 20px;
+    float:right;
+    cursor:pointer;
+    background-color : #FFFFFF;
 }

@@ -18,7 +18,7 @@
         <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 
         <!-- base css -->
-        <link rel="stylesheet" type="text/css" href="/static/css/basestyle.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
     </head>
 
     <body>
@@ -49,8 +49,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class = "span-8 last" style="background-color:#FFFFFF; height:200px">
-                    </div>
+
+                    <%@include file="sidebar.jsp" %>
+
                 </div>
             </div>
         </div>
