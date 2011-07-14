@@ -58,8 +58,6 @@ public class Follow {
         catch( Exception ex ){
             ex.printStackTrace();
         }
-        for(int i=0;i<userList.size();i++)
-            System.out.println( userList.get(i) );
         return userList;
     }
 

@@ -40,8 +40,8 @@ public class TweetController {
 
 
     @RequestMapping("/tweet")
-    public ModelAndView tweetsList(HttpSession session) {
-        ModelAndView mv = new ModelAndView();
+    public static ModelAndView tweetsList(HttpSession session) {
+        ModelAndView mv = new ModelAndView( "/tweet" );
         //System.out.println("HAHAHA" + UserTweetList.userTweetList(session.getAttribute("userId").toString()));
         mv.addObject("tweetsList_o", UserTweetList.userTweetList_o(session.getAttribute("userId").toString()));
         mv.addObject("followerList", Follow.getFollowerList(session.getAttribute("userId").toString()));

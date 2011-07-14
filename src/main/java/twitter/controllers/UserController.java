@@ -28,15 +28,20 @@ public class UserController {
     public UserController() {
     }
 
-    @RequestMapping("/login")
-    public ModelAndView loginGet(){
-        return new ModelAndView("/login");
+    @RequestMapping( value = { "/" , "/login" } )
+    public ModelAndView loginGet(HttpSession session) {
+        if( session.getAttribute( "username" ) == null )
+            return new ModelAndView("/login");
+        return TweetController.tweetsList( session );
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = { "/" , "/login" } , method = RequestMethod.POST)
     public ModelAndView login(@RequestParam("username") String username,
                               @RequestParam("password") String password ,
                                HttpSession session ){
+        System.out.println( "Here : " +  session );
+        if( session.getAttribute( "username" ) != null )
+            return TweetController.tweetsList( session );
 
         ModelAndView mv = new ModelAndView("/login");
         User currentUser = UserAuthentication.authenticateUser( username , password );
@@ -47,7 +52,7 @@ public class UserController {
         session.setAttribute( "username" , currentUser.getUsername() );
         session.setAttribute( "userId" , currentUser.getUserId() );
         //mv.addObject( "message" , "Login successful");
-        mv.setViewName("redirect:/tweet");
+        mv.setViewName("redirect:/");
         return mv;
     }
 
@@ -70,8 +75,7 @@ public class UserController {
     @RequestMapping("/logout")
     public ModelAndView logout(HttpSession session){
         session.invalidate();
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("redirect:/login");
+        ModelAndView mv = new ModelAndView( "/login" );
         return mv;
     }
 
