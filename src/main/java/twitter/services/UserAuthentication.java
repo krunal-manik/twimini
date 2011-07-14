@@ -84,4 +84,28 @@ public class UserAuthentication {
         }
         return data;
     }
+
+    public static String getPassword( String email ){
+        User data = null;
+        try{
+            data = db.queryForObject( "SELECT user_id, username , password from user where email = ?",
+                    new RowMapper<User>() {
+                        @Override
+                        public User mapRow(ResultSet rs, int i) throws SQLException {
+                            User ret = new User();
+                            ret.setUserId( rs.getInt("user_id"));
+                            ret.setUsername(rs.getString("username"));
+                            ret.setPassword(rs.getString("password"));
+                            return ret;
+                        }
+                    }, email );
+        }
+        catch( EmptyResultDataAccessException ex ){
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in user exists :(( " );
+            ex.printStackTrace();
+        }
+        return data.getPassword();
+    }
 }
