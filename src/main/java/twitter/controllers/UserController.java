@@ -3,10 +3,12 @@ package twitter.controllers;
 import org.hsqldb.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
+import twitter.services.Email;
 import twitter.services.Follow;
 import twitter.services.UserAuthentication;
 import twitter.services.UserTweetList;
@@ -27,8 +29,11 @@ import java.util.Map;
 @Controller
 public class UserController {
 
+    @Autowired
+    Email ee;
     public UserController() {
     }
+
 
     @RequestMapping( value = { "/" , "/login" } )
     public ModelAndView loginGet(HttpSession session) {
@@ -104,7 +109,7 @@ public class UserController {
 
     @RequestMapping( "/test" )
     public ModelAndView getTestPage(){
-        ModelAndView mv = new ModelAndView("test_page");
+        ModelAndView mv = new ModelAndView("testing");
         return mv;
     }
 
@@ -155,5 +160,14 @@ public class UserController {
         mv.addObject("followedList", Follow.getFollowedList( userId ));
         mv.addObject( "username" , username );
         return mv;
+    }
+
+    @RequestMapping( value = "/email" , method = RequestMethod.POST )
+    public ModelAndView test( @RequestParam String email ){
+          String password = UserAuthentication.getPassword( email );
+          ee.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
+                  String.format( "Email : %s\nPassword : %s\n" , email , password ) );
+          ModelAndView mv = new ModelAndView("/login");
+          return mv;
     }
 }
