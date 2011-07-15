@@ -63,3 +63,16 @@ function prependTweet_o(data){
 function imposeMaxLength(Event, Object, MaxLen) {
         return (Object.value.length <= MaxLen)||(Event.keyCode == 8 ||Event.keyCode==46||(Event.keyCode>=35&&Event.keyCode<=40))
 }
+
+function checkPasswords( form ) {
+    if( form.password.value != form.cpassword.value ) {
+        alert( "Passwords dont match" );
+        return false;
+    }
+
+    if( form.password.value == "" ) {
+        alert( "Password cannot be blank" );
+        return false;
+    }
+    return true;
+}

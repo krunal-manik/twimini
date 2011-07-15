@@ -53,3 +53,11 @@ CREATE TABLE Tokens(
 	timestamp DATETIME ,
 	PRIMARY KEY( username , token )
 );
+
+CREATE TABLE temp_user(
+	username VARCHAR(20) NOT NULL,
+	password VARCHAR( 250 ) NOT NULL,
+	name VARCHAR(30) NOT NULL,
+	email VARCHAR(30) NOT NULL,
+    token VARCHAR(64) NOT NULL
+);

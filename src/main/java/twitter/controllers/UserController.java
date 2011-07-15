@@ -31,7 +31,7 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    Email ee;
+    Email emailSender;
     public UserController() {
     }
 
@@ -72,10 +72,31 @@ public class UserController {
     public ModelAndView register( @RequestParam("username") String username ,
                                 @RequestParam("password") String password ,
                                 @RequestParam("name") String name ,
-                                @RequestParam("email") String email ){
-        UserAuthentication.registerUser( username , password , name ,email );
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("redirect:/login");
+                                @RequestParam("email") String email ,
+                                HttpSession session ){
+
+        String registerToken = getRandomToken();
+        UserAuthentication.registerTemporaryUser( username , password , name , email , registerToken );
+        emailSender.sendMail( "manikkrunal@gmail.com" , email , "Activate your twitter account" ,
+                String.format( "Hi %s!\n" +
+                        "To start tweeting, just click on the link below to activate your account: " +
+                        "http://localhost:8080/activateAccount?token=%s\n" +
+                        "Regards,\nTeam Twitter" , name , registerToken ) );
+
+        ModelAndView mv = new ModelAndView( "/activate" );
+        return mv;
+    }
+
+    @RequestMapping( "/activate" )
+    public ModelAndView getActivatePage(){
+        return new ModelAndView("/activate");
+    }
+    @RequestMapping( value = "/activateAccount" , method = RequestMethod.GET )
+    public ModelAndView activateAccount(String token,HttpSession session){
+        User user = UserAuthentication.makeUserPermanent( token );
+        session.setAttribute( "username" , user.getUsername() );
+        session.setAttribute( "userId" , user.getUserId() );
+        ModelAndView mv = new ModelAndView( "/tweet" );
         return mv;
     }
 
@@ -189,16 +210,23 @@ public class UserController {
     @RequestMapping( value = "/email" , method = RequestMethod.POST )
     public ModelAndView test( @RequestParam String email ){
           User user = UserAuthentication.getPassword( email );
-          String password = user.getPassword();
+          if( user == null ) {
+              return new ModelAndView( "/error404" );
+          }
           String token = getRandomToken();
           UserAuthentication.insertToken( user , token );
-          ee.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
-                  String.format( "http://localhost:8080/%s?token=%s\n" , user.getUsername() , token ) );
+          emailSender.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
+                  String.format( "Hi %s!\n" +
+                          "It seems you have lost your password.But no worries, you can reset your password." +
+                          "Just click the link below to activate." +
+                          "http://localhost:8080/%s/changePassword?token=%s\n" +
+                          "\nRegards,\n" +
+                          "Team Twitter\n" , user.getUsername() , user.getUsername() , token ) );
           ModelAndView mv = new ModelAndView("/login");
           return mv;
     }
 
-    @RequestMapping( value = "/{username}" , method = RequestMethod.GET )
+    @RequestMapping( value = "/{username}/changePassword" , method = RequestMethod.GET )
     public ModelAndView tokenQueryString( @PathVariable String username , String token ){
 
           boolean tokenExists = UserAuthentication.tokenExists( username , token );

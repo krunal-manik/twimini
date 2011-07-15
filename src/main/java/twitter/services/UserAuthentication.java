@@ -9,6 +9,8 @@ import twitter.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -153,5 +155,37 @@ public class UserAuthentication {
             System.out.println( "Bug in updatePassword :(( " );
             ex.printStackTrace();
         }
+    }
+
+    public static void registerTemporaryUser( String username, String password, String name , String email , String token ) {
+        try{
+            db.update( "insert into temp_user values ( ? , ? , ? , ? , ? )" ,
+                    username , password , name , email , token );
+            System.out.println( "Temp user regd" );
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in updatePassword :(( " );
+            ex.printStackTrace();
+        }
+    }
+
+    public static User makeUserPermanent( String token ) {
+        User user = null;
+        try{
+            Map<String,Object> t = db.queryForList("select * from temp_user where token = ?", token ).get(0);
+            db.update( "INSERT into user (username,password,name,email) VALUES ( ? , ? , ? , ? )" ,
+                    t.get("username").toString() , t.get("password").toString() ,
+                    t.get("name").toString() , t.get("email").toString() );
+            db.update( "delete from temp_user where token = ? " , token );
+            user = UserAuthentication.getUserByUsername(t.get("username").toString());
+
+        }
+        catch( EmptyResultDataAccessException ex ) {
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in makeUserPermanent :(( " );
+            ex.printStackTrace();
+        }
+        return user;
     }
 }

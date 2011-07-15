@@ -18,19 +18,19 @@
         <div class = "body">
             <div class = "container">
                 <div class="reset-box">
-                    <form action="/${username}/updatePassword" method=post>
+                    <form action="/${username}/updatePassword" method=post onsubmit="return checkPasswords(this);">
                         <div class="prepend-5 span-9 append-8 last">
                             <div class="span-3 append-1">
                                 Password :
                             </div>
                             <div class="span-5 last">
-                                <input type="text" name = "password" value = "" />
+                                <input type="password" name = "password" value = "" />
                             </div>
                             <div class="span-3 append-1">
                                 Confirm Password :
                             </div>
                             <div class="span-5 last">
-                                <input type="text" name = "cpassword" value = "" />
+                                <input type="password" name = "cpassword" value = "" />
                             </div>
                             <input type="hidden" name = "token" value = "${token}" />
                             <div class="prepend-4 span-5 last">
