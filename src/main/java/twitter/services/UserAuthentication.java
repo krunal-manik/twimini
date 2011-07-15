@@ -85,7 +85,7 @@ public class UserAuthentication {
         return data;
     }
 
-    public static String getPassword( String email ){
+    public static User getPassword( String email ){
         User data = null;
         try{
             data = db.queryForObject( "SELECT user_id, username , password from user where email = ?",
@@ -106,6 +106,52 @@ public class UserAuthentication {
             System.out.println( "Bug in user exists :(( " );
             ex.printStackTrace();
         }
-        return data.getPassword();
+        return data;
+    }
+
+    public static void insertToken( User user , String token ) {
+
+        try{
+            db.update( "INSERT into tokens values( ? , ? , NOW() )" , user.getUsername() , token );
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in insertToken :(( " );
+            ex.printStackTrace();
+        }
+    }
+
+    public static boolean tokenExists( String username , String token ) {
+        int count = 0;
+        try{
+            count = db.queryForInt( "SELECT count(*) from tokens where username = ? and token = ? " ,
+                    username , token );
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in tokenExists :(( " );
+            ex.printStackTrace();
+        }
+        return count == 1;
+    }
+
+    public static void deleteToken( String username , String token ) {
+        try{
+            db.update( "delete from tokens where username = ? and token = ? " ,
+                    username , token );
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in deleteToken :(( " );
+            ex.printStackTrace();
+        }
+    }
+
+    public static void updatePassword( String username , String password ) {
+        try{
+            db.update( "update user set password = ? where username = ?" ,
+                    password , username );
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in updatePassword :(( " );
+            ex.printStackTrace();
+        }
     }
 }

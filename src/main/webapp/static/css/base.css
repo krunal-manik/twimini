@@ -247,3 +247,10 @@ a{
     cursor:pointer;
     background-color : #FFFFFF;
 }
+
+.reset-box{
+    padding:10px;
+    height: 200px;
+    background-color:#FFFFFF;
+    background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
+}

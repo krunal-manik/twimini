@@ -46,3 +46,10 @@ CREATE TABLE Follow(
 	FOREIGN KEY (follower) REFERENCES User(user_id),
 	FOREIGN KEY (followed) REFERENCES User(user_id)
 );
+
+CREATE TABLE Tokens(
+	username VARCHAR(30) NOT NULL,
+	token VARCHAR(64) NOT NULL,
+	timestamp DATETIME ,
+	PRIMARY KEY( username , token )
+);

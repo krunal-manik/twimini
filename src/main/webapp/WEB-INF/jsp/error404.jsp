@@ -16,7 +16,7 @@
 
         <div class = "body">
             <div class = "container">
-                <h1>Error : No such user</h1>
+                <h4>Error : Sorry that page doesn't exist !</h4>
             </div>
         </div>
     </body>

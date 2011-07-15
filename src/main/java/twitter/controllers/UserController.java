@@ -113,6 +113,7 @@ public class UserController {
         return mv;
     }
 
+
     @RequestMapping( "/test_upload_image" )
     public ModelAndView getTestUploadImagePage(){
         ModelAndView mv = new ModelAndView();
@@ -162,12 +163,76 @@ public class UserController {
         return mv;
     }
 
+    @RequestMapping( value = "/account/reset_password" )
+    public ModelAndView resetPassword() {
+        return new ModelAndView( "/reset_password" );
+    }
+
+    /*
     @RequestMapping( value = "/email" , method = RequestMethod.POST )
     public ModelAndView test( @RequestParam String email ){
           String password = UserAuthentication.getPassword( email );
           ee.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
-                  String.format( "Email : %s\nPassword : %s\n" , email , password ) );
+                  String.format( "http://localhost:8080 \nEmail : %s\nPassword : %s\n" , email , password ) );
           ModelAndView mv = new ModelAndView("/login");
           return mv;
+    }
+    */
+
+    @RequestMapping( value = "/email" , method = RequestMethod.POST )
+    public ModelAndView test( @RequestParam String email ){
+          User user = UserAuthentication.getPassword( email );
+          String password = user.getPassword();
+          String token = getRandomToken();
+          UserAuthentication.insertToken( user , token );
+          ee.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
+                  String.format( "http://localhost:8080/%s?token=%s\n" , user.getUsername() , token ) );
+          ModelAndView mv = new ModelAndView("/login");
+          return mv;
+    }
+
+    @RequestMapping( value = "/{username}" , method = RequestMethod.GET )
+    public ModelAndView tokenQueryString( @PathVariable String username , String token ){
+
+          boolean tokenExists = UserAuthentication.tokenExists( username , token );
+          if( !tokenExists ) {
+              return new ModelAndView( "/error404" );
+          }
+          ModelAndView mv = new ModelAndView("/confirm_passwords");
+          mv.addObject( "username" , username );
+          mv.addObject( "token" , token );
+          return mv;
+    }
+
+    @RequestMapping( value = "/{username}/updatePassword" )
+    public ModelAndView updatePassword( @PathVariable String username , @RequestParam String password , @RequestParam String token ){
+
+          UserAuthentication.deleteToken( username , token );
+          UserAuthentication.updatePassword( username , password );
+          ModelAndView mv = new ModelAndView("/login");
+          mv.setViewName( "redirect:/login" );
+          return mv;
+    }
+
+    public static String getRandomToken() {
+        char a[] = new char[62];
+        int c = 0;
+        for( char i = 'a'; i <= 'z' ;i++ ) a[c++] = i;
+        for( char i = 'A'; i <= 'Z' ;i++ ) a[c++] = i;
+        for( char i = '0'; i <= '9' ;i++ ) a[c++] = i;
+
+        int left = a.length-1;
+        for(int i=0;i<a.length;i++) {
+            int num = ( (int)( Math.random() * 150 ) ) % (left+1);
+            swap( a , i , num );
+            left--;
+        }
+        return new String(a);
+    }
+
+    public static void swap( char a[] , int i , int j ) {
+        char c = a[i];
+        a[i] = a[j];
+        a[j] = c;
     }
 }
