@@ -20,6 +20,13 @@
                 <div class = "span-24">
                     <div class = "span-16">
                         <div id="userTweetsContainer">
+                            <% if( session.getAttribute("username") == null ) { %>
+
+                            <% } else { %>
+                                <input type = "button" id = 'follow${currentUserId}' class = "btn border"
+                                value = ${followStatus} onclick='changeFollowStatus(${currentUserId})' />
+                                <br>
+                            <% } %>
                             ${currentUsername}'s Tweets :
                             <div id="tweetsList">
                                 <c:forEach var='item' items='${userTweets}'>

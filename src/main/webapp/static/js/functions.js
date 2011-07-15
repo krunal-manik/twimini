@@ -1,25 +1,30 @@
 function changeFollowStatus(userId) {
-        var buttonName = "follow_" + userId;
-        if( document.getElementById(buttonName).value == "Follow" ){
+        var buttonName = document.getElementById("follow" + userId);
+        var button_Name = document.getElementById("follow_" + userId);
+        if( button_Name.value == "Follow" ){
             $.ajax({
                type : "POST",
                url : "/all_users/addFollowing",
                data : "userId=" + userId ,
                success : function() {
-                    document.getElementById(buttonName).value = "Unfollow";
+                    button_Name.value = "Unfollow";
+                    if (buttonName != null) {
+                        buttonName.value = "Unfollow";
+                    }
                }
             });
         }
         else {
             $.ajax({
-               type : "POST",
-               url : "/all_users/removeFollowing",
-               data : "userId=" + userId ,
-               success : function() {
-                   alert( 'success in remove' );
-                   document.getElementById(buttonName).value = "Follow";
-                   alert( 'final success in remove' );
-               }
+                type : "POST",
+                url : "/all_users/removeFollowing",
+                data : "userId=" + userId ,
+                success : function() {
+                    button_Name.value = "Follow";
+                    if (buttonName != null) {
+                        buttonName.value = "Follow";
+                    }
+                }
             });
         }
     }

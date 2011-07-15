@@ -14,6 +14,7 @@ import twitter.services.UserAuthentication;
 import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
+import javax.swing.plaf.multi.MultiViewportUI;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
@@ -88,22 +89,28 @@ public class UserController {
     @RequestMapping("/{username}")
     public ModelAndView getUserProfile(@PathVariable String username, HttpSession session){
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
-
         if( urlMappedUser == null ) {
             ModelAndView mv = new ModelAndView("/error404");
             return mv;
         }
-
-        ModelAndView mv = new ModelAndView("/profile");
         String userId = String.valueOf( urlMappedUser.getUserId() );
+        ModelAndView mv = new ModelAndView("/profile");
+        if( session.getAttribute("userId") != null ) {
+            String session_userId = session.getAttribute("userId").toString();
+            mv.addObject("allUserList", Follow.allUsersList(session_userId));
+            if (Follow.ifFollow(userId, session_userId)) {
+                mv.addObject("followStatus", "Follow");
+            } else {
+                mv.addObject("followStatus", "Unfollow");
+            }
+        }
         mv.addObject("userTweets", UserTweetList.userTweetList( userId ));
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
         mv.addObject("followingCount", Follow.getFollowedList( userId ).size() );
-        if( session.getAttribute("userId") != null )
-            mv.addObject("allUserList", Follow.allUsersList(session.getAttribute("userId").toString()));
         mv.addObject( "currentUsername" , username );
+        mv.addObject( "currentUserId" , userId );
         return mv;
     }
 

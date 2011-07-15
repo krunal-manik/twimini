@@ -37,6 +37,20 @@ public class Follow {
         this.db = db;
     }
 
+    public static Boolean ifFollow(String followed, String follower) {
+        if (followed.equals(follower)) {
+            return true;
+        } else {
+            List<User> followers =  db.query("SELECT user_id, username, name from user " +
+                    "where user_id IN (select followed from follower_followed " +
+                    "where follower = ? and followed = ?)",
+                     Follow.rowMapperForFollow, follower , followed);
+            if (followers.size() > 0) {
+                return false;
+            } else return true;
+        }
+    }
+
     public static List<User> allUsersList( String userId ){
         List<User> userList = null;
         try{

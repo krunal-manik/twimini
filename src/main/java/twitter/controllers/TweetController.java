@@ -49,15 +49,7 @@ public class TweetController {
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
         mv.addObject("followingCount", Follow.getFollowedList( userId ).size() );
         mv.addObject("allUserList", Follow.allUsersList( userId ));
-        return mv;
-    }
-
-    @RequestMapping("/new_profile")
-    public ModelAndView profile_data(HttpSession session) {
-        ModelAndView mv = new ModelAndView();
-        mv.addObject("tweetsList", UserTweetList.userTweetList(session.getAttribute("userId").toString()));
-        mv.addObject("followerList", Follow.getFollowerList(session.getAttribute("userId").toString()));
-        mv.addObject("followedList", Follow.getFollowedList(session.getAttribute("userId").toString()));
+        mv.addObject("currentUsername", session.getAttribute("username").toString());
         return mv;
     }
 }
