@@ -36,7 +36,7 @@ function addTweet(){
                document.getElementById("tweet").value = "";
                 var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
                 var tweetHTML = $(html);
-                $("#tweetsList").prepend(tweetHTML.hide().fadeIn( 'slow' ) );
+                $("#tweetsList_o").prepend(tweetHTML.hide().fadeIn( 'slow' ) );
            }
     });
 }

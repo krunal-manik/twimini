@@ -1,5 +1,6 @@
 package twitter.controllers;
 
+import org.hsqldb.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import twitter.services.UserAuthentication;
 import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +98,6 @@ public class UserController {
         mv.addObject("followingCount", Follow.getFollowedList( userId ).size() );
         if( session.getAttribute("userId") != null )
             mv.addObject("allUserList", Follow.allUsersList(session.getAttribute("userId").toString()));
-
         mv.addObject( "currentUsername" , username );
         return mv;
     }
@@ -104,6 +105,55 @@ public class UserController {
     @RequestMapping( "/test" )
     public ModelAndView getTestPage(){
         ModelAndView mv = new ModelAndView("test_page");
+        return mv;
+    }
+
+    @RequestMapping( "/test_upload_image" )
+    public ModelAndView getTestUploadImagePage(){
+        ModelAndView mv = new ModelAndView();
+        return mv;
+    }
+
+    @RequestMapping( value = "/test_upload_image", method = RequestMethod.POST)
+    public ModelAndView getTestUploadImagePOST(@RequestParam File img, HttpSession session){
+        System.out.println(img.getAbsolutePath());
+        File f = new File(session.getAttribute("username").toString() + ".jpg");
+        System.out.println(f.getAbsolutePath());
+        System.out.println("File Exits - > " + f.exists());
+        ModelAndView mv = new ModelAndView();
+        return mv;
+    }
+
+
+    @RequestMapping("/{username}/followers")
+    public ModelAndView getUserFollowers(@PathVariable String username){
+        User urlMappedUser = UserAuthentication.getUserByUsername(username);
+
+        if( urlMappedUser == null ) {
+            ModelAndView mv = new ModelAndView("/error404");
+            return mv;
+        }
+
+        ModelAndView mv = new ModelAndView("/followers");
+        String userId = String.valueOf( urlMappedUser.getUserId() );
+        mv.addObject("followerList", Follow.getFollowerList( userId ));
+        mv.addObject( "username" , username );
+        return mv;
+    }
+
+    @RequestMapping("/{username}/followings")
+    public ModelAndView getUserFollowings(@PathVariable String username){
+        User urlMappedUser = UserAuthentication.getUserByUsername(username);
+
+        if( urlMappedUser == null ) {
+            ModelAndView mv = new ModelAndView("/error404");
+            return mv;
+        }
+
+        ModelAndView mv = new ModelAndView("/followings");
+        String userId = String.valueOf( urlMappedUser.getUserId() );
+        mv.addObject("followedList", Follow.getFollowedList( userId ));
+        mv.addObject( "username" , username );
         return mv;
     }
 }

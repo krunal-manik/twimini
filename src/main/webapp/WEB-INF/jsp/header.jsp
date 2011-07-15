@@ -6,7 +6,7 @@
                 </div>
                 <div class="span-12 last" style="padding-top:6;" >
                     <div class="span-3">
-                        <a href="#">Hello <%= session.getAttribute("username") %></a>
+                        <a href="/">Hello <%= session.getAttribute("username") %></a>
                     </div>
                     <div class="span-2 prepend-1">
                         <a href="/"> <img src="/static/images/home.png"/> Home</a>

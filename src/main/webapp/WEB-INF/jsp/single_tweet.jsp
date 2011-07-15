@@ -5,7 +5,7 @@
     <div class= "span-14 last tweet_box">
         <img src="/static/images/comment_arrow.png" class="comment_arrow" />
         <div class="padding">
-            <div class = "tweeter_name"> <%= request.getParameter("name") %> posted </div>
+            <div class = "tweeter_name"> <a href = '/<%= request.getParameter("username") %>'> <%= request.getParameter("name") %> </a> posted </div>
             <div class = "tweet_content"> <%= request.getParameter("tweet") %> </div>
             <div class = "tweet_time">at <%= request.getParameter("timestamp") %> </div>
             <div style="width:100%; height:25px">
