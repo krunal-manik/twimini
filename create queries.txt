@@ -61,3 +61,11 @@ CREATE TABLE temp_user(
 	email VARCHAR(30) NOT NULL,
     token VARCHAR(64) NOT NULL
 );
+
+CREATE TABLE favorite(
+    user_id INT NOT NULL,
+	tweet_id INT NOT NULL,
+	PRIMARY KEY( user_id , tweet_id ),
+	FOREIGN KEY (user_id) REFERENCES User(user_id),
+	FOREIGN KEY (tweet_id) REFERENCES Tweets(tweet_id)
+);

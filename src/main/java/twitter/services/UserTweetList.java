@@ -11,10 +11,7 @@ import twitter.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,9 +53,6 @@ public class UserTweetList {
                     "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ? " ,
                     UserTweetList.newsFeedMapper , userId , tweetId );
-
-            /*ret = db.queryForObject( "SELECT tweet_id ,tweeted_by ,tweet ,timestamp FROM tweets WHERE tweet_id = ?",
-                    Tweet.rowMapper , tweetId );*/
         }
         catch( EmptyResultDataAccessException ex ){
             ex.printStackTrace();
@@ -73,11 +67,44 @@ public class UserTweetList {
                     "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp DESC" ,
                     UserTweetList.newsFeedMapper , userId );
+
+            int favoritesList[] = getFavoriteTweetsOfUser( userId );
+            for(int i=0;i<ret.size();i++) {
+               ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+            }
         }
-        catch( Exception ex ){
+        catch( Exception ex ) {
+            System.out.println( "Bug in userTweetList :((" );
             ex.printStackTrace();
         }
         return ret;
+    }
+
+    public static int[] getFavoriteTweetsOfUser( String userId ) {
+
+        int favoritesList[] = new int[0];
+        try{
+            List< Map<String,Object> > favorites = db.queryForList("SELECT tweet_id from favorite where user_id = ? ORDER BY tweet_id", userId);
+            favoritesList = new int[ favorites.size() ];
+            for(int i=0;i<favorites.size();i++) favoritesList[i] = ( Integer.valueOf( favorites.get(i).get("tweet_id").toString() ) ).intValue();
+            for(int i=0;i<favoritesList.length;i++) System.out.println( favoritesList[i] );
+        }
+        catch ( Exception ex ) {
+            System.out.println( "Bug in favoriteTweetsOfUser :((" );
+            ex.printStackTrace();
+        }
+        return favoritesList;
+    }
+
+    public static boolean binarySearch( int a[] , int key ) {
+        int low = 0 , high = a.length - 1;
+        while( low <= high ) {
+            int mid = ( low + high ) >> 1;
+            if( a[mid] == key )return true;
+            if( a[mid] < key ) low = mid+1;
+            else high = mid-1;
+        }
+        return false;
     }
 
     public static List<Tweet> newsFeed( String userId ){
@@ -92,10 +119,27 @@ public class UserTweetList {
                     "select user_id from user where user_id = ? ) " +
                     "ORDER BY timestamp DESC",
                 UserTweetList.newsFeedMapper, userId , userId );
+
+            int favoritesList[] = getFavoriteTweetsOfUser( userId );
+            for(int i=0;i<ret.size();i++) {
+               ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+            }
         }
-        catch( Exception ex ){
+        catch( Exception ex ) {
+            System.out.println( "Bug in newsFeed :((" );
             ex.printStackTrace();
         }
         return ret;
+    }
+
+    public static void markFavorite( String tweetId , String userId ) {
+        try{
+            db.update("INSERT INTO favorite ( user_id , tweet_id ) VALUES ( ? , ? )"
+                    , userId, tweetId);
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in markFavorite :((" );
+            ex.printStackTrace();
+        }
     }
 }

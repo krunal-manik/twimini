@@ -78,14 +78,12 @@ function checkPasswords( form ) {
 }
 
 function markFavorite( tweetId ) {
-    alert();
-    document.getElementById('favorite_' + tweetId).style.backgroundImage = "url('/static/images/filled_star.png')";
     $.ajax({
         type : "POST",
         url : "tweet/markFavorite",
         data : "tweetId=" + tweetId ,
         success : function(){
-
+            document.getElementById('favorite_' + tweetId).style.backgroundImage = "url('/static/images/filled_star.png')";
         }
     });
 }

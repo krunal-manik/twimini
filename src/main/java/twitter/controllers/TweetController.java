@@ -52,4 +52,9 @@ public class TweetController {
         mv.addObject("currentUsername", session.getAttribute("username").toString());
         return mv;
     }
+
+    @RequestMapping( value = "/tweet/markFavorite" , method = RequestMethod.POST ) @ResponseBody // Ajax call
+    public static void markFavorite( @RequestParam String tweetId , HttpSession session ){
+        UserTweetList.markFavorite( tweetId , session.getAttribute("userId").toString() );
+    }
 }

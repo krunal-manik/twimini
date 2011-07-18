@@ -22,7 +22,9 @@ public class User {
     String aboutMe;
     String followStatus;
 
-    public User(){}
+    public User(){
+        followStatus = "Follow";
+    }
 
     public static final RowMapper<User> rowMapper = new RowMapper<User>() {
         @Override public User mapRow( ResultSet rs , int i ) throws SQLException {
