@@ -130,8 +130,11 @@ public class UserController {
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
         mv.addObject("followingCount", Follow.getFollowedList( userId ).size() );
-        mv.addObject( "currentUsername" , username );
-        mv.addObject( "currentUserId" , userId );
+        mv.addObject("currentUsername" , username );
+        mv.addObject("currentUserId" , userId );
+        mv.addObject("currentEmail", urlMappedUser.getEmail());
+        System.out.println(urlMappedUser.getUserId());
+        mv.addObject("currentName" , urlMappedUser.getName());
         return mv;
     }
 

@@ -53,6 +53,7 @@ body{
     -moz-box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
     box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
     text-shadow: rgba(0, 0, 0, .4) 0 1px 0;
+    cursor:pointer;
     color: white;
     font-size: 9px;
     font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
@@ -253,4 +254,17 @@ a{
     height: 200px;
     background-color:#FFFFFF;
     background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
+}
+
+.profile_box {
+    background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
+}
+
+i {
+    display: inline-block;
+    vertical-align: baseline;
+    position:relative;
+    width:20px;
+    height:20px;
+    background: url("../images/empty_star.png") repeat-x scroll left bottom #FFFFFF;
 }

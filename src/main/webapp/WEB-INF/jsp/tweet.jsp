@@ -12,14 +12,13 @@
         <div class = "body">
         <div class = "container">
             <div class = "span-24">
-                <div class = "span-16" style="">
-                <h4>TWEET</h4>
-                <form name = "tweet_form">
-                    <textarea id = "tweet" onkeypress="return imposeMaxLength(event, this, 140);"
-                    name = "tweetContent" value = "" class="span-16" placeholder="tweet !!!"
-                    style="resize:none; height:60px;"></textarea>
-                    <input type = "button" value = "Tweet" onclick="addTweet()" />
-                </form>
+                <div class = "span-16">
+                    <form name = "tweet_form">
+                        <textarea id = "tweet" onkeypress="return imposeMaxLength(event, this, 140);"
+                        name = "tweetContent" value = "" class="span-16" placeholder="tweet !!!"
+                        style="resize:none; height:60px;"></textarea>
+                        <input type = "button" value = "Tweet" onclick="addTweet()" />
+                    </form>
                     <div id="newsFeedContainer">
                         Newsfeed :
                         <div id="tweetsList_o">

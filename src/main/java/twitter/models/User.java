@@ -83,6 +83,10 @@ public class User {
         this.name = name;
     }
 
+    public void setEmail( String email ){
+        this.email = email;
+    }
+
     public void setFollowStatus( String followStatus ) {
         this.followStatus = followStatus;
     }

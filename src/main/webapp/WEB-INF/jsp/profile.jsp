@@ -19,15 +19,19 @@
             <div class = "container">
                 <div class = "span-24">
                     <div class = "span-16">
+                        <% if( (session.getAttribute("userId") == null) || (session.getAttribute("username").equals(request.getAttribute("currentUsername")))) { %>
+                            <div style="height:90px;" class="padding border profile_box">
+                                <div class="prepend-3 span-5"> Name </div>
+                                <input type="text" value='${currentName}' class="prepend-1 span-5" />
+                                <div class="prepend-3 span-5"> E-mail id </div>
+                                <input type="text"  value='${currentEmail}' class="prepend-1 span-5"/>
+                            </div>
+                        <% } else { %>
+                            <input type = "button" id = 'follow${currentUserId}' class = "btn border"
+                            value = ${followStatus} onclick='changeFollowStatus(${currentUserId})' />
+                            <br>
+                        <% } %>
                         <div id="userTweetsContainer">
-                            <% if( (session.getAttribute("userId") == null) ) { %>
-
-                            <% } else { %>
-                                <input type = "button" id = 'follow${currentUserId}' class = "btn border"
-                                value = ${followStatus} onclick='changeFollowStatus(${currentUserId})' />
-                                <br>
-                            <% } %>
-
                             ${currentUsername}'s Tweets :
                             <div id="tweetsList">
                                 <c:forEach var='item' items='${userTweets}'>

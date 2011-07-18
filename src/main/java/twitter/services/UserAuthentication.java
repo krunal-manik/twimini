@@ -66,7 +66,7 @@ public class UserAuthentication {
     public static User getUserByUsername( String username ) {
         User data = null;
         try{
-            data = db.queryForObject( "SELECT user_id, username , password from user where username = ?",
+            data = db.queryForObject( "SELECT * from user where username = ?",
                     new RowMapper<User>() {
                         @Override
                         public User mapRow(ResultSet rs, int i) throws SQLException {
@@ -74,6 +74,8 @@ public class UserAuthentication {
                             ret.setUserId( rs.getInt("user_id"));
                             ret.setUsername(rs.getString("username"));
                             ret.setPassword(rs.getString("password"));
+                            ret.setName(rs.getString("name"));
+                            ret.setEmail(rs.getString("email"));
                             return ret;
                         }
                     }, username );
