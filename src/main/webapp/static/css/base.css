@@ -260,12 +260,19 @@ a{
     background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
 }
 
-i {
+.i {
     display: inline-block;
     vertical-align: baseline;
     position:relative;
-    width:20px;
     height:20px;
     cursor: pointer;
-    background: url("../images/empty_star.png") repeat-x scroll left bottom #FFFFFF;
+    padding-left:20px;
+}
+
+.fav {
+    background: url("../images/empty_star.png") no-repeat scroll left bottom #FFFFFF;
+}
+
+.unfav {
+    background: url("../images/filled_star.png") no-repeat scroll left bottom #FFFFFF;
 }

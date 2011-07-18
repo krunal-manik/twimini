@@ -77,7 +77,17 @@ function checkPasswords( form ) {
     return true;
 }
 
-function markFavorite( tweetId ) {
+function toggleFavorite( tweetId ) {
+    if (document.getElementById('favorite_' + tweetId).innerHTML == "Favorite") {
+        document.getElementById('favorite_' + tweetId).innerHTML = "Unfavorite";
+        $('#favorite_' + tweetId).removeClass("fav");
+        $('#favorite_' + tweetId).addClass("unfav");
+    } else {
+        document.getElementById('favorite_' + tweetId).innerHTML = "Favorite";
+        $('#favorite_' + tweetId).removeClass("unfav");
+        $('#favorite_' + tweetId).addClass("fav");
+    }
+    /*
     $.ajax({
         type : "POST",
         url : "tweet/markFavorite",
@@ -86,4 +96,5 @@ function markFavorite( tweetId ) {
             document.getElementById('favorite_' + tweetId).style.backgroundImage = "url('/static/images/filled_star.png')";
         }
     });
+    */
 }
