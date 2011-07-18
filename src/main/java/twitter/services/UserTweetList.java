@@ -60,17 +60,18 @@ public class UserTweetList {
         return ret;
     }
 
-    public static List<Tweet> userTweetList( String userId ){
+    public static List<Tweet> userTweetList( String userId, String favoriter ){
         List<Tweet> ret = null;
         try{
             ret = db.query("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
                     "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp DESC" ,
                     UserTweetList.newsFeedMapper , userId );
-
-            int favoritesList[] = getFavoriteTweetsOfUser( userId );
-            for(int i=0;i<ret.size();i++) {
-               ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+            if (favoriter != null) {
+                int favoritesList[] = getFavoriteTweetsOfUser( favoriter );
+                for(int i=0;i<ret.size();i++) {
+                   ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+                }
             }
         }
         catch( Exception ex ) {

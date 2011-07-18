@@ -42,6 +42,7 @@
                                         <jsp:param name="timestamp" value="${item.timestamp}" />
                                         <jsp:param name="name" value="${item.name}" />
                                         <jsp:param name="username" value="${item.username}" />
+                                        <jsp:param name="isFavorite" value="${item.isFavorite}" />
                                     </jsp:include>
                                 </c:forEach>
                             </div>

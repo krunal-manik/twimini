@@ -116,8 +116,9 @@ public class UserController {
         }
         String userId = String.valueOf( urlMappedUser.getUserId() );
         ModelAndView mv = new ModelAndView("/profile");
+        String session_userId = null;
         if( session.getAttribute("userId") != null ) {
-            String session_userId = session.getAttribute("userId").toString();
+            session_userId = session.getAttribute("userId").toString();
             mv.addObject("allUserList", Follow.allUsersList(session_userId));
             if (Follow.ifFollow(userId, session_userId)) {
                 mv.addObject("followStatus", "Follow");
@@ -125,7 +126,7 @@ public class UserController {
                 mv.addObject("followStatus", "Unfollow");
             }
         }
-        mv.addObject("userTweets", UserTweetList.userTweetList( userId ));
+        mv.addObject("userTweets", UserTweetList.userTweetList( userId, session_userId));
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
@@ -133,7 +134,6 @@ public class UserController {
         mv.addObject("currentUsername" , username );
         mv.addObject("currentUserId" , userId );
         mv.addObject("currentEmail", urlMappedUser.getEmail());
-        System.out.println(urlMappedUser.getUserId());
         mv.addObject("currentName" , urlMappedUser.getName());
         return mv;
     }
