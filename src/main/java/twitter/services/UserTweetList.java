@@ -43,7 +43,7 @@ public class UserTweetList {
         this.db = db;
     }
 
-    public static Tweet addTweet( String tweet , String userId ){
+    public static Tweet addTweet( String tweet , String userId ) {
         Tweet ret = new Tweet();
         try{
             db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,userId , tweet  );
@@ -87,7 +87,6 @@ public class UserTweetList {
             List< Map<String,Object> > favorites = db.queryForList("SELECT tweet_id from favorite where user_id = ? ORDER BY tweet_id", userId);
             favoritesList = new int[ favorites.size() ];
             for(int i=0;i<favorites.size();i++) favoritesList[i] = ( Integer.valueOf( favorites.get(i).get("tweet_id").toString() ) ).intValue();
-            for(int i=0;i<favoritesList.length;i++) System.out.println( favoritesList[i] );
         }
         catch ( Exception ex ) {
             System.out.println( "Bug in favoriteTweetsOfUser :((" );
@@ -139,6 +138,17 @@ public class UserTweetList {
         }
         catch( Exception ex ) {
             System.out.println( "Bug in markFavorite :((" );
+            ex.printStackTrace();
+        }
+    }
+
+    public static void deleteFavorite( String tweetId , String userId ) {
+        try{
+            db.update("DELETE from favorite where user_id = ? AND tweet_id = ?"
+                    , userId, tweetId );
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in deleteFavorite :((" );
             ex.printStackTrace();
         }
     }

@@ -57,4 +57,9 @@ public class TweetController {
     public static void markFavorite( @RequestParam String tweetId , HttpSession session ){
         UserTweetList.markFavorite( tweetId , session.getAttribute("userId").toString() );
     }
+
+    @RequestMapping( value = "/tweet/deleteFavorite" , method = RequestMethod.POST ) @ResponseBody // Ajax call
+    public static void deleteFavorite( @RequestParam String tweetId , HttpSession session ){
+        UserTweetList.deleteFavorite( tweetId , session.getAttribute("userId").toString() );
+    }
 }

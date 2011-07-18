@@ -78,23 +78,29 @@ function checkPasswords( form ) {
 }
 
 function toggleFavorite( tweetId ) {
-    if (document.getElementById('favorite_' + tweetId).innerHTML == "Favorite") {
-        document.getElementById('favorite_' + tweetId).innerHTML = "Unfavorite";
-        $('#favorite_' + tweetId).removeClass("fav");
-        $('#favorite_' + tweetId).addClass("unfav");
-    } else {
-        document.getElementById('favorite_' + tweetId).innerHTML = "Favorite";
-        $('#favorite_' + tweetId).removeClass("unfav");
-        $('#favorite_' + tweetId).addClass("fav");
+
+    if ( document.getElementById('favorite_' + tweetId).innerHTML == "Favorite" ) {
+        $.ajax({
+            type : "POST",
+            url : "tweet/markFavorite",
+            data : "tweetId=" + tweetId ,
+            success : function(){
+                document.getElementById('favorite_' + tweetId).innerHTML = "Unfavorite";
+                $('#favorite_' + tweetId).removeClass("fav");
+                $('#favorite_' + tweetId).addClass("unfav");
+            }
+        });
     }
-    /*
-    $.ajax({
-        type : "POST",
-        url : "tweet/markFavorite",
-        data : "tweetId=" + tweetId ,
-        success : function(){
-            document.getElementById('favorite_' + tweetId).style.backgroundImage = "url('/static/images/filled_star.png')";
-        }
-    });
-    */
+    else {
+        $.ajax({
+            type : "POST",
+            url : "tweet/deleteFavorite",
+            data : "tweetId=" + tweetId ,
+            success : function(){
+                document.getElementById('favorite_' + tweetId).innerHTML = "Favorite";
+                $('#favorite_' + tweetId).removeClass("unfav");
+                $('#favorite_' + tweetId).addClass("fav");
+            }
+        });
+    }
 }

@@ -9,7 +9,7 @@
             <div class = "tweet_content"> <%= tweet %> </div>
             <div class = "tweet_time">at <%= timestamp %> </div>
             <div style="width:100%; height:25px">
-                <% if (favorite == 'true') {%>
+                <% if (isFavorite == 'true') {%>
                     <div id = 'favorite_<%= tweetId %>' class = "i unfav span-3" onclick = 'toggleFavorite(<%= tweetId %>)'> Unfavorite </div>
                 <% } else { %>
                    <div id = 'favorite_<%= tweetId %>' class = "i fav span-3" onclick = 'toggleFavorite(<%= tweetId %>)'> Favorite </div>

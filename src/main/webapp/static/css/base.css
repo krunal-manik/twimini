@@ -269,10 +269,14 @@ a{
     padding-left:20px;
 }
 
+.i:hover {
+    text-decoration: underline;
+}
+
 .fav {
-    background: url("../images/empty_star.png") no-repeat scroll left bottom #FFFFFF;
+    background: url("../images/empty_star.png") no-repeat scroll left bottom;
 }
 
 .unfav {
-    background: url("../images/filled_star.png") no-repeat scroll left bottom #FFFFFF;
+    background: url("../images/filled_star.png") no-repeat scroll left bottom;
 }
