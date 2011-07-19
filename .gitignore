@@ -1,3 +1,4 @@
 .idea/*
 twimini.iml
 target/*
+src/main/webapp/photo/*

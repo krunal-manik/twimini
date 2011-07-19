@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
 import twitter.services.Email;
@@ -15,7 +16,7 @@ import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
 import javax.swing.plaf.multi.MultiViewportUI;
-import java.io.File;
+import java.io.*;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -144,24 +145,6 @@ public class UserController {
         return mv;
     }
 
-
-    @RequestMapping( "/test_upload_image" )
-    public ModelAndView getTestUploadImagePage(){
-        ModelAndView mv = new ModelAndView();
-        return mv;
-    }
-
-    @RequestMapping( value = "/test_upload_image", method = RequestMethod.POST)
-    public ModelAndView getTestUploadImagePOST(@RequestParam File img, HttpSession session){
-        System.out.println(img.getAbsolutePath());
-        File f = new File(session.getAttribute("username").toString() + ".jpg");
-        System.out.println(f.getAbsolutePath());
-        System.out.println("File Exits - > " + f.exists());
-        ModelAndView mv = new ModelAndView();
-        return mv;
-    }
-
-
     @RequestMapping("/{username}/followers")
     public ModelAndView getUserFollowers(@PathVariable String username){
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
@@ -273,4 +256,5 @@ public class UserController {
         a[i] = a[j];
         a[j] = c;
     }
+
 }

@@ -6,8 +6,8 @@
         <input type="text" name = "email" value = "" />
         <input type="Submit" />
     </form>
-    <form action="/testing" method=post>
-	    <input type="file" name="pic" />
+    <form action="/testing" enctype="multipart/form-data" method=post>
+	    <input type="file" name="file" />
 	    <input type="submit" name="submit">
     </form>
 

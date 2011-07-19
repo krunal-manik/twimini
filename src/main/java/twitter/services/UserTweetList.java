@@ -83,6 +83,7 @@ public class UserTweetList {
 
     public static int[] getFavoriteTweetsOfUser( String userId ) {
 
+        if( userId == null )return new int[0];
         int favoritesList[] = new int[0];
         try{
             List< Map<String,Object> > favorites = db.queryForList("SELECT tweet_id from favorite where user_id = ? ORDER BY tweet_id", userId);
