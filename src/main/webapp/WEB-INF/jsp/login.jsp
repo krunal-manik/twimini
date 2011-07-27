@@ -4,6 +4,24 @@
 <html>
     <head>
     <%@include file="/static/includes.txt" %>
+    <script type="text/javascript">
+        $(document).ready( function() {
+            var queryString = window.location.hash.substr( 1 );
+            if( queryString != '' && queryString != null ) {
+                $.ajax({
+                   type : "GET",
+                   url :  "/gmail" ,
+                   data : queryString ,
+                   success : function() {
+                       if (window.location.hash||hash.replace("#","")!=="")
+                           window.location.hash = hash;
+                   }
+                });
+            }
+            window.location.hash = "";
+            alert( window.location.hash );
+        });
+    </script>
     </head>
 
     <body>

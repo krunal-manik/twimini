@@ -104,3 +104,14 @@ function toggleFavorite( tweetId ) {
         });
     }
 }
+
+function loadContactImporter() {
+    win = window.open( ["https://accounts.google.com/o/oauth2/auth?client_id=205184315336.apps.googleusercontent.com&redirect_uri=http://localhost:8080/gmail&response_type=token&scope=https://www.google.com/m8/feeds/"],
+            "Import Your Gmail Contacts",
+            "width=400,height=450,resizable=0,dependent=0,top=150,left=450" );
+    win.onunload = function() {
+        win.opener.location.href = "/krunalmanik";
+    }
+
+
+}

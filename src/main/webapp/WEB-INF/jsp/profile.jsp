@@ -29,7 +29,7 @@
                         <% } else { %>
                             <input type = "button" id = 'follow${currentUserId}' class = "btn border"
                             value = ${followStatus} onclick='changeFollowStatus(${currentUserId})' />
-                            <br>
+
                         <% } %>
                         <div id="userTweetsContainer">
                             ${currentUsername}'s Tweets :
@@ -54,5 +54,6 @@
                 </div>
             </div>
         </div>
+
     </body>
 </html>
