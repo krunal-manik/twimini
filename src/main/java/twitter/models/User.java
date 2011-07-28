@@ -18,8 +18,6 @@ public class User {
     String name;
     String password;
     String email;
-    boolean emailNotifications;
-    String aboutMe;
     String followStatus;
 
     public User(){
@@ -38,7 +36,6 @@ public class User {
         name = rs.getString("name");
         password = rs.getString("password");
         email = rs.getString("email");
-        aboutMe = rs.getString("about_me");
     }
 
     public int getUserId(){
@@ -59,10 +56,6 @@ public class User {
 
     public String getEmail(){
         return email;
-    }
-
-    public String getAboutMe(){
-        return aboutMe;
     }
 
     public String getFollowStatus() {

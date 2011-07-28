@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import twitter.models.Tweet;
 import twitter.models.User;
 
+import javax.crypto.interfaces.PBEKey;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -58,6 +59,19 @@ public class UserTweetList {
             ex.printStackTrace();
         }
         return ret;
+    }
+
+    public static int getUserTweetsCount( String userId ) {
+        int userTweetsCount = 0;
+        try{
+            userTweetsCount = db.queryForInt("SELECT COUNT(T.tweet_id) FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp DESC" , userId );
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in userTweetsCount :((" );
+            ex.printStackTrace();
+        }
+        return userTweetsCount;
     }
 
     public static List<Tweet> userTweetList( String userId, String favoriter ){
@@ -133,7 +147,7 @@ public class UserTweetList {
         return ret;
     }
 
-    public static void markFavorite( String tweetId , String userId ) {
+    public static boolean markFavorite( String tweetId , String userId ) {
         try{
             db.update("INSERT INTO favorite ( user_id , tweet_id ) VALUES ( ? , ? )"
                     , userId, tweetId);
@@ -141,10 +155,12 @@ public class UserTweetList {
         catch( Exception ex ) {
             System.out.println( "Bug in markFavorite :((" );
             ex.printStackTrace();
+            return false;
         }
+        return true;
     }
 
-    public static void deleteFavorite( String tweetId , String userId ) {
+    public static boolean deleteFavorite( String tweetId , String userId ) {
         try{
             db.update("DELETE from favorite where user_id = ? AND tweet_id = ?"
                     , userId, tweetId );
@@ -152,6 +168,8 @@ public class UserTweetList {
         catch( Exception ex ) {
             System.out.println( "Bug in deleteFavorite :((" );
             ex.printStackTrace();
+            return false;
         }
+        return true;
     }
 }

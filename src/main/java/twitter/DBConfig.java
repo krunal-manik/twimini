@@ -35,6 +35,7 @@ public class DBConfig {
         // the required parameters such as the Jdbc Driver class,
         // Jdbc URL, database user name and password.
         //
+        System.out.println( "Connected to db" );
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(DBConfig.DRIVER);
         dataSource.setUrl(DBConfig.JDBC_URL);

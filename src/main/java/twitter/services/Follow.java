@@ -75,24 +75,28 @@ public class Follow {
         return userList;
     }
 
-    public static void addFollowing( String userId , String currentUser ){
+    public static boolean addFollowing( String userId , String currentUser ){
         try{
             db.update("INSERT INTO follower_followed (followed, follower) values (?, ?)", userId, currentUser );
         }
         catch ( Exception ex ){
             System.out.println( "Add Following-Followers Exception :((((((" );
             ex.printStackTrace();
+            return false;
         }
+        return true;
     }
 
-    public static void removeFollowing( String userId , String currentUser ){
+    public static boolean removeFollowing( String userId , String currentUser ){
         try{
             db.update("DELETE FROM follower_followed where followed = ? and follower = ?", userId, currentUser );
         }
         catch ( Exception ex ){
             System.out.println( "Remove Following-Followers Exception :((((((" );
             ex.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public static List<User> getFollowedList( String userId ){
@@ -156,5 +160,33 @@ public class Follow {
             ex.printStackTrace();
         }
         return followerList;
+    }
+
+    public static int getFollowerCount( String userId ) {
+        int followerCount = 0;
+        try{
+            followerCount = db.queryForInt("SELECT COUNT(user_id) from user " +
+                                    "where user_id in (SELECT follower from follower_followed " +
+                                    "where followed = ?)" ,  userId );
+        }
+        catch( Exception ex ){
+            System.out.println( "FollowerCount Exception :(((((" );
+            ex.printStackTrace();
+        }
+        return followerCount;
+    }
+
+    public static int getFollowingCount( String userId ){
+        int followingCount = 0;
+        try{
+            followingCount = db.queryForInt("SELECT COUNT(user_id) from user " +
+                                    "where user_id in (SELECT followed from follower_followed " +
+                                    "where follower = ?)" , userId );
+        }
+        catch( Exception ex ){
+            System.out.println( "FollowingCount Exception :((((((" );
+            ex.printStackTrace();
+        }
+        return followingCount;
     }
 }

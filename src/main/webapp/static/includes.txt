@@ -1,6 +1,5 @@
         <!-- jQuery and ejs scripts -->
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-	    <script type="text/javascript" src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.js"></script>
         <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
         <script type="text/javascript" src="/static/js/functions.js"></script>
 

@@ -5,6 +5,7 @@
     <head>
     <%@include file="/static/includes.txt" %>
     <script type="text/javascript">
+
         $(document).ready( function() {
             var queryString = window.location.hash.substr( 1 );
             if( queryString != '' && queryString != null ) {
@@ -19,8 +20,8 @@
                 });
             }
             window.location.hash = "";
-            alert( window.location.hash );
         });
+
     </script>
     </head>
 

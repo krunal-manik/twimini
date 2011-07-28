@@ -29,6 +29,7 @@ public class UserAuthentication {
     }
 
     public static User authenticateUser( String username , String password ){
+        System.out.println( username + password );
         User data = null;
         try{
             data = db.queryForObject( "SELECT user_id, username , password from user where username = ?",

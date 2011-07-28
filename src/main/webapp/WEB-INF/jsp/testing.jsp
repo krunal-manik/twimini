@@ -15,8 +15,7 @@
     <img src = "${image}"/>
     <div id="gmail-contacts-importer">
 
-        <input type="button" data-role="button" data-rel="dialog" data-url="https://accounts.google.com/o/oauth2/auth?client_id=205184315336.apps.googleusercontent.com&redirect_uri=http://localhost:8080/gmail&response_type=token&scope=https://www.google.com/m8/feeds/"
-                data-popup="true" />
+        <input type="button" onclick="loadContactImporter();" value="Import Contacts"/>
     </div>
 
 
