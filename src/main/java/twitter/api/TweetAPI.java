@@ -88,4 +88,48 @@ public class TweetAPI {
 
         return userTweet;
     }
+
+    @RequestMapping( "/api/{username}/favorite" )
+    @ResponseBody
+    public static Hashtable<String,Object> markFavorite( @PathVariable String username , String tweetId , String token ) {
+        Hashtable<String,Object> favoriteStatus = new Hashtable<String, Object>();
+        try {
+            User user = UserAuthentication.getUserByUsername(username);
+            boolean success = UserTweetList.markFavorite(tweetId, String.valueOf(user.getUserId()));
+            if( !success )
+                throw new Exception();
+            favoriteStatus.put("success", "true");
+            favoriteStatus.put("status code", "200 OK");
+        } catch (NullPointerException ex) {
+            favoriteStatus.put("Error", "No such user exists");
+            favoriteStatus.put("status code", "401 User not found");
+        } catch (Exception ex) {
+            favoriteStatus.put("Error", "Server error");
+            favoriteStatus.put("status code", "500 Internal server error");
+        }
+
+        return favoriteStatus;
+    }
+
+    @RequestMapping( "/api/{username}/unfavorite" )
+    @ResponseBody
+    public static Hashtable<String,Object> markUnfavorite( @PathVariable String username , String tweetId , String token ) {
+        Hashtable<String,Object> unFavoriteStatus = new Hashtable<String, Object>();
+        try {
+            User user = UserAuthentication.getUserByUsername(username);
+            boolean success = UserTweetList.deleteFavorite(tweetId, String.valueOf(user.getUserId()));
+            if( !success )
+                throw new Exception();
+            unFavoriteStatus.put("success", "true");
+            unFavoriteStatus.put("status code", "200 OK");
+        } catch (NullPointerException ex) {
+            unFavoriteStatus.put("Error", "No such user exists");
+            unFavoriteStatus.put("status code", "401 User not found");
+        } catch (Exception ex) {
+            unFavoriteStatus.put("Error", "Server error");
+            unFavoriteStatus.put("status code", "500 Internal server error");
+        }
+
+        return unFavoriteStatus;
+    }
 }

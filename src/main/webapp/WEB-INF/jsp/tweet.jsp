@@ -16,11 +16,9 @@
     </head>
 
     <body class="claro">
-
-        <div id="replyPopUp" title="Colorful" dojoType="dijit.Dialog" style="height:300">
+        <div id="replyPopUp" title="Colorful" dojoType="dijit.Dialog" style="height:300;display:none">
             My background color is Green
         </div>
-
 
         <%@include file="/WEB-INF/jsp/header.jsp" %>
 

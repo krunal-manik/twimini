@@ -4,8 +4,10 @@
         <script type="text/javascript" src="/static/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js"
+        djConfig="parseOnLoad: true">
+        </script>
         <script type="text/javascript" src="/static/js/functions.js"></script>
-
 
         <!-- favicon -->
         <link href='/static/images/twitter_favicon.png' rel='shortcut icon' type='image/x-icon'/>
@@ -14,6 +16,9 @@
         <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection" />
         <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print" />
         <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+        <!--claro css-->
+        <link rel="stylesheet" type="text/css" href="/static/css/claro.css" />
 
         <!-- base css -->
         <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+

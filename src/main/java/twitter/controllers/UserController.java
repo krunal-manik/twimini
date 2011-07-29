@@ -93,6 +93,7 @@ public class UserController {
     public ModelAndView getActivatePage(){
         return new ModelAndView("/activate");
     }
+
     @RequestMapping( value = "/activateAccount" , method = RequestMethod.GET )
     public ModelAndView activateAccount(String token,HttpSession session){
         User user = UserAuthentication.makeUserPermanent( token );

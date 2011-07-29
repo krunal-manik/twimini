@@ -1,3 +1,5 @@
+dojo.require(dijit.Dialog);
+
 function changeFollowStatus(userId) {
     var buttonName = document.getElementById("follow" + userId);
     var button_Name = document.getElementById("follow_" + userId);
