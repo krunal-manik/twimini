@@ -231,8 +231,7 @@ function imposeMaxLength(Event, Object, MaxLen, TagBox) {
             tag_mode = false;
             var to_change = TagBox.options[TagBox.selectedIndex].innerHTML;
             Object.value =
-                Object.value.substring(0, crt_pos(Object)).substring(0, Object.value.substring(0, crt_pos(Object)).lastIndexOf('@')) + to_change + Object.value.substring(crt_pos(Object), Object.value.length);
-            alert(Object.value);
+                Object.value.substring(0, crt_pos(Object)).substring(0, Object.value.substring(0, crt_pos(Object)).lastIndexOf('@') + 1) + to_change + Object.value.substring(crt_pos(Object), Object.value.length);
             TagBox.style.display = "none";
             selected_option = 0;
             return false;
@@ -310,8 +309,9 @@ function reply(tweetId) {
         "<textarea id = 'reply' onkeypress='return imposeMaxLength(event, this, 140, dojo.byId(\"tagging_dropdown_dialog\"));' " +
         "name = 'tweetContent' value = '' class='span-16' placeholder='tweet !!!'" +
         "style='resize:none; height:60px;' onkeyup = 'givesuggestions(event, this, dojo.byId(\"tagging_dropdown_dialog\"));'></textarea>" +
-        "<select id='tagging_dropdown_dialog' style='' class='dropdown_select'> </select>" +
-    "</div>" );
+        "<select id='tagging_dropdown_dialog' style='display:none' class='dropdown_select'> </select>" +
+    "</div> " +
+    "<input type = 'button' value = 'Reply' onclick='replyTweet()'/>");
 
     dijit.byId("replyPopUp").show();
 }
