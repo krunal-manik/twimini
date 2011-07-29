@@ -155,7 +155,7 @@ function crt_pos (ctrl) {
 	return (CaretPos);
 };
 
-function givesuggestions(Event, Object) {
+function givesuggestions(Event, Object, TagBox) {
 
     if (tag_mode) {
         dojo.require("dijit.form.MultiSelect");
@@ -165,7 +165,7 @@ function givesuggestions(Event, Object) {
             url : "search_user",
             data : "pattern=" + to_search ,
             success : function( data ){
-                var sel = dojo.byId('tagging_dropdown');
+                var sel = TagBox;
                 sel.innerHTML = "";
                 if (selected_option === -1) {
                     selected_option = data.length - 1;
@@ -222,23 +222,23 @@ function search(Event, Object) {
 }
 */
 
-function imposeMaxLength(Event, Object, MaxLen) {
+function imposeMaxLength(Event, Object, MaxLen, TagBox) {
         if  (String.fromCharCode(Event.which) == "@") {
             selected_option = 0;
             tag_mode = true;
-            dojo.byId("tagging_dropdown").style.display = "block";
+            TagBox.style.display = "block";
         } else if (keycode.getKeyCode(Event)==13) {
             tag_mode = false;
-            var to_change = dojo.byId("tagging_dropdown").options[dojo.byId("tagging_dropdown").selectedIndex].innerHTML;
+            var to_change = TagBox.options[TagBox.selectedIndex].innerHTML;
             Object.value =
                 Object.value.substring(0, crt_pos(Object)).substring(0, Object.value.substring(0, crt_pos(Object)).lastIndexOf('@')) + to_change + Object.value.substring(crt_pos(Object), Object.value.length);
             alert(Object.value);
-            dojo.byId("tagging_dropdown").style.display = "none";
+            TagBox.style.display = "none";
             selected_option = 0;
             return false;
         } else if (keycode.getKeyCode(Event)==32) {
             tag_mode = false;
-            dojo.byId("tagging_dropdown").style.display = "none";
+            TagBox.style.display = "none";
             selected_option = 0;
         } else if (Event.keyCode==38) {
             selected_option--;
@@ -307,10 +307,10 @@ function reply(tweetId) {
     dijit.byId("replyPopUp").attr("title", "Reply to Tweet ID " + tweetId);
     dijit.byId("replyPopUp").attr("content",
     "<div style = 'position:relative'>" +
-        " <textarea id = 'reply' onkeypress='return imposeMaxLength(event, this, 140);' " +
+        "<textarea id = 'reply' onkeypress='return imposeMaxLength(event, this, 140, dojo.byId(\"tagging_dropdown_dialog\"));' " +
         "name = 'tweetContent' value = '' class='span-16' placeholder='tweet !!!'" +
-        "style='resize:none; height:60px;' onkeyup = 'givesuggestions(event, this);'></textarea>" +
-        "<select id='tagging_dropdown' style='' class='dropdown_select'> </select>" +
+        "style='resize:none; height:60px;' onkeyup = 'givesuggestions(event, this, dojo.byId(\"tagging_dropdown_dialog\"));'></textarea>" +
+        "<select id='tagging_dropdown_dialog' style='' class='dropdown_select'> </select>" +
     "</div>" );
 
     dijit.byId("replyPopUp").show();
