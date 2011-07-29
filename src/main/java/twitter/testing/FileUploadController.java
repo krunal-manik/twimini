@@ -39,7 +39,7 @@ import java.util.Map;
 public class FileUploadController {
 
     final SimpleJdbcTemplate db;
-    public static final String prefixPath = "C:\\Users\\krunal.ma\\twimini\\src\\main\\webapp\\";
+    public static final String prefixPath = "C:\\Users\\rahul.pl\\twimini\\src\\main\\webapp\\";
     public static final String tempPath = "C://photos/username.jpg";
 
     @Autowired

@@ -21,7 +21,7 @@
                     <li>
                         <a href = "/${item.username}"> ${item.name} </a>
                         <input type = "button" id = 'follow_${item.userId}' class = "btn border"
-                        value = ${item.followStatus} onclick='changeFollowStatus(${item.userId})' />
+                        value = ${item.followStatus} onclick="changeFollowStatus(${item.userId})" />
                     </li>
 
                 </c:forEach>

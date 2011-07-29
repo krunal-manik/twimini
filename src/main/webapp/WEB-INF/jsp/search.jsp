@@ -18,9 +18,9 @@
             <div class = "span-24">
                 <div class = "span-16" style="">
                     <div id="newsFeedContainer">
-                        PEOPLE FOLLOWING ${username}
+                        SEARCH RESULT BY ${pattern}
                         <div id="followerList">
-                            <c:forEach var='item' items='${followerList}'>
+                            <c:forEach var='item' items='${userList}'>
                                 <div class = "span-16 tweet_container">
                                     <div class = "span-2 usr_image_box">
                                         <img src="/static/images/def_user.jpg" style="border-color:#000000; border-width:2px; border-style:solid"/>
@@ -31,10 +31,10 @@
                                             <div class = "tweeter_name"> <a href = "/${item.username}">${item.username} </a> </div>
                                             <div style="width:100%; height:25px">
                                                 <% if (session.getAttribute("userId") != null) {%>
-                                                    <c:if test="${item.followStatus == 'Unfollow'}">
+                                                    <c:if test="${item.followStatus == 'Follow'}">
                                                         <div id = 'follow_${item.userId}' class = "i fav span-3" onclick = 'changeFollowStatusForDivs(${item.userId})'>${item.followStatus}</div>
                                                     </c:if>
-                                                    <c:if test="${item.followStatus == 'Follow'}">
+                                                    <c:if test="${item.followStatus == 'Unfollow'}">
                                                         <div id = 'follow_${item.userId}' class = "i unfav span-3" onclick = 'changeFollowStatusForDivs(${item.userId})'>${item.followStatus}</div>
                                                     </c:if>
                                                     <div class = "span-3"><a href="#"><img src = "/static/images/empty_star.png" />Reply</a> </div>

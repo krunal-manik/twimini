@@ -1,6 +1,7 @@
 package twitter.controllers;
 
 import org.hsqldb.Session;
+import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.mail.MailSender;
@@ -97,7 +98,15 @@ public class UserController {
         User user = UserAuthentication.makeUserPermanent( token );
         session.setAttribute( "username" , user.getUsername() );
         session.setAttribute( "userId" , user.getUserId() );
-        ModelAndView mv = new ModelAndView( "/tweet" );
+        String session_userId = session.getAttribute("userId").toString();
+        ModelAndView mv = null;
+        mv.addObject("followerList", 0);
+        mv.addObject("followedList", 0);
+        if( session.getAttribute("userId") != null ) {
+            mv = new ModelAndView( "/tweet" );
+            session_userId = session.getAttribute("userId").toString();
+            mv.addObject("allUserList", Follow.allUsersList(session_userId));
+        }
         return mv;
     }
 
@@ -106,6 +115,12 @@ public class UserController {
         session.invalidate();
         ModelAndView mv = new ModelAndView( "/login" );
         return mv;
+    }
+
+    @RequestMapping("/search_user") @ResponseBody
+    public List<User> search_user(HttpSession session, @RequestParam final String pattern) {
+        List<User> userList = Follow.allUsersListbyPattern(pattern, session.getAttribute("userId").toString());
+        return userList;
     }
 
     @RequestMapping("/{username}")
@@ -235,6 +250,15 @@ public class UserController {
           return mv;
     }
 
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ModelAndView search(String pattern, HttpSession session){
+        List<User> userList = Follow.allUsersListContainingSubstring(pattern, session.getAttribute("userId").toString());
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("userList", userList);
+        mv.addObject("pattern" , pattern);
+        return mv;
+    }
+
     public static String getRandomToken() {
         char a[] = new char[62];
         int c = 0;
@@ -256,5 +280,4 @@ public class UserController {
         a[i] = a[j];
         a[j] = c;
     }
-
 }

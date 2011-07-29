@@ -51,6 +51,47 @@ public class Follow {
         }
     }
 
+
+    public static List<User> allUsersListbyPattern(String pattern, String userId) {
+        List<User> userList = null;
+        try{
+            userList = db.query("SELECT user_id, username, name from user " +
+                    "where user_id != ? and username like '" + pattern + "%'",
+                     Follow.rowMapperForFollow,  userId );
+        }
+        catch( Exception ex ){
+            ex.printStackTrace();
+        }
+        return userList;
+    }
+
+    public static List<User> allUsersListContainingSubstring(String pattern, String userId) {
+        List<User> userList = null;
+        try{
+            userList = db.query("SELECT user_id, username, name from user " +
+                    "where user_id != ? and username like '%" + pattern + "%' " +
+                    "and user_id not in (select followed from follower_followed " +
+                    "where follower = ?)",
+                     Follow.rowMapperForFollow,  userId , userId );
+            for(int i=0;i<userList.size();i++)
+                    userList.get(i).setFollowStatus( "Follow" );
+            List<User> followers =  db.query("SELECT user_id, username, name from user " +
+                    "where user_id != ? and username like '%" + pattern + "%' " +
+                    "and user_id IN (select followed from follower_followed " +
+                    "where follower = ?)",
+                     Follow.rowMapperForFollow,  userId , userId );
+            for(int i=0;i<followers.size();i++)
+                    followers.get(i).setFollowStatus( "Unfollow" );
+            for(int i=0;i<followers.size();i++)
+                userList.add( followers.get(i) );
+        }
+        catch( Exception ex ){
+            ex.printStackTrace();
+        }
+        return userList;
+    }
+
+
     public static List<User> allUsersList( String userId ){
         List<User> userList = null;
         try{
