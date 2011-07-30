@@ -1,7 +1,6 @@
 
 
         <!-- jQuery and ejs scripts -->
-        <script type="text/javascript" src="/static/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js"

@@ -1,4 +1,3 @@
-dojo.require(dijit.Dialog);
 
 function changeFollowStatus(userId) {
     var buttonName = document.getElementById("follow" + userId);
@@ -313,7 +312,27 @@ function reply(tweetId) {
         "style='resize:none; height:60px;' onkeyup = 'givesuggestions(event, this, dojo.byId(\"tagging_dropdown_dialog\"));'></textarea>" +
         "<select id='tagging_dropdown_dialog' style='display:none' class='dropdown_select'> </select>" +
     "</div> " +
-    "<input type = 'button' value = 'Reply' onclick='replyTweet()'/>");
+    "<input type = 'button' value = 'Reply' onclick='replyToTweet( " + tweetId + ") '/>");
 
     dijit.byId("replyPopUp").show();
+}
+
+function replyToTweet(replyTo) {
+    var reply = dojo.byId('reply');
+    var tweetContent = reply.value;
+    if( tweetContent == null || tweetContent.trim() == '' )return;
+    if( tweetContent.length > 140 ) {
+        alert( 'You cannot tweet more than 140 characters' );
+        return;
+    }
+
+    $.ajax({
+           type : "POST",
+           url : "tweet/replyToTweet",
+           data : { "tweetContent" : tweetContent ,  "replyTo" : replyTo } ,
+           success : function( data ){
+                prependTweet_o(data);
+               dijit.byId("replyPopUp").hide();
+           }
+    });
 }

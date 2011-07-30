@@ -16,6 +16,7 @@ import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -61,5 +62,12 @@ public class TweetController {
     @RequestMapping( value = "/tweet/deleteFavorite" , method = RequestMethod.POST ) @ResponseBody // Ajax call
     public static void deleteFavorite( @RequestParam String tweetId , HttpSession session ){
         UserTweetList.deleteFavorite( tweetId , session.getAttribute("userId").toString() );
+    }
+
+    @RequestMapping( value = "/tweet/replyToTweet" , method = RequestMethod.POST )
+    @ResponseBody
+    public static Tweet replyToTweet(String tweetContent,String replyTo,HttpSession session) {
+        Tweet tweet = UserTweetList.replyToTweet( tweetContent , replyTo , session.getAttribute("userId").toString() );
+        return tweet;
     }
 }

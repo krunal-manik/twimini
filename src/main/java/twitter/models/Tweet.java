@@ -119,4 +119,12 @@ public class Tweet {
         ret.put("username", username);
         return ret.toString();
     }
+
+    public int getInReplyTo() {
+        return inReplyTo;
+    }
+
+    public void setInReplyTo( int inReplyTo ) {
+        this.inReplyTo = inReplyTo;
+    }
 }

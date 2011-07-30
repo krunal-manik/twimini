@@ -35,6 +35,7 @@ public class UserTweetList {
             ret.setUserId( rs.getString( "user_id" ) );
             ret.setTweetedBy( rs.getInt( "tweeted_by" ) );
             ret.setUsername( rs.getString( "username" ) );
+            ret.setInReplyTo( rs.getInt("in_reply_to"));
             return ret;
         }
     };
@@ -51,7 +52,8 @@ public class UserTweetList {
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
 
             ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
-                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id , T.in_reply_to as in_reply_to " +
+                    "FROM tweets as T INNER JOIN user as U " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ? " ,
                     UserTweetList.newsFeedMapper , userId , tweetId );
         }
@@ -78,7 +80,8 @@ public class UserTweetList {
         List<Tweet> ret = null;
         try{
             ret = db.query("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
-                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id FROM tweets as T INNER JOIN user as U " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to " +
+                    "FROM tweets as T INNER JOIN user as U " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp DESC" ,
                     UserTweetList.newsFeedMapper , userId );
             if (favoriter != null) {
@@ -126,12 +129,11 @@ public class UserTweetList {
         List<Tweet> ret = null;
         try{
             ret = db.query("SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
-                    "U.name as name ,U.username as username, U.user_id as user_id " +
+                    "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to " +
                     "FROM tweets as T INNER JOIN user as U ON T.tweeted_by = U.user_id " +
-                    "WHERE T.tweeted_by in (" +
-                    "select followed from follower_followed where follower = ?" +
-                    "UNION " +
-                    "select user_id from user where user_id = ? ) " +
+                    "WHERE " +
+                    "((T.tweeted_by in (select followed from follower_followed where follower = ?) AND T.in_reply_to IS NULL) " +
+                    "OR T.tweeted_by = ? ) " +
                     "ORDER BY timestamp DESC",
                 UserTweetList.newsFeedMapper, userId , userId );
 
@@ -171,5 +173,23 @@ public class UserTweetList {
             return false;
         }
         return true;
+    }
+
+    public static Tweet replyToTweet( String tweetContent, String inReplyToTweetId , String userId ) {
+        Tweet ret = new Tweet();
+        try{
+            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to) VALUES ( ? , ? , NOW() , ? )" ,userId , tweetContent , inReplyToTweetId );
+            int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
+
+            ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id , T.in_reply_to as in_reply_to " +
+                    "FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ? " ,
+                    UserTweetList.newsFeedMapper , userId , tweetId );
+        }
+        catch( EmptyResultDataAccessException ex ){
+            ex.printStackTrace();
+        }
+        return ret;
     }
 }
