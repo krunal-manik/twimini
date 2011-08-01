@@ -296,6 +296,7 @@ a{
 }
 
 #tagging_dropdown, #tagging_dropdown_dialog {
+    display: none;
     position:absolute;
     z-index:25;
     top:65px;

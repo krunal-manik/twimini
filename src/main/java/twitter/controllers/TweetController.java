@@ -1,5 +1,6 @@
 package twitter.controllers;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hsqldb.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -12,13 +13,12 @@ import org.springframework.web.servlet.ModelAndView;
 import twitter.models.Tweet;
 import twitter.models.User;
 import twitter.services.Follow;
+import twitter.services.Mention;
+import twitter.services.UserAuthentication;
 import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,8 +35,45 @@ public class TweetController {
 
     @RequestMapping( value = "/tweet/addTweet" ) @ResponseBody // Ajax call
     public Tweet addTweet( @RequestParam String tweetContent , HttpSession session ){
-        Tweet t = UserTweetList.addTweet( tweetContent , session.getAttribute("userId").toString() );
+        Set<User> tags = searchTags(tweetContent);
+        Tweet t = UserTweetList.addTweet( escapeHTML(tweetContent) , session.getAttribute("userId").toString() );
+        for (Object u : tags.toArray()) {
+            User user = (User) u;
+            Mention.mentionUserInTweet(user.getUserId(), t.getTweetId());
+        }
         return t;
+    }
+
+    private String escapeHTML(String tweetContent) {
+        String[] parts = tweetContent.split("@");
+        tweetContent = StringEscapeUtils.escapeHtml(parts[0]);
+        for (int i = 1; i < parts.length; i++) {
+            String toLink;
+            String toEscape;
+            if (parts[i].indexOf(" ") == -1) {
+                toLink = parts[i];
+                toEscape = "";
+            } else {
+                toLink = parts[i].substring(0, parts[i].indexOf(" "));
+                toEscape = parts[i].substring(parts[i].indexOf(" "));
+            }
+            tweetContent += "<a href=\"/" + toLink + "\">" + toLink + "</a>" + StringEscapeUtils.escapeHtml(toEscape);
+        }
+        return tweetContent;
+    }
+
+    private Set<User> searchTags(String tweetContent) {
+        Set<User> setOfTags = new HashSet<User>();
+        String[] parts = tweetContent.split("@");
+        System.out.println("TAGS -> ");
+        for (int i = 1; i < parts.length; i++) {
+            String toTag = parts[i].split(" ")[0];
+            User taggedUser = UserAuthentication.getUserByUsername(toTag);
+            if (taggedUser != null) {
+                setOfTags.add(taggedUser);
+            }
+        }
+        return setOfTags;
     }
 
 

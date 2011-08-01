@@ -1,5 +1,7 @@
 package twitter.controllers;
 
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.hsqldb.Session;
 import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
@@ -17,6 +21,7 @@ import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
 import javax.swing.plaf.multi.MultiViewportUI;
+import javax.xml.transform.Source;
 import java.io.*;
 import java.util.Hashtable;
 import java.util.List;
@@ -75,7 +80,28 @@ public class UserController {
                                 @RequestParam("password") String password ,
                                 @RequestParam("name") String name ,
                                 @RequestParam("email") String email ,
+//                                @RequestParam("recaptcha_challenge_field") String challenge,
+//                                @RequestParam("recaptcha_response_field") String response,
                                 HttpSession session ){
+//        String remoteAddr = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+//                                        .getRequest().getRemoteAddr();
+//        System.out.println(remoteAddr);
+//        System.out.println(challenge);
+//        System.out.println(response);
+//        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+//
+//        // Probably don't want to hardcode your private key here but
+//        // just to get it working is OK...
+//        reCaptcha.setPrivateKey("6Lcnr8YSAAAAAMrqJspiBayv9TRwf1py4qsrzITZ");
+//
+//        ReCaptchaResponse reCaptchaResponse =
+//        reCaptcha.checkAnswer(remoteAddr, challenge, response);
+//
+//        if (reCaptchaResponse.isValid()) {
+//              System.out.println("Answer was entered correctly!");
+//        } else {
+//            System.out.println("Answer is wrong");
+//        }
 
         String registerToken = getRandomToken();
         UserAuthentication.registerTemporaryUser( username , password , name , email , registerToken );
@@ -120,6 +146,7 @@ public class UserController {
 
     @RequestMapping("/search_user") @ResponseBody
     public List<User> search_user(HttpSession session, @RequestParam final String pattern) {
+        System.out.println("session userId is null -> " + session.getAttribute("userId") == null);
         List<User> userList = Follow.allUsersListbyPattern(pattern, session.getAttribute("userId").toString());
         return userList;
     }
@@ -210,22 +237,46 @@ public class UserController {
     */
 
     @RequestMapping( value = "/email" , method = RequestMethod.POST )
-    public ModelAndView test( @RequestParam String email ){
-          User user = UserAuthentication.getPassword( email );
-          if( user == null ) {
-              return new ModelAndView( "/error404" );
-          }
-          String token = getRandomToken();
-          UserAuthentication.insertToken( user , token );
-          emailSender.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
-                  String.format( "Hi %s!\n" +
-                          "It seems you have lost your password.But no worries, you can reset your password." +
-                          "Just click the link below to activate." +
-                          "http://localhost:8080/%s/changePassword?token=%s\n" +
-                          "\nRegards,\n" +
-                          "Team Twitter\n" , user.getUsername() , user.getUsername() , token ) );
-          ModelAndView mv = new ModelAndView("/login");
-          return mv;
+    public ModelAndView test( @RequestParam String email,
+                                @RequestParam("recaptcha_challenge_field") String challenge,
+                                @RequestParam("recaptcha_response_field") String response,
+                                HttpSession session ){
+        String remoteAddr = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                                        .getRequest().getRemoteAddr();
+        System.out.println(remoteAddr);
+        System.out.println(challenge);
+        System.out.println(response);
+        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+
+        // Probably don't want to hardcode your private key here but
+        // just to get it working is OK...
+        reCaptcha.setPrivateKey("6Lfwr8YSAAAAADODckf9OR9xR9CXHD3btgFe7mLN");
+
+        ReCaptchaResponse reCaptchaResponse =
+        reCaptcha.checkAnswer(remoteAddr, challenge, response);
+
+        if (reCaptchaResponse.isValid()) {
+            System.out.println("VALID !!!!!!!!!!");
+            User user = UserAuthentication.getPassword( email );
+            if( user == null ) {
+            return new ModelAndView( "/error404" );
+            }
+            String token = getRandomToken();
+            UserAuthentication.insertToken( user , token );
+            emailSender.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
+            String.format( "Hi %s!\n" +
+                            "It seems you have lost your password.But no worries, you can reset your password." +
+                            "Just click the link below to activate." +
+                            "http://localhost:8080/%s/changePassword?token=%s\n" +
+                            "\nRegards,\n" +
+                            "Team Twitter\n" , user.getUsername() , user.getUsername() , token ) );
+            ModelAndView mv = new ModelAndView("/login");
+            return mv;
+        } else {
+            System.out.println("Invalid !!!!");
+            ModelAndView mv = new ModelAndView("reset_password");
+            return mv;
+        }
     }
 
     @RequestMapping( value = "/{username}/changePassword" , method = RequestMethod.GET )

@@ -1,4 +1,3 @@
-
 function changeFollowStatus(userId) {
     var buttonName = document.getElementById("follow" + userId);
     var button_Name = document.getElementById("follow_" + userId);
@@ -159,7 +158,6 @@ function crt_pos (ctrl) {
 function givesuggestions(Event, Object, TagBox) {
 
     if (tag_mode) {
-        dojo.require("dijit.form.MultiSelect");
         var to_search = Object.value.substring(0, crt_pos(Object)).split('@')[Object.value.substring(0, crt_pos(Object)).split('@').length - 1];
         $.ajax({
             type : "POST",
@@ -183,10 +181,6 @@ function givesuggestions(Event, Object, TagBox) {
                     }
                     sel.appendChild(c);
                 }
-                new dijit.form.MultiSelect({
-                    name: 'dynamic'
-                },
-                sel);
             }
         });
     }
@@ -302,18 +296,18 @@ function loadContactImporter() {
     }
 }
 
-
+dojo.require("dijit.Dialog");
 function reply(tweetId) {
     dijit.byId("replyPopUp").attr("title", "Reply to Tweet ID " + tweetId);
-    dijit.byId("replyPopUp").attr("content",
+    var content =
     "<div style = 'position:relative'>" +
         "<textarea id = 'reply' onkeypress='return imposeMaxLength(event, this, 140, dojo.byId(\"tagging_dropdown_dialog\"));' " +
         "name = 'tweetContent' value = '' class='span-16' placeholder='tweet !!!'" +
         "style='resize:none; height:60px;' onkeyup = 'givesuggestions(event, this, dojo.byId(\"tagging_dropdown_dialog\"));'></textarea>" +
         "<select id='tagging_dropdown_dialog' style='display:none' class='dropdown_select'> </select>" +
     "</div> " +
-    "<input type = 'button' value = 'Reply' onclick='replyToTweet( " + tweetId + ") '/>");
-
+    "<input type = 'button' value = 'Reply' onclick='replyToTweet( "+ tweetId + ")'/>";
+    dijit.byId("replyPopUp").attr("content", content);
     dijit.byId("replyPopUp").show();
 }
 

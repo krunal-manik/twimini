@@ -1,5 +1,6 @@
 package twitter.services;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -48,7 +49,7 @@ public class UserTweetList {
     public static Tweet addTweet( String tweet , String userId ) {
         Tweet ret = new Tweet();
         try{
-            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,userId , tweet  );
+            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,userId , tweet );
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
 
             ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +

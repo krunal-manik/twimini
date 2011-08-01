@@ -5,18 +5,26 @@
     <head>
         <%@include file="/static/includes.txt" %>
         <script type="text/javascript">
+            dojo.require("dijit.form.MultiSelect");
             dojo.require("dijit.Dialog");
-//            dojo.addOnLoad(function() {
-//                alert(dijit.byId("replyPopUp").title);
-//                var replyPopUp = dijit.byId("replyPopUp");
-//                dojo.connect(dojo.byId("reply_52"), "onClick", replyPopUp, "show");
-//            });
+            dojo.addOnLoad(function() {
+                new dijit.form.MultiSelect ({
+                        name: 'dynamic'
+                    },
+                    dojo.byId("tagging_dropdown")
+                );
+                new dijit.form.MultiSelect ({
+                        name: 'dynamic2'
+                    },
+                    dojo.byId("tagging_dropdown_dialog")
+                );
+            });
         </script>
 
     </head>
 
-    <body class="claro">
-        <div id="replyPopUp" title="Colorful" dojoType="dijit.Dialog" style="height:300;display:none">
+    <body class=" claro ">
+        <div id="replyPopUp" title="Colorful" dojoType="dijit.Dialog">
             My background color is Green
         </div>
 
