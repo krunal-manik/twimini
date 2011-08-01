@@ -1,3 +1,18 @@
+dojo.require("dijit.Dialog");
+dojo.require("js.tweetContainerWidget");
+function addslashes( str ) {
+    return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
+}
+
+function appendTweetsToNewsFeedContainer(data) {
+    alert(data.tweetId);
+    var c = new js.tweetContainerWidget(data);
+    alert( 'here' );
+    var domNode = dojo.byId("newsFeedContainer");
+    dojo.place(domNode,c,"first");
+}
+
+
 function changeFollowStatus(userId) {
     var buttonName = document.getElementById("follow" + userId);
     var button_Name = document.getElementById("follow_" + userId);
@@ -59,10 +74,6 @@ function changeFollowStatusForDivs(userId) {
     }
 }
 
-
-
-
-
 function addTweet(){
     var tweetContent = document.getElementById("tweet").value;
     if( tweetContent == null || tweetContent.trim() == '' )return;
@@ -70,15 +81,15 @@ function addTweet(){
         alert( 'You cannot tweet more than 140 characters' );
         return;
     }
-    $.ajax({
-           type : "POST",
+    dojo.xhrPost({
            url : "tweet/addTweet",
-           data : "tweetContent=" + tweetContent ,
-           success : function( data ){
-               document.getElementById("tweet").value = "";
-                var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
-                var tweetHTML = $(html);
-                $("#tweetsList_o").prepend(tweetHTML.hide().fadeIn( 'slow' ) );
+           content : {tweetContent:tweetContent},
+           handleAs : 'json',
+           load : function(data) {
+               appendTweetsToNewsFeedContainer(data);
+           },
+           error: function(data) {
+               alert( 'error ' + data );
            }
     });
 }
@@ -258,33 +269,6 @@ function checkPasswords( form ) {
     return true;
 }
 
-function toggleFavorite( tweetId ) {
-
-    if ( document.getElementById('favorite_' + tweetId).innerHTML == "Favorite" ) {
-        $.ajax({
-            type : "POST",
-            url : "tweet/markFavorite",
-            data : "tweetId=" + tweetId ,
-            success : function(){
-                document.getElementById('favorite_' + tweetId).innerHTML = "Unfavorite";
-                $('#favorite_' + tweetId).removeClass("fav");
-                $('#favorite_' + tweetId).addClass("unfav");
-            }
-        });
-    }
-    else {
-        $.ajax({
-            type : "POST",
-            url : "tweet/deleteFavorite",
-            data : "tweetId=" + tweetId ,
-            success : function(){
-                document.getElementById('favorite_' + tweetId).innerHTML = "Favorite";
-                $('#favorite_' + tweetId).removeClass("unfav");
-                $('#favorite_' + tweetId).addClass("fav");
-            }
-        });
-    }
-}
 
 function loadContactImporter() {
     alert( 'here' );

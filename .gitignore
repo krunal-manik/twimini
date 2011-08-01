@@ -3,3 +3,4 @@ twimini.iml
 target/*
 src/main/webapp/static/photo/*
 src/main/webapp/static/js/dojo/*
+src/main/webapp/static/dojo widgets/*

@@ -48,19 +48,11 @@
                         </form>
                     <div id="newsFeedContainer">
                         Newsfeed :
-                        <div id="tweetsList_o">
-                            <c:forEach var='item' items='${newsFeed}'>
-                                <jsp:include page="single_tweet.jsp">
-                                    <jsp:param name="tweetId" value="${item.tweetId}" />
-                                    <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
-                                    <jsp:param name="tweet" value="${item.tweet}" />
-                                    <jsp:param name="timestamp" value="${item.timestamp}" />
-                                    <jsp:param name="name" value="${item.name}" />
-                                    <jsp:param name="username" value="${item.username}" />
-                                    <jsp:param name="isFavorite" value="${item.isFavorite}" />
-                                </jsp:include>
-                            </c:forEach>
-                        </div>
+                        <c:forEach var='item' items='${newsFeed}'>
+                            <div data-dojo-type="js.tweetContainerWidget" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',
+                            timestamp: '${item.timestamp}', name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}'">
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
 
@@ -69,6 +61,7 @@
             </div>
         </div>
         </div>
+
 
     </body>
 </html>

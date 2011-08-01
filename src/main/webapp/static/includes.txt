@@ -1,12 +1,3 @@
-
-
-        <!-- jQuery and ejs scripts -->
-        <script type="text/javascript" src="/static/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
-        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
-        <!--script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js" djConfig="parseOnLoad: true"></script-->
-        <script type="text/javascript" src="/static/js/functions.js"></script>
-
         <!-- favicon -->
         <link href='/static/images/twitter_favicon.png' rel='shortcut icon' type='image/x-icon'/>
         <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/claro/claro.css"/>
@@ -19,4 +10,16 @@
 
         <!-- base css -->
         <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+
+        <script src="/static/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad:false,modulePaths:{js:'/static/js'}"></script>
+        <script type="text/javascript" src="/static/js/functions.js"></script>
+
+        <!-- jQuery and ejs scripts -->
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
+        <script type="text/javascript">
+            dojo.ready( function() {
+               dojo.parser.parse();
+            });
+        </script>
 
