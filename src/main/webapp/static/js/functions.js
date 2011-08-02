@@ -6,6 +6,7 @@ function addslashes( str ) {
 }
     function addTags(tweetContent) {
         var parts = tweetContent.split("@");
+
         tweetContent = (parts[0]);
         for (var i = 1; i < parts.length; i++) {
             var toLink;
@@ -29,7 +30,6 @@ function filterEscapeCharacters(str) {
     str = str.replace(/[']/g, '&#39;');
     str = str.replace(/["]/g, '&quot;');
     str = str.replace(/[\n]/g, '<br>');
-    str = str.replace(/[ ]/g, '&nbsp;');
     return str;
 }
 function unEscapeCharacters(str) {
