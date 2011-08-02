@@ -49,7 +49,7 @@
                     <div id="newsFeedContainer">
                         Newsfeed :
                         <c:forEach var='item' items='${newsFeed}'>
-                            <div data-dojo-type="js.tweetContainerWidget" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',
+                            <div data-dojo-type="js.tweetContainer" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',
                             timestamp: '${item.timestamp}', name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}'">
                             </div>
                         </c:forEach>

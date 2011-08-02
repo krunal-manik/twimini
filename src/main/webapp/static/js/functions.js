@@ -1,15 +1,26 @@
 dojo.require("dijit.Dialog");
-dojo.require("js.tweetContainerWidget");
+dojo.require("js.tweetContainer");
+dojo.require("js.tweetContainerWithoutOptions");
 function addslashes( str ) {
     return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
 }
-
+function filterEscapeCharacters(str) {
+    str = str.replace(/[&]/g, '&amp;');
+    str = str.replace(/[<]/g, '&lt;');
+    str = str.replace(/[>]/g, '&gt;');
+    str = str.replace(/[']/g, '&#39;');
+    str = str.replace(/["]/g, '&quot;');
+    str = str.replace(/[\n]/g, '<br>');
+    str = str.replace(/[ ]/g, '&nbsp;');
+    return str;
+}
 function appendTweetsToNewsFeedContainer(data) {
     alert(data.tweetId);
-    var c = new js.tweetContainerWidget(data);
+    var c = new js.tweetContainer(data);
     alert( 'here' );
     var domNode = dojo.byId("newsFeedContainer");
-    dojo.place(domNode,c,"first");
+    dojo.parser.parse(c);
+    dojo.prependTo(domNode,c);
 }
 
 
@@ -280,7 +291,6 @@ function loadContactImporter() {
     }
 }
 
-dojo.require("dijit.Dialog");
 function reply(tweetId) {
     dijit.byId("replyPopUp").attr("title", "Reply to Tweet ID " + tweetId);
     var content =

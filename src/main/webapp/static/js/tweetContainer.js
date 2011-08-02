@@ -1,11 +1,11 @@
-dojo.provide("js.tweetContainerWidget");
+dojo.provide("js.tweetContainer");
 dojo.provide("js.functions");
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
 dojo.require("dojo.cache");
 dojo.require("dijit.Dialog");
 
-dojo.declare("js.tweetContainerWidget",
+dojo.declare("js.tweetContainer",
         [dijit._Widget,dijit._Templated],{
 
             constructor : function(args) {
@@ -30,6 +30,12 @@ dojo.declare("js.tweetContainerWidget",
                 dojo.connect( this.replyNode , "onclick" , function() {
                     reply(domNode.args.tweetId);
                 });
+            },
+            getAttribute : function() {
+                return this.args;
+            },
+            getSelf : function() {
+                return this;
             },
             _toggleFavorite : function(domNode) {
 

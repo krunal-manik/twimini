@@ -35,15 +35,10 @@
                             ${currentUsername}'s Tweets :
                             <div id="tweetsList">
                                 <c:forEach var='item' items='${userTweets}'>
-                                    <jsp:include page="single_tweet.jsp">
-                                        <jsp:param name="tweetId" value="${item.tweetId}" />
-                                        <jsp:param name="tweetedBy" value="${item.tweetedBy}" />
-                                        <jsp:param name="tweet" value="${item.tweet}" />
-                                        <jsp:param name="timestamp" value="${item.timestamp}" />
-                                        <jsp:param name="name" value="${item.name}" />
-                                        <jsp:param name="username" value="${item.username}" />
-                                        <jsp:param name="isFavorite" value="${item.isFavorite}" />
-                                    </jsp:include>
+                                 <div data-dojo-type="<%= session.getAttribute("userId") != null ? "js.tweetContainer" : "js.tweetContainerWithoutOptions"%>"
+                                      data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',
+                                 timestamp: '${item.timestamp}', name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}'">
+                                 </div>
                                 </c:forEach>
                             </div>
                         </div>
