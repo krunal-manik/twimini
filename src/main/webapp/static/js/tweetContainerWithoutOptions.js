@@ -21,6 +21,9 @@ dojo.declare("js.tweetContainerWithoutOptions",
             },
             getAttribute : function() {
                 return this.args;
+            },
+            appendChild : function() {
+
             }
         }
 );

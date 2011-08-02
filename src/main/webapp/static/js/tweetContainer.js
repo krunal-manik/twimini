@@ -14,8 +14,9 @@ dojo.declare("js.tweetContainer",
             templateString : dojo.cache( "js/widgets", "tweetContainer.html"),
             postCreate : function() {
                 this.inherited(arguments);
+                this.args.isFavorite = this.args.isFavorite.toString();
                 this.args.tweet = addslashes(this.args.tweet);
-                if( this.args.isFavorite == "false" ) {
+                if( this.args.isFavorite ==  'false' ) {
                     dojo.addClass( this.favoriteNode , "fav" );
                     this.favoriteNode.innerHTML = "Favorite";
                 }
@@ -33,6 +34,10 @@ dojo.declare("js.tweetContainer",
             },
             getAttribute : function() {
                 return this.args;
+            },
+            appendChild : function() {
+                alert(' in append child here');
+                dojo.parser.parse(this);
             },
             getSelf : function() {
                 return this;

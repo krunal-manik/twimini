@@ -15,12 +15,8 @@ function filterEscapeCharacters(str) {
     return str;
 }
 function appendTweetsToNewsFeedContainer(data) {
-    alert(data.tweetId);
-    var c = new js.tweetContainer(data);
-    alert( 'here' );
-    var domNode = dojo.byId("newsFeedContainer");
-    dojo.parser.parse(c);
-    dojo.prependTo(domNode,c);
+    var widget = new js.tweetContainer(data);
+    widget.placeAt( dojo.byId("newsFeedContainer") , "first" );
 }
 
 
@@ -98,6 +94,7 @@ function addTweet(){
            handleAs : 'json',
            load : function(data) {
                appendTweetsToNewsFeedContainer(data);
+               document.getElementById("tweet").value = '';
            },
            error: function(data) {
                alert( 'error ' + data );
