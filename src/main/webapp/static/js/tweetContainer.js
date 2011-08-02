@@ -14,23 +14,33 @@ dojo.declare("js.tweetContainer",
             templateString : dojo.cache( "js/widgets", "tweetContainer.html"),
             postCreate : function() {
                 this.inherited(arguments);
+                this.args.tweetOptions = this.args.tweetOptions.toString();
                 this.args.isFavorite = this.args.isFavorite.toString();
                 this.tweetNode.innerHTML = addTags(filterEscapeCharacters(this.args.tweet));
-                if( this.args.isFavorite ==  'false' ) {
-                    dojo.addClass( this.favoriteNode , "fav" );
-                    this.favoriteNode.innerHTML = "Favorite";
-                }
-                else {
-                    dojo.addClass( this.favoriteNode , "unfav" );
-                    this.favoriteNode.innerHTML = "Unfavorite";
-                }
                 var domNode = this;
-                dojo.connect( this.favoriteNode , "onclick" , function() {
-                    domNode._toggleFavorite(domNode);
-                });
-                dojo.connect( this.replyNode , "onclick" , function() {
-                    reply(domNode.args.tweetId);
-                });
+                if( this.args.tweetOptions == 'true' ) {
+                    if( this.args.isFavorite ==  'false' ) {
+                        dojo.addClass( this.favoriteNode , "fav" );
+                        this.favoriteNode.innerHTML = "Favorite";
+                    }
+                    else {
+                        dojo.addClass( this.favoriteNode , "unfav" );
+                        this.favoriteNode.innerHTML = "Unfavorite";
+                    }
+                    dojo.connect( this.favoriteNode , "onclick" , function() {
+                        domNode._toggleFavorite(domNode);
+                    });
+                    dojo.connect( this.replyNode , "onclick" , function() {
+                        reply(domNode.args.tweetId);
+                    });
+                    dojo.addClass( this.favoriteNode , "display-inline" );
+                    dojo.addClass( this.replyNode , "display-inline" );
+                    dojo.addClass( this.retweetNode , "display-inline" );
+                } else {
+                    dojo.addClass( this.favoriteNode , "display-none" );
+                    dojo.addClass( this.replyNode , "display-none" );
+                    dojo.addClass( this.retweetNode , "display-none" );
+                }
             },
             getAttribute : function() {
                 return this.args;

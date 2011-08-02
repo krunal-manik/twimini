@@ -261,7 +261,6 @@ a{
 }
 
 .i {
-    display: inline-block;
     vertical-align: baseline;
     position:relative;
     height:20px;
@@ -330,5 +329,12 @@ a{
     font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
     text-decoration: none;
     vertical-align: middle;
+}
+
+.display-inline {
+    display: inline-block;
+}
+.display-none {
+    display: none;
 }
 

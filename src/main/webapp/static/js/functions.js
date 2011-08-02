@@ -1,6 +1,5 @@
 dojo.require("dijit.Dialog");
 dojo.require("js.tweetContainer");
-dojo.require("js.tweetContainerWithoutOptions");
 function addTags(tweetContent) {
    var parts = tweetContent.split("@");
 
@@ -49,6 +48,7 @@ function unEscapeCharacters(str) {
 }
 function appendTweetsToNewsFeedContainer(data) {
     data.tweet = unEscapeCharacters(data.tweet);
+    data.tweetOptions = "true";
     var widget = new js.tweetContainer(data);
     widget.placeAt( dojo.byId("newsFeedContainer") , "first" );
 }

@@ -39,8 +39,7 @@ import java.util.Map;
 public class FileUploadController {
 
     final SimpleJdbcTemplate db;
-    public static final String prefixPath = "C:\\Users\\rahul.pl\\twimini\\src\\main\\webapp\\";
-    public static final String tempPath = "C://photos/username.jpg";
+    public static final String prefixPath = "C:\\Users\\krunal.ma\\Desktop\\photos\\";
 
     @Autowired
     public FileUploadController(SimpleJdbcTemplate db) {
@@ -50,27 +49,27 @@ public class FileUploadController {
     @RequestMapping(value = "/testing", method = RequestMethod.POST)
     public ModelAndView uploadPost(HttpSession session, @RequestParam MultipartFile file) throws Exception {
 
+        String photoPath = prefixPath + session.getAttribute("username").toString() + ".jpg";
+        ModelAndView mv = new ModelAndView("/testing");
         try {
-            InputStream in = file.getInputStream();
-            System.out.println(file.getName());
-            System.out.println(file.getOriginalFilename());
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(prefixPath + "\\static\\photo\\" + file.getOriginalFilename()));
+            File photo = new File(photoPath);
 
-            int bytesRead = 0;
-            byte[] buffer = new byte[8192];
-
-            while ((bytesRead = in.read(buffer, 0, 8192)) != -1) {
-                out.write(buffer, 0, bytesRead);
+            if( photo.exists() ) {
+                photo.delete();
             }
-            in.close();
-            out.close();
+            photo.createNewFile();
+
+            if( !file.isEmpty() ) {
+                byte imagesBytes[] = file.getBytes();
+                FileOutputStream outputStream = new FileOutputStream(photo);
+                outputStream.write(imagesBytes);
+                outputStream.close();
+                mv.addObject( "image", "/photos/" + session.getAttribute("username").toString() + ".jpg" );
+            }
         } catch (Exception ex) {
-            System.out.println("Bug in image upload :((");
+            System.out.println( "Bug in fileupload :(" );
             ex.printStackTrace();
         }
-
-        ModelAndView mv = new ModelAndView("/testing");
-        mv.addObject("image", "/static/photo/" + file.getOriginalFilename());
         return mv;
     }
 

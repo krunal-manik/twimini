@@ -36,9 +36,10 @@
                             ${currentUsername}'s Tweets :
                             <div id="tweetsList">
                                 <c:forEach var='item' items='${userTweets}'>
-                                 <div data-dojo-type="<%= session.getAttribute("userId") != null ? "js.tweetContainer" : "js.tweetContainerWithoutOptions"%>"
+                                 <div data-dojo-type="js.tweetContainer"
                                       data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',
-                                 timestamp: '${item.timestamp}', name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}'">
+                                 timestamp: '${item.timestamp}', name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}',
+                                 tweetOptions: '<%= session.getAttribute("userId") != null %>'">
                                  </div>
                                 </c:forEach>
                             </div>

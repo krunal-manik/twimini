@@ -12,7 +12,7 @@
 	    <input type="submit" name="submit">
     </form>
 
-    <img src = "${image}"/>
+    <img src = "${image}" height="150" width="150"/>
     <div id="gmail-contacts-importer">
 
         <input type="button" onclick="loadContactImporter();" value="Import Contacts"/>

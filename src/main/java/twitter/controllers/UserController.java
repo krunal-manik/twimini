@@ -82,28 +82,7 @@ public class UserController {
                                 @RequestParam("password") String password ,
                                 @RequestParam("name") String name ,
                                 @RequestParam("email") String email ,
-//                                @RequestParam("recaptcha_challenge_field") String challenge,
-//                                @RequestParam("recaptcha_response_field") String response,
                                 HttpSession session ){
-//        String remoteAddr = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-//                                        .getRequest().getRemoteAddr();
-//        System.out.println(remoteAddr);
-//        System.out.println(challenge);
-//        System.out.println(response);
-//        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-//
-//        // Probably don't want to hardcode your private key here but
-//        // just to get it working is OK...
-//        reCaptcha.setPrivateKey("6Lcnr8YSAAAAAMrqJspiBayv9TRwf1py4qsrzITZ");
-//
-//        ReCaptchaResponse reCaptchaResponse =
-//        reCaptcha.checkAnswer(remoteAddr, challenge, response);
-//
-//        if (reCaptchaResponse.isValid()) {
-//              System.out.println("Answer was entered correctly!");
-//        } else {
-//            System.out.println("Answer is wrong");
-//        }
 
         String registerToken = getRandomToken();
         UserAuthentication.registerTemporaryUser( username , password , name , email , registerToken );
@@ -230,16 +209,6 @@ public class UserController {
         return new ModelAndView( "/reset_password" );
     }
 
-    /*
-    @RequestMapping( value = "/email" , method = RequestMethod.POST )
-    public ModelAndView test( @RequestParam String email ){
-          String password = UserAuthentication.getPassword( email );
-          ee.sendMail( "manikkrunal@gmail.com" , email , "Password recovery" ,
-                  String.format( "http://localhost:8080 \nEmail : %s\nPassword : %s\n" , email , password ) );
-          ModelAndView mv = new ModelAndView("/login");
-          return mv;
-    }
-    */
 
     @RequestMapping( value = "/email" , method = RequestMethod.POST )
     public ModelAndView test( @RequestParam String email,
