@@ -175,7 +175,6 @@ function crt_pos (ctrl) {
 };
 
 function givesuggestions(Event, Object, TagBox) {
-
     if (tag_mode) {
         var to_search = Object.value.substring(0, crt_pos(Object)).split('@')[Object.value.substring(0, crt_pos(Object)).split('@').length - 1];
         $.ajax({
@@ -236,6 +235,66 @@ function search(Event, Object) {
 }
 */
 
+function byTags(tweetContent) {
+    var parts = tweetContent.split("@");
+    tweetContent = StringEscapeUtils.escapeHtml(parts[0]);
+    for (var i = 1; i < parts.length; i++) {
+        var toLink;
+        var toEscape;
+        if (parts[i].indexOf(" ") == -1) {
+            toLink = parts[i];
+            toEscape = "";
+        } else {
+            toLink = parts[i].substring(0, parts[i].indexOf(" "));
+            toEscape = parts[i].substring(parts[i].indexOf(" "));
+        }
+        tweetContent += "<a href=\"/" + toLink + "\">" + toLink + "</a>" + (toEscape);
+    }
+    return tweetContent;
+}
+
+
+function alertkey(e) {
+  if( !e ) {
+    //if the browser did not pass the event information to the
+    //function, we will have to obtain it from the event register
+    if( window.event ) {
+      //Internet Explorer 8-
+      e = window.event;
+    } else {
+      //total failure, we have no way of referencing the event
+      return;
+    }
+  }
+  if( typeof( e.keyCode ) == 'number'  ) {
+    //DOM
+    e = e.keyCode;
+  } else if( typeof( e.which ) == 'number' ) {
+    //NS 4 compatible, including many older browsers
+    e = e.which;
+  } else if( typeof( e.charCode ) == 'number'  ) {
+    //also NS 6+, Mozilla 0.9+
+    e = e.charCode;
+  } else {
+    //total failure, we have no way of obtaining the key code
+    return;
+  }
+  window.alert('The key pressed has keycode ' + e +
+    ' and is key ' + String.fromCharCode( e ) );
+}
+
+function suggestionDivChange(Event, Object, MaxLen, TagBox) {
+        if (keycode.getKeyCode(Event)==32) {
+            tag_mode = false;
+            TagBox.style.display = "none";
+            selected_option = 0;
+        } else if (Event.keyCode==38) {
+            selected_option--;
+        } else if (Event.keyCode==40) {
+            selected_option++;
+        }
+}
+
 function imposeMaxLength(Event, Object, MaxLen, TagBox) {
         if  (String.fromCharCode(Event.which) == "@") {
             selected_option = 0;
@@ -248,15 +307,6 @@ function imposeMaxLength(Event, Object, MaxLen, TagBox) {
                 Object.value.substring(0, crt_pos(Object)).substring(0, Object.value.substring(0, crt_pos(Object)).lastIndexOf('@') + 1) + to_change + Object.value.substring(crt_pos(Object), Object.value.length);
             TagBox.style.display = "none";
             selected_option = 0;
-            return false;
-        } else if (keycode.getKeyCode(Event)==32) {
-            tag_mode = false;
-            TagBox.style.display = "none";
-            selected_option = 0;
-        } else if (Event.keyCode==38) {
-            selected_option--;
-        } else if (Event.keyCode==40) {
-            selected_option++;
         }
         if (Event.keyCode==40||Event.keyCode==38) {
             return false;

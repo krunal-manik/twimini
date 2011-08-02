@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
+import twitter.controllers.TweetController;
 import twitter.models.Tweet;
 import twitter.models.User;
 
@@ -31,7 +32,7 @@ public class UserTweetList {
             Tweet ret = new Tweet();
             ret.setTweetId( rs.getInt( "tweet_id" ) );
             ret.setName( rs.getString( "name" ) );
-            ret.setTweet( rs.getString( "tweet" ) );
+            ret.setTweet(TweetController.addTags(TweetController.escapeHTML(rs.getString( "tweet" ))));
             ret.setTimestamp( rs.getString( "timestamp" ) );
             ret.setUserId( rs.getString( "user_id" ) );
             ret.setTweetedBy( rs.getInt( "tweeted_by" ) );
@@ -49,7 +50,12 @@ public class UserTweetList {
     public static Tweet addTweet( String tweet , String userId ) {
         Tweet ret = new Tweet();
         try{
-            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,userId , tweet );
+            Set<User> tags = TweetController.searchTags(tweet);
+                for (Object u : tags.toArray()) {
+            User user = (User) u;
+            Mention.mentionUserInTweet(user.getUserId(), ret.getTweetId());
+        }
+            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,userId , tweet);
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
 
             ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
@@ -179,7 +185,7 @@ public class UserTweetList {
     public static Tweet replyToTweet( String tweetContent, String inReplyToTweetId , String userId ) {
         Tweet ret = new Tweet();
         try{
-            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to) VALUES ( ? , ? , NOW() , ? )" ,userId , tweetContent , inReplyToTweetId );
+            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to) VALUES ( ? , ? , NOW() , ? )" ,userId , TweetController.escapeHTML(tweetContent) , inReplyToTweetId );
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
 
             ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +

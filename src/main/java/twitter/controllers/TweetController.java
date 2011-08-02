@@ -35,18 +35,17 @@ public class TweetController {
 
     @RequestMapping( value = "/tweet/addTweet" ) @ResponseBody // Ajax call
     public Tweet addTweet( @RequestParam String tweetContent , HttpSession session ){
-        Set<User> tags = searchTags(tweetContent);
-        Tweet t = UserTweetList.addTweet( escapeHTML(tweetContent) , session.getAttribute("userId").toString() );
-        for (Object u : tags.toArray()) {
-            User user = (User) u;
-            Mention.mentionUserInTweet(user.getUserId(), t.getTweetId());
-        }
+        Tweet t = UserTweetList.addTweet( tweetContent , session.getAttribute("userId").toString() );
         return t;
     }
 
-    private String escapeHTML(String tweetContent) {
+    public static String escapeHTML(String tweetContent) {
+        return StringEscapeUtils.escapeHtml(tweetContent);
+    }
+
+    public static String addTags(String tweetContent) {
         String[] parts = tweetContent.split("@");
-        tweetContent = StringEscapeUtils.escapeHtml(parts[0]);
+        tweetContent = (parts[0]);
         for (int i = 1; i < parts.length; i++) {
             String toLink;
             String toEscape;
@@ -57,12 +56,12 @@ public class TweetController {
                 toLink = parts[i].substring(0, parts[i].indexOf(" "));
                 toEscape = parts[i].substring(parts[i].indexOf(" "));
             }
-            tweetContent += "<a href=\"/" + toLink + "\">" + toLink + "</a>" + StringEscapeUtils.escapeHtml(toEscape);
+            tweetContent += "<a href=\"/" + toLink + "\">" + toLink + "</a>" + (toEscape);
         }
         return tweetContent;
     }
 
-    private Set<User> searchTags(String tweetContent) {
+    public static Set<User> searchTags(String tweetContent) {
         Set<User> setOfTags = new HashSet<User>();
         String[] parts = tweetContent.split("@");
         System.out.println("TAGS -> ");

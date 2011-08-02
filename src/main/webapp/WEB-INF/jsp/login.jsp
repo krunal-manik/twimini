@@ -50,8 +50,6 @@
                     <div class="span-4 last"> <input type="password" name="password" class="textbox" /> </div>
                     <div class="span-3 append-1"> Confirm password </div>
                     <div class="span-4 last"> <input type="password" name="password2" class="textbox" /> </div>
-                    <div class="span-8 border">
-                    </div>
                     <div class="span-3 prepend-5 last"> <input type="Submit" value="Sign up" class="signup_button"/> </div>
                 </form>
         </div>

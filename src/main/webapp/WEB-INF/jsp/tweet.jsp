@@ -36,9 +36,11 @@
                 <div class = "span-16">
                         <form name = "tweet_form">
                             <div style = "position:relative">
-                                <textarea id = "tweet" onkeypress="return imposeMaxLength(event, this, 140, dojo.byId('tagging_dropdown'));"
+                                <textarea id = "tweet" onkeydown="return imposeMaxLength(event, this, 140, dojo.byId('tagging_dropdown'));"
                                 name = "tweetContent" value = "" class="span-16" placeholder="tweet !!!"
-                                style="resize:none; height:60px;" onkeyup = "givesuggestions(event, this, dojo.byId('tagging_dropdown'));"></textarea>
+                                style="resize:none; height:60px;"
+                                onkeypress="suggestionDivChange(event, this, dojo.byId('tagging_dropdown'))"
+                                onkeyup = "givesuggestions(event, this, dojo.byId('tagging_dropdown'));"></textarea>
                                 <!--div id= "tagging_dropdown" class = "dropdown_box border" style = "display:none"></div-->
 
                                 <select id="tagging_dropdown" style="display:none" class="dropdown_select"> </select>
