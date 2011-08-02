@@ -24,8 +24,7 @@
     </head>
 
     <body class=" claro ">
-        <div id="replyPopUp" title="Colorful" dojoType="dijit.Dialog">
-            My background color is Green
+        <div id="replyPopUp" dojoType="dijit.Dialog">
         </div>
 
         <%@include file="/WEB-INF/jsp/header.jsp" %>

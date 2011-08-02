@@ -174,7 +174,7 @@ public class UserController {
         }
         List<Tweet> userTweetList = UserTweetList.userTweetList(userId, session_userId);
         for( Tweet tweet : userTweetList )
-            tweet.setTweet(StringEscapeUtils.escapeHtml( tweet.getTweet() ));
+            tweet.setTweet( StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml( tweet.getTweet() )));
         mv.addObject("userTweets", userTweetList );
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));

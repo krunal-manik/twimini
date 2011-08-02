@@ -1,27 +1,24 @@
 dojo.require("dijit.Dialog");
 dojo.require("js.tweetContainer");
 dojo.require("js.tweetContainerWithoutOptions");
-function addslashes( str ) {
-    return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
-}
-    function addTags(tweetContent) {
-        var parts = tweetContent.split("@");
+function addTags(tweetContent) {
+   var parts = tweetContent.split("@");
 
-        tweetContent = (parts[0]);
-        for (var i = 1; i < parts.length; i++) {
-            var toLink;
-            var toEscape;
-            if (parts[i].indexOf(" ") == -1) {
-                toLink = parts[i];
-                toEscape = "";
-            } else {
-                toLink = parts[i].substring(0, parts[i].indexOf(" "));
-                toEscape = parts[i].substring(parts[i].indexOf(" "));
-            }
-            tweetContent += "<a href=\"/" + toLink + "\">@" + toLink + "</a>" + (toEscape) ;
-        }
-        return tweetContent;
-    }
+   tweetContent = (parts[0]);
+   for (var i = 1; i < parts.length; i++) {
+       var toLink;
+       var toEscape;
+       if (parts[i].indexOf(" ") == -1) {
+           toLink = parts[i];
+           toEscape = "";
+       } else {
+           toLink = parts[i].substring(0, parts[i].indexOf(" "));
+           toEscape = parts[i].substring(parts[i].indexOf(" "));
+       }
+       tweetContent += "<a href=\"/" + toLink + "\">@" + toLink + "</a>" + (toEscape) ;
+   }
+   return tweetContent;
+}
 
 function filterEscapeCharacters(str) {
     str = str.replace(/[&]/g, '&amp;');

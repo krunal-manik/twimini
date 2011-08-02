@@ -7,8 +7,9 @@
     <%@include file="/static/includes.txt" %>
     </head>
 
-    <body>
-
+    <body class="claro">
+        <div id="replyPopUp" dojoType="dijit.Dialog">
+        </div>
         <% if( session.getAttribute("username") == null ) { %>
             <%@include file="/WEB-INF/jsp/signin_header.jsp" %>
         <% } else { %>

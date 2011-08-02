@@ -45,7 +45,7 @@ public class TweetController {
         String userId = session.getAttribute( "userId" ).toString();
         List<Tweet> tweetList = UserTweetList.newsFeed(userId);
         for( Tweet tweet : tweetList )
-            tweet.setTweet( (UserTweetList.escapeHTML(tweet.getTweet())) );
+            tweet.setTweet( StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())) );
         mv.addObject("newsFeed", tweetList);
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
