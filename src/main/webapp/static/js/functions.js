@@ -106,10 +106,7 @@ function prependTweet(data){
     var tweetHTML = $(html);
     $("#tweetsList").prepend(tweetHTML);
 }
-function toggle_show() {
-    $("#userTweetsContainer").toggle();
-    $("#newsFeedContainer").toggle();
-}
+
 function prependTweet_o(data){
     var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
     var tweetHTML = $(html);
@@ -204,37 +201,6 @@ function givesuggestions(Event, Object, TagBox) {
     }
 }
 
-
-/*
-function search(Event, Object) {
-
-    dojo.require("dijit.form.MultiSelect");
-
-    document.getElementById("search_dropdown").style.display = "block";
-    var to_search = Object.value;
-    $.ajax({
-        type : "POST",
-        url : "search_user",
-        data : "pattern=" + to_search ,
-        success : function( data ){
-            var sel = dojo.byId('search_dropdown');
-            sel.innerHTML = "";
-            for (var i = 0; i < data.length; i++) {
-                var c = dojo.doc.createElement('option');
-                var arr = JSON.parse ( JSON.stringify(data[i]) );
-                c.innerHTML = arr.username;
-                c.value = i;
-                sel.appendChild(c);
-            }
-            new dijit.form.MultiSelect({
-                name: 'dynamic'
-            },
-            sel);
-        }
-    });
-}
-*/
-
 function byTags(tweetContent) {
     var parts = tweetContent.split("@");
     tweetContent = StringEscapeUtils.escapeHtml(parts[0]);
@@ -294,6 +260,7 @@ function suggestionDivChange(Event, Object, MaxLen, TagBox) {
             selected_option++;
         }
 }
+
 
 function imposeMaxLength(Event, Object, MaxLen, TagBox) {
         if  (String.fromCharCode(Event.which) == "@") {
@@ -366,7 +333,7 @@ function replyToTweet(replyTo) {
            url : "tweet/replyToTweet",
            data : { "tweetContent" : tweetContent ,  "replyTo" : replyTo } ,
            success : function( data ){
-                prependTweet_o(data);
+                appendTweetsToNewsFeedContainer(data);
                dijit.byId("replyPopUp").hide();
            }
     });
