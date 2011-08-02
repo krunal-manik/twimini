@@ -286,7 +286,7 @@ function alertkey(e) {
     ' and is key ' + String.fromCharCode( e ) );
 }
 
-function suggestionDivChange(Event, Object, MaxLen, TagBox) {
+function suggestionDivChange(Event, Object, TagBox) {
         if (keycode.getKeyCode(Event)==32) {
             tag_mode = false;
             TagBox.style.display = "none";
@@ -311,6 +311,7 @@ function imposeMaxLength(Event, Object, MaxLen, TagBox) {
                 Object.value.substring(0, crt_pos(Object)).substring(0, Object.value.substring(0, crt_pos(Object)).lastIndexOf('@') + 1) + to_change + Object.value.substring(crt_pos(Object), Object.value.length);
             TagBox.style.display = "none";
             selected_option = 0;
+            return false;
         }
         if (Event.keyCode==40||Event.keyCode==38) {
             return false;

@@ -39,50 +39,13 @@ public class TweetController {
         return t;
     }
 
-    public static String escapeHTML(String tweetContent) {
-        return StringEscapeUtils.escapeHtml(tweetContent);
-    }
-
-    public static String addTags(String tweetContent) {
-        String[] parts = tweetContent.split("@");
-        tweetContent = (parts[0]);
-        for (int i = 1; i < parts.length; i++) {
-            String toLink;
-            String toEscape;
-            if (parts[i].indexOf(" ") == -1) {
-                toLink = parts[i];
-                toEscape = "";
-            } else {
-                toLink = parts[i].substring(0, parts[i].indexOf(" "));
-                toEscape = parts[i].substring(parts[i].indexOf(" "));
-            }
-            tweetContent += "<a href=\"/" + toLink + "\">" + toLink + "</a>" + (toEscape);
-        }
-        return tweetContent;
-    }
-
-    public static Set<User> searchTags(String tweetContent) {
-        Set<User> setOfTags = new HashSet<User>();
-        String[] parts = tweetContent.split("@");
-        System.out.println("TAGS -> ");
-        for (int i = 1; i < parts.length; i++) {
-            String toTag = parts[i].split(" ")[0];
-            User taggedUser = UserAuthentication.getUserByUsername(toTag);
-            if (taggedUser != null) {
-                setOfTags.add(taggedUser);
-            }
-        }
-        return setOfTags;
-    }
-
-
     @RequestMapping("/tweet")
     public static ModelAndView tweetsList(HttpSession session) {
         ModelAndView mv = new ModelAndView( "/tweet" );
         String userId = session.getAttribute( "userId" ).toString();
         List<Tweet> tweetList = UserTweetList.newsFeed(userId);
         for( Tweet tweet : tweetList )
-            tweet.setTweet( (escapeHTML(tweet.getTweet())) );
+            tweet.setTweet( (UserTweetList.escapeHTML(tweet.getTweet())) );
         mv.addObject("newsFeed", tweetList);
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));

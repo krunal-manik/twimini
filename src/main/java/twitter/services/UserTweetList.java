@@ -50,11 +50,6 @@ public class UserTweetList {
     public static Tweet addTweet( String tweet , String userId ) {
         Tweet ret = new Tweet();
         try{
-            Set<User> tags = TweetController.searchTags(tweet);
-                for (Object u : tags.toArray()) {
-            User user = (User) u;
-            Mention.mentionUserInTweet(user.getUserId(), ret.getTweetId());
-        }
             db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp) VALUES ( ? , ? , NOW() )" ,userId , tweet);
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
 
@@ -63,11 +58,52 @@ public class UserTweetList {
                     "FROM tweets as T INNER JOIN user as U " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ? " ,
                     UserTweetList.newsFeedMapper , userId , tweetId );
+            Set<User> tags = searchTags(tweet);
+            for (Object u : tags.toArray()) {
+                User user = (User) u;
+                Mention.mentionUserInTweet(user.getUserId(), ret.getTweetId());
+            }
         }
         catch( EmptyResultDataAccessException ex ){
             ex.printStackTrace();
         }
         return ret;
+    }
+
+    public static Set<User> searchTags(String tweetContent) {
+        Set<User> setOfTags = new HashSet<User>();
+        String[] parts = tweetContent.split("@");
+        System.out.println("TAGS -> ");
+        for (int i = 1; i < parts.length; i++) {
+            String toTag = parts[i].split(" ")[0];
+            User taggedUser = UserAuthentication.getUserByUsername(toTag);
+            if (taggedUser != null) {
+                setOfTags.add(taggedUser);
+            }
+        }
+        return setOfTags;
+    }
+
+    public static String escapeHTML(String tweetContent) {
+        return StringEscapeUtils.escapeHtml(tweetContent);
+    }
+
+    public static String addTags(String tweetContent) {
+        String[] parts = tweetContent.split("@");
+        tweetContent = (parts[0]);
+        for (int i = 1; i < parts.length; i++) {
+            String toLink;
+            String toEscape;
+            if (parts[i].indexOf(" ") == -1) {
+                toLink = parts[i];
+                toEscape = "";
+            } else {
+                toLink = parts[i].substring(0, parts[i].indexOf(" "));
+                toEscape = parts[i].substring(parts[i].indexOf(" "));
+            }
+            tweetContent += "<a href=\"/" + toLink + "\">" + toLink + "</a>" + (toEscape);
+        }
+        return tweetContent;
     }
 
     public static int getUserTweetsCount( String userId ) {
@@ -185,7 +221,7 @@ public class UserTweetList {
     public static Tweet replyToTweet( String tweetContent, String inReplyToTweetId , String userId ) {
         Tweet ret = new Tweet();
         try{
-            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to) VALUES ( ? , ? , NOW() , ? )" ,userId , TweetController.escapeHTML(tweetContent) , inReplyToTweetId );
+            db.update( "INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to) VALUES ( ? , ? , NOW() , ? )" ,userId , tweetContent , inReplyToTweetId );
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
 
             ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
