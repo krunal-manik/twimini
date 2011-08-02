@@ -80,7 +80,10 @@ public class TweetController {
     public static ModelAndView tweetsList(HttpSession session) {
         ModelAndView mv = new ModelAndView( "/tweet" );
         String userId = session.getAttribute( "userId" ).toString();
-        mv.addObject("newsFeed", UserTweetList.newsFeed( userId ));
+        List<Tweet> tweetList = UserTweetList.newsFeed(userId);
+        for( Tweet tweet : tweetList )
+            tweet.setTweet( (escapeHTML(tweet.getTweet())) );
+        mv.addObject("newsFeed", tweetList);
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );

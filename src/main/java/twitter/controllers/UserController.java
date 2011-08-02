@@ -2,6 +2,7 @@ package twitter.controllers;
 
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hsqldb.Session;
 import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import twitter.models.Tweet;
 import twitter.models.User;
 import twitter.services.Email;
 import twitter.services.Follow;
@@ -170,7 +172,10 @@ public class UserController {
                 mv.addObject("followStatus", "Unfollow");
             }
         }
-        mv.addObject("userTweets", UserTweetList.userTweetList( userId, session_userId));
+        List<Tweet> userTweetList = UserTweetList.userTweetList(userId, session_userId);
+        for( Tweet tweet : userTweetList )
+            tweet.setTweet(StringEscapeUtils.escapeHtml( tweet.getTweet() ));
+        mv.addObject("userTweets", userTweetList );
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );

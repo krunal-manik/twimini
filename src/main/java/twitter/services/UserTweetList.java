@@ -32,7 +32,7 @@ public class UserTweetList {
             Tweet ret = new Tweet();
             ret.setTweetId( rs.getInt( "tweet_id" ) );
             ret.setName( rs.getString( "name" ) );
-            ret.setTweet(TweetController.addTags(TweetController.escapeHTML(rs.getString( "tweet" ))));
+            ret.setTweet( rs.getString( "tweet" ));
             ret.setTimestamp( rs.getString( "timestamp" ) );
             ret.setUserId( rs.getString( "user_id" ) );
             ret.setTweetedBy( rs.getInt( "tweeted_by" ) );

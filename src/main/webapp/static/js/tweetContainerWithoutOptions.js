@@ -14,7 +14,8 @@ dojo.declare("js.tweetContainerWithoutOptions",
             templateString : dojo.cache( "js/widgets", "tweetContainerWithoutOptions.html"),
             postCreate : function() {
                 this.inherited(arguments);
-                this.args.tweet = addslashes(this.args.tweet);
+                this.args.tweet = unEscapeCharacters(this.args.tweet);
+                this.tweetNode.innerHTML = addTags(filterEscapeCharacters(this.args.tweet));
             },
             getSelf : function() {
                 return this;

@@ -4,6 +4,24 @@ dojo.require("js.tweetContainerWithoutOptions");
 function addslashes( str ) {
     return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
 }
+    function addTags(tweetContent) {
+        var parts = tweetContent.split("@");
+        tweetContent = (parts[0]);
+        for (var i = 1; i < parts.length; i++) {
+            var toLink;
+            var toEscape;
+            if (parts[i].indexOf(" ") == -1) {
+                toLink = parts[i];
+                toEscape = "";
+            } else {
+                toLink = parts[i].substring(0, parts[i].indexOf(" "));
+                toEscape = parts[i].substring(parts[i].indexOf(" "));
+            }
+            tweetContent += "<a href=\"/" + toLink + "\">@" + toLink + "</a>" + (toEscape) ;
+        }
+        return tweetContent;
+    }
+
 function filterEscapeCharacters(str) {
     str = str.replace(/[&]/g, '&amp;');
     str = str.replace(/[<]/g, '&lt;');
@@ -14,7 +32,26 @@ function filterEscapeCharacters(str) {
     str = str.replace(/[ ]/g, '&nbsp;');
     return str;
 }
+function unEscapeCharacters(str) {
+
+    while( str.indexOf('&lt;') != -1 )
+    str = str.replace('&lt;', '<' );
+    while( str.indexOf('&gt;') != -1 )
+    str = str.replace('&gt;', '>' );
+    while( str.indexOf('&#39;') != -1 )
+    str = str.replace('&#39;' , '\'' );
+    while( str.indexOf('&quot;') != -1 )
+    str = str.replace('&quot;', '\"');
+    while( str.indexOf('<br>') != -1 )
+    str = str.replace('<br>', '\n' );
+    while( str.indexOf('&nbsp;') != -1 )
+    str = str.replace('&nbsp;', ' ' );
+    while( str.indexOf('&amp;') != -1 )
+    str = str.replace( '&amp;', '&' );
+    return str;
+}
 function appendTweetsToNewsFeedContainer(data) {
+    data.tweet = unEscapeCharacters(data.tweet);
     var widget = new js.tweetContainer(data);
     widget.placeAt( dojo.byId("newsFeedContainer") , "first" );
 }

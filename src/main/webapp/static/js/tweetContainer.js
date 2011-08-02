@@ -15,7 +15,7 @@ dojo.declare("js.tweetContainer",
             postCreate : function() {
                 this.inherited(arguments);
                 this.args.isFavorite = this.args.isFavorite.toString();
-                this.args.tweet = addslashes(this.args.tweet);
+                this.tweetNode.innerHTML = addTags(filterEscapeCharacters(this.args.tweet));
                 if( this.args.isFavorite ==  'false' ) {
                     dojo.addClass( this.favoriteNode , "fav" );
                     this.favoriteNode.innerHTML = "Favorite";

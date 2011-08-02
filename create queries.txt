@@ -70,7 +70,7 @@ CREATE TABLE favorite(
 	FOREIGN KEY (tweet_id) REFERENCES Tweets(tweet_id)
 );
 
-CREATE TABLE mention(
+CREATE TABLE mentions(
     user_id INT NOT NULL,
 	tweet_id INT NOT NULL,
 	PRIMARY KEY( user_id , tweet_id ),
