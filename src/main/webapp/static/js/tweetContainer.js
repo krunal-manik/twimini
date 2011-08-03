@@ -54,9 +54,9 @@ dojo.declare("js.tweetContainer",
             },
             _toggleFavorite : function(domNode) {
 
-                urlString = "tweet/markFavorite";
-                favClassName = "unfav";
-                unfavClassName = "fav";
+                var urlString = "tweet/markFavorite";
+                var favClassName = "unfav";
+                var unfavClassName = "fav";
 
                 if( domNode.args.isFavorite == "true" ) {
                     urlString = "tweet/deleteFavorite";

@@ -1,0 +1,16 @@
+<div>
+    <div class = "span-16 tweet_container">
+        <div class = "span-2 usr_image_box">
+            <img src="/photos/${username}.jpg" height="70" width="70" style="border-color:#000000; border-width:2px; border-style:solid"/>
+        </div>
+        <div class= "span-14 last tweet_box">
+            <img src="/static/images/comment_arrow.png" class="comment_arrow" />
+            <div class="padding">
+                <div class = "tweeter_name" data-dojo-attach-point="usernameNode"> <a href = "/${username}">${username} </a> </div>
+                <div style="width:100%; height:25px">
+                    <div class = "i span-3" data-dojo-attach-point="followNode">${followStatus}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

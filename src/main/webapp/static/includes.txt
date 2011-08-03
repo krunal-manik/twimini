@@ -14,9 +14,8 @@
         <script src="/static/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad:false,modulePaths:{js:'/static/js'}"></script>
         <script type="text/javascript" src="/static/js/functions.js"></script>
 
-        <!-- jQuery and ejs scripts -->
+        <!-- jQuery script -->
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/static/ejs/ejs_production.js"></script>
         <script type="text/javascript">
             dojo.ready( function() {
                dojo.parser.parse();

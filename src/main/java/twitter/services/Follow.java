@@ -81,7 +81,7 @@ public class Follow {
                     "where follower = ?)",
                      Follow.rowMapperForFollow,  userId , userId );
             for(int i=0;i<followers.size();i++)
-                    followers.get(i).setFollowStatus( "Unfollow" );
+                    followers.get(i).setFollowStatus( "Following" );
             for(int i=0;i<followers.size();i++)
                 userList.add( followers.get(i) );
         }
@@ -106,7 +106,7 @@ public class Follow {
                     "where follower = ?)",
                      Follow.rowMapperForFollow,  userId , userId );
             for(int i=0;i<followers.size();i++)
-                    followers.get(i).setFollowStatus( "Unfollow" );
+                    followers.get(i).setFollowStatus( "Following" );
             for(int i=0;i<followers.size();i++)
                 userList.add( followers.get(i) );
         }

@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import javax.swing.plaf.multi.MultiViewportUI;
 import javax.xml.transform.Source;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -173,34 +174,65 @@ public class UserController {
     }
 
     @RequestMapping("/{username}/followers")
-    public ModelAndView getUserFollowers(@PathVariable String username){
+    public ModelAndView getUserFollowers(@PathVariable String username,HttpSession session){
+        String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
-
+        User loggedInUser = UserAuthentication.getUserByUsername( loggedInUserId );
         if( urlMappedUser == null ) {
             ModelAndView mv = new ModelAndView("/error404");
             return mv;
         }
 
-        ModelAndView mv = new ModelAndView("/followers");
+        ModelAndView mv = new ModelAndView("/user-list");
         String userId = String.valueOf( urlMappedUser.getUserId() );
-        mv.addObject("followerList", Follow.getFollowerList( userId ));
+        List<User> followerList = Follow.getFollowerList(userId);
+        List<User> loggedInUsersFollowingList = new ArrayList<User>();
+        if( loggedInUser != null )
+            loggedInUsersFollowingList = Follow.getFollowedList(""+loggedInUser.getUserId());
+        for( User user : followerList ) {
+            for( User loggedInUserIsFollowing : loggedInUsersFollowingList ) {
+                if( user.getUserId() == loggedInUserIsFollowing.getUserId() ) {
+                    user.setFollowStatus( "Following" );
+                    break;
+                }
+            }
+        }
+        mv.addObject("userList", followerList );
         mv.addObject( "username" , username );
+        mv.addObject( "message" , username + "\'s follower list" );
+        System.out.println( "done" );
         return mv;
     }
 
     @RequestMapping("/{username}/followings")
-    public ModelAndView getUserFollowings(@PathVariable String username){
+    public ModelAndView getUserFollowings(@PathVariable String username,HttpSession session){
+        String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
-
+        User loggedInUser = UserAuthentication.getUserByUsername( loggedInUserId );
         if( urlMappedUser == null ) {
             ModelAndView mv = new ModelAndView("/error404");
             return mv;
         }
 
-        ModelAndView mv = new ModelAndView("/followings");
+        ModelAndView mv = new ModelAndView("/user-list");
+
         String userId = String.valueOf( urlMappedUser.getUserId() );
-        mv.addObject("followedList", Follow.getFollowedList( userId ));
+        List<User> followedList = Follow.getFollowedList(userId);
+        List<User> loggedInUsersFollowingList = new ArrayList<User>();
+        if( loggedInUser != null )
+            loggedInUsersFollowingList = Follow.getFollowedList(""+loggedInUser.getUserId());
+        for( User user : followedList ) {
+            for( User loggedInUserIsFollowing : loggedInUsersFollowingList ) {
+                if( user.getUserId() == loggedInUserIsFollowing.getUserId() ) {
+                    user.setFollowStatus( "Following" );
+                    break;
+                }
+            }
+        }
+
+        mv.addObject("userList", followedList );
         mv.addObject( "username" , username );
+        mv.addObject( "message" , username + "\'s following list" );
         return mv;
     }
 
@@ -278,10 +310,17 @@ public class UserController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView search(String pattern, HttpSession session){
+        if( pattern == null || pattern.equals("") ) {
+            ModelAndView mv = new ModelAndView();
+            mv.setViewName("redirect:/");
+            return mv;
+        }
+
+
         List<User> userList = Follow.allUsersListContainingSubstring(pattern, session.getAttribute("userId").toString());
-        ModelAndView mv = new ModelAndView();
+        ModelAndView mv = new ModelAndView("/user-list");
         mv.addObject("userList", userList);
-        mv.addObject("pattern" , pattern);
+        mv.addObject( "message" , "Search results for " + pattern );
         return mv;
     }
 

@@ -1,5 +1,6 @@
 dojo.require("dijit.Dialog");
 dojo.require("js.tweetContainer");
+dojo.require("js.userContainer");
 function addTags(tweetContent) {
    var parts = tweetContent.split("@");
 
@@ -135,17 +136,8 @@ function addTweet(){
            }
     });
 }
-function prependTweet(data){
-    var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
-    var tweetHTML = $(html);
-    $("#tweetsList").prepend(tweetHTML);
-}
 
-function prependTweet_o(data){
-    var html = new EJS( {url:'/static/ejs_templates/tweet.ejs'} ).render( data ) ;
-    var tweetHTML = $(html);
-    $("#tweetsList_o").prepend(tweetHTML);
-}
+
 
 var tag_mode = false;
 var selected_option = 0;

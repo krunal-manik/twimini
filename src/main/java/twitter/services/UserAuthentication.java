@@ -65,6 +65,8 @@ public class UserAuthentication {
     }
 
     public static User getUserByUsername( String username ) {
+        if( username == null )
+            return null;
         User data = null;
         try{
             data = db.queryForObject( "SELECT * from user where username = ?",
