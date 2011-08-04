@@ -19,7 +19,7 @@ public class Tweet {
     String tweet;
     int inReplyTo;
     String timestamp;
-    int retweetedFrom;
+    private String retweetedBy;
 
     String userId;
     String username;
@@ -126,5 +126,13 @@ public class Tweet {
 
     public void setInReplyTo( int inReplyTo ) {
         this.inReplyTo = inReplyTo;
+    }
+
+    public String getRetweetedBy() {
+        return retweetedBy;
+    }
+
+    public void setRetweetedBy(String retweetedBy) {
+        this.retweetedBy = retweetedBy;
     }
 }

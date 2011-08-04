@@ -7,6 +7,8 @@
         <script type="text/javascript">
             dojo.require("dijit.form.MultiSelect");
             dojo.require("dijit.Dialog");
+            dojo.require("dijit.layout.TabContainer");
+            dojo.require("dijit.layout.ContentPane");
             dojo.addOnLoad(function() {
                 new dijit.form.MultiSelect ({
                         name: 'dynamic'
@@ -47,13 +49,25 @@
                             </div>
                             <input type = "button" value = "Tweet" onclick="addTweet()"/>
                         </form>
-                    Newsfeed :
-                    <div id="newsFeedContainer">
-                        <c:forEach var='item' items='${newsFeed}'>
-                            <div data-dojo-type="js.tweetContainer" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',timestamp: '${item.timestamp}',
-                             name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}', tweetOptions:'true'">
+                    <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false">
+                        <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="newsFeed" selected="true">
+                            <div id="newsFeedContainer">
+                                <c:forEach var='item' items='${newsFeed}'>
+                                    <div data-dojo-type="js.tweetContainer" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',timestamp: '${item.timestamp}',
+                                     name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}', retweetedBy: '${item.retweetedBy}', tweetOptions:'true'">
+                                    </div>
+                                </c:forEach>
                             </div>
-                        </c:forEach>
+                        </div>
+                        <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="Mentions" selected="true">
+                            <div id="mentionContainer">
+                                <c:forEach var='item' items='${mentionFeed}'>
+                                    <div data-dojo-type="js.tweetContainer" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',timestamp: '${item.timestamp}',
+                                     name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}', retweetedBy: '0', tweetOptions:'true'">
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

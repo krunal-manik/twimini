@@ -27,16 +27,32 @@ import java.util.*;
 public class UserTweetList {
     public static SimpleJdbcTemplate db;
 
+    public static final RowMapper<Tweet> newsFeedMapperWithRetweet = new RowMapper<Tweet>() {
+        @Override public Tweet mapRow( ResultSet rs , int i ) throws SQLException {
+            Tweet ret = new Tweet();
+            ret.setTweetId(rs.getInt("tweet_id"));
+            ret.setName(rs.getString("name"));
+            ret.setTweet(rs.getString("tweet"));
+            ret.setTimestamp(rs.getString("timestamp"));
+            ret.setUserId(rs.getString("user_id"));
+            ret.setTweetedBy(rs.getInt("tweeted_by"));
+            ret.setUsername(rs.getString("username"));
+            ret.setInReplyTo(rs.getInt("in_reply_to"));
+            ret.setRetweetedBy(rs.getString("retweeted_by"));
+            return ret;
+        }
+    };
+
     public static final RowMapper<Tweet> newsFeedMapper = new RowMapper<Tweet>() {
         @Override public Tweet mapRow( ResultSet rs , int i ) throws SQLException {
             Tweet ret = new Tweet();
-            ret.setTweetId( rs.getInt( "tweet_id" ) );
-            ret.setName( rs.getString( "name" ) );
-            ret.setTweet( rs.getString( "tweet" ));
-            ret.setTimestamp( rs.getString( "timestamp" ) );
-            ret.setUserId( rs.getString( "user_id" ) );
-            ret.setTweetedBy( rs.getInt( "tweeted_by" ) );
-            ret.setUsername( rs.getString( "username" ) );
+            ret.setTweetId(rs.getInt("tweet_id"));
+            ret.setName(rs.getString("name"));
+            ret.setTweet(rs.getString("tweet"));
+            ret.setTimestamp(rs.getString("timestamp"));
+            ret.setUserId(rs.getString("user_id"));
+            ret.setTweetedBy(rs.getInt("tweeted_by"));
+            ret.setUsername(rs.getString("username"));
             ret.setInReplyTo( rs.getInt("in_reply_to"));
             return ret;
         }
@@ -58,10 +74,10 @@ public class UserTweetList {
                     "FROM tweets as T INNER JOIN user as U " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ? " ,
                     UserTweetList.newsFeedMapper , userId , tweetId );
-            Set<User> tags = searchTags(tweet);
+            Set<Integer> tags = searchTags(tweet);
             for (Object u : tags.toArray()) {
-                User user = (User) u;
-                Mention.mentionUserInTweet(user.getUserId(), ret.getTweetId());
+                Integer user = (Integer) u;
+                Mention.mentionUserInTweet(user, ret.getTweetId());
             }
         }
         catch( EmptyResultDataAccessException ex ){
@@ -70,15 +86,18 @@ public class UserTweetList {
         return ret;
     }
 
-    public static Set<User> searchTags(String tweetContent) {
-        Set<User> setOfTags = new HashSet<User>();
+    public static Set<Integer> searchTags(String tweetContent) {
+        Set<Integer> setOfTags = new HashSet<Integer>();
         String[] parts = tweetContent.split("@");
         System.out.println("TAGS -> ");
         for (int i = 1; i < parts.length; i++) {
             String toTag = parts[i].split(" ")[0];
-            User taggedUser = UserAuthentication.getUserByUsername(toTag);
-            if (taggedUser != null) {
+            Integer taggedUser = UserAuthentication.getUserByUsername(toTag).getUserId();
+            if (taggedUser != null && !setOfTags.contains(taggedUser)) {
                 setOfTags.add(taggedUser);
+            }
+            for (Object o : setOfTags.toArray()) {
+                System.out.println(((Integer) o));
             }
         }
         return setOfTags;
@@ -125,7 +144,7 @@ public class UserTweetList {
             ret = db.query("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
                     "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to " +
                     "FROM tweets as T INNER JOIN user as U " +
-                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? ORDER BY timestamp DESC" ,
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? " ,
                     UserTweetList.newsFeedMapper , userId );
             if (favoriter != null) {
                 int favoritesList[] = getFavoriteTweetsOfUser( favoriter );
@@ -168,29 +187,6 @@ public class UserTweetList {
         return false;
     }
 
-    public static List<Tweet> newsFeed( String userId ){
-        List<Tweet> ret = null;
-        try{
-            ret = db.query("SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
-                    "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to " +
-                    "FROM tweets as T INNER JOIN user as U ON T.tweeted_by = U.user_id " +
-                    "WHERE " +
-                    "((T.tweeted_by in (select followed from follower_followed where follower = ?) AND T.in_reply_to IS NULL) " +
-                    "OR T.tweeted_by = ? ) " +
-                    "ORDER BY timestamp DESC",
-                UserTweetList.newsFeedMapper, userId , userId );
-
-            int favoritesList[] = getFavoriteTweetsOfUser( userId );
-            for(int i=0;i<ret.size();i++) {
-               ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
-            }
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in newsFeed :((" );
-            ex.printStackTrace();
-        }
-        return ret;
-    }
 
     public static boolean markFavorite( String tweetId , String userId ) {
         try{
@@ -231,6 +227,88 @@ public class UserTweetList {
                     UserTweetList.newsFeedMapper , userId , tweetId );
         }
         catch( EmptyResultDataAccessException ex ){
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
+    public static Tweet addRetweet(String tweetId, String username, String userId) {
+        Tweet ret = new Tweet();
+        try {
+            ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to  " +
+                    "FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id " +
+                    "WHERE T.tweet_id = ? " +
+                    "AND T.tweeted_by != ? " +
+                    "AND T.tweet_id NOT IN (select tweet_id from retweets where user_id = ?)" ,
+                    UserTweetList.newsFeedMapper, tweetId, userId, userId);
+            ret.setRetweetedBy(username);
+            db.update( "INSERT into retweets(username, user_id, tweet_id, timestamp, original_user_id) VALUES ( ?, ? , ? , NOW() , ? )" , username, userId , tweetId , ret.getUserId());
+        }
+        catch( EmptyResultDataAccessException ex ) {
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
+public static List<Tweet> newsFeed( String userId ){
+        List<Tweet> ret = null;
+        try{
+            ret = db.query("( SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
+                    "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to, " +
+                    "'0' as retweeted_by " +
+                    "FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id " +
+                    "WHERE " +
+                    "(T.tweeted_by in (select followed from follower_followed where follower = ?) AND T.in_reply_to IS NULL) " +
+                    "OR T.tweeted_by = ? ) " +
+                    "UNION " +
+                    "( SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet," +
+                    "R.max_timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to , " +
+                    "R.username as retweeted_by " +
+                    "FROM tweets as T INNER JOIN user as U ON T.tweeted_by = U.user_id INNER JOIN " +
+                    "(select username, user_id, tweet_id, MIN(timestamp) as max_timestamp from retweets " +
+                    "where user_id in (select followed from follower_followed where follower = ?) GROUP BY tweet_id) as R " +
+                    "ON R.tweet_id = T.tweet_id ) " +
+                    "ORDER BY timestamp DESC "
+                    , UserTweetList.newsFeedMapperWithRetweet, userId , userId, userId );
+
+            int favoritesList[] = getFavoriteTweetsOfUser( userId );
+            for(int i=0;i<ret.size();i++) {
+               ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+            }
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in newsFeed :((" );
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
+
+    public static List<Tweet> mentionFeed(String userId) {
+        System.out.println(userId);
+        List<Tweet> ret = null;
+        try{
+            ret = db.query("SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
+                    "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to," +
+                    "'0' as retweeted_by " +
+                    "from tweets as T inner join user as U " +
+                    "ON T.tweeted_by = U.user_id " +
+                    "WHERE " +
+                    "T.tweet_id in (SELECT tweet_id from mentions where user_id = ?)"
+                    , UserTweetList.newsFeedMapperWithRetweet, userId );
+
+            System.out.println("mention_count " +ret.size());
+
+            int favoritesList[] = getFavoriteTweetsOfUser( userId );
+            for(int i=0;i<ret.size();i++) {
+               ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+            }
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in newsFeed :((" );
             ex.printStackTrace();
         }
         return ret;

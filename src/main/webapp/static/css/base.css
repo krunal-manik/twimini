@@ -177,7 +177,7 @@ label{
 }
 
 .tweet_box a:hover {
-    color:#FFFFFF;
+    text-decoration: underline;
 }
 
 .tweeter_name {
@@ -283,6 +283,10 @@ a{
 
 .rep {
     background: url("../images/reply.png") no-repeat scroll left bottom;
+}
+
+.rt {
+    background: url("../images/retweet.png") no-repeat scroll left bottom;
 }
 
 .dropdown_box {

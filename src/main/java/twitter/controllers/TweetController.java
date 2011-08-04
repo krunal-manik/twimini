@@ -46,7 +46,11 @@ public class TweetController {
         List<Tweet> tweetList = UserTweetList.newsFeed(userId);
         for( Tweet tweet : tweetList )
             tweet.setTweet( StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())) );
+        List<Tweet> mentionList = UserTweetList.mentionFeed(userId);
+        for( Tweet tweet : mentionList )
+            tweet.setTweet( StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())) );
         mv.addObject("newsFeed", tweetList);
+        mv.addObject("mentionFeed", mentionList);
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
@@ -71,5 +75,11 @@ public class TweetController {
     public static Tweet replyToTweet(String tweetContent,String replyTo,HttpSession session) {
         Tweet tweet = UserTweetList.replyToTweet( tweetContent , replyTo , session.getAttribute("userId").toString() );
         return tweet;
+    }
+
+    @RequestMapping( value = "/tweet/retweet" ) @ResponseBody // Ajax call
+    public Tweet retweet( @RequestParam String tweetId , HttpSession session ){
+        Tweet t = UserTweetList.addRetweet( tweetId , session.getAttribute("username").toString(), session.getAttribute("userId").toString() );
+        return t;
     }
 }

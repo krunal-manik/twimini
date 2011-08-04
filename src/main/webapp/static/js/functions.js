@@ -337,11 +337,18 @@ function reply(tweetId) {
     var content =
     "<div style = 'position:relative'>" +
         "<textarea id = 'reply' onkeypress='return imposeMaxLength(event, this, 140, dojo.byId(\"tagging_dropdown_dialog\"));' " +
-        "name = 'tweetContent' value = '' class='span-16' placeholder='tweet !!!'" +
+        "name = 'tweetContent' value = '' class='span-16' placeholder='tweet !!!' " +
+        "onkeydown='suggestionDivChange(event, this, dojo.byId(\"tagging_dropdown_dialog\"))' " +
         "style='resize:none; height:60px;' onkeyup = 'givesuggestions(event, this, dojo.byId(\"tagging_dropdown_dialog\"));'></textarea>" +
         "<select id='tagging_dropdown_dialog' style='display:none' class='dropdown_select'> </select>" +
     "</div> " +
     "<input type = 'button' value = 'Reply' onclick='replyToTweet( "+ tweetId + ")'/>";
+
+    new dijit.form.MultiSelect ({
+            name: 'dynamic2'
+        },
+        dojo.byId("tagging_dropdown_dialog")
+    );
     dijit.byId("replyPopUp").attr("content", content);
     dijit.byId("replyPopUp").show();
 }

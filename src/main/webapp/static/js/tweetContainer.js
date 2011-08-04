@@ -33,6 +33,9 @@ dojo.declare("js.tweetContainer",
                     dojo.connect( this.replyNode , "onclick" , function() {
                         reply(domNode.args.tweetId);
                     });
+                    dojo.connect( this.retweetNode , "onclick" , function() {
+                        domNode._retweet(domNode);
+                    });
                     dojo.addClass( this.favoriteNode , "display-inline" );
                     dojo.addClass( this.replyNode , "display-inline" );
                     dojo.addClass( this.retweetNode , "display-inline" );
@@ -85,6 +88,23 @@ dojo.declare("js.tweetContainer",
                         alert( 'error' + data );
                      }
                 });
+            },
+            _retweet : function(domNode) {
+                var tweetId = domNode.args.tweetId;
+                var confirm_box = confirm("do you want to retweet tweetId " + tweetId);
+                if (confirm_box) {
+                    dojo.xhrPost({
+                         url: "tweet/retweet",
+                         content: {tweetId:domNode.args.tweetId},
+                         load: function(data) {
+                             alert("retweet done");
+                         },
+                         error: function(data) {
+                            alert( 'error' + data );
+                         }
+                    });
+                }
             }
         }
 );
+

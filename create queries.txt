@@ -77,3 +77,15 @@ CREATE TABLE mentions(
 	FOREIGN KEY (user_id) REFERENCES User(user_id),
 	FOREIGN KEY (tweet_id) REFERENCES Tweets(tweet_id)
 );
+
+CREATE TABLE retweets(
+    username VARCHAR(20) NOT NULL,
+    user_id INT NOT NULL,
+	tweet_id INT NOT NULL,
+	original_user_id INT NOT NULL,
+	timestamp DATETIME NOT NULL,
+	PRIMARY KEY( user_id , tweet_id ),
+	FOREIGN KEY (user_id) REFERENCES User(user_id),
+	FOREIGN KEY (original_user_id) REFERENCES User(user_id),
+	FOREIGN KEY (tweet_id) REFERENCES Tweets(tweet_id)
+);

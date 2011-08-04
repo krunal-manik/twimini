@@ -155,6 +155,7 @@ public class UserController {
         List<Tweet> userTweetList = UserTweetList.userTweetList(userId, session_userId);
         for( Tweet tweet : userTweetList )
             tweet.setTweet( StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml( tweet.getTweet() )));
+        System.out.println("Users tweets -> " + userTweetList.size());
         mv.addObject("userTweets", userTweetList );
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
@@ -200,7 +201,7 @@ public class UserController {
         mv.addObject("userList", followerList );
         mv.addObject( "username" , username );
         mv.addObject( "message" , username + "\'s follower list" );
-        System.out.println( "done" );
+        System.out.println("done");
         return mv;
     }
 
