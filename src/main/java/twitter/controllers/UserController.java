@@ -45,7 +45,6 @@ public class UserController {
     public UserController() {
     }
 
-
     @RequestMapping( value = { "/" , "/login" } )
     public ModelAndView loginGet(HttpSession session) {
         if( session.getAttribute( "username" ) == null )
@@ -155,8 +154,15 @@ public class UserController {
         List<Tweet> userTweetList = UserTweetList.userTweetList(userId, session_userId);
         for( Tweet tweet : userTweetList )
             tweet.setTweet( StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml( tweet.getTweet() )));
-        System.out.println("Users tweets -> " + userTweetList.size());
+        List<Tweet> userMentionList = UserTweetList.mentionFeed(userId, session_userId);
+        for( Tweet tweet : userMentionList )
+            tweet.setTweet( StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml( tweet.getTweet() )));
+        List<Tweet> userFavoriteList = UserTweetList.favoritesFeed(userId, session_userId);
+        for( Tweet tweet : userFavoriteList )
+            tweet.setTweet( StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml( tweet.getTweet() )));
         mv.addObject("userTweets", userTweetList );
+        mv.addObject("userMentionList", userMentionList);
+        mv.addObject("userFavoriteList", userFavoriteList);
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
         mv.addObject("followerCount", Follow.getFollowerList( userId ).size() );
@@ -165,12 +171,6 @@ public class UserController {
         mv.addObject("currentUserId" , userId );
         mv.addObject("currentEmail", urlMappedUser.getEmail());
         mv.addObject("currentName" , urlMappedUser.getName());
-        return mv;
-    }
-
-    @RequestMapping( "/test" )
-    public ModelAndView getTestPage(){
-        ModelAndView mv = new ModelAndView("testing");
         return mv;
     }
 
@@ -316,9 +316,22 @@ public class UserController {
             mv.setViewName("redirect:/");
             return mv;
         }
-
-
+        String loggedInUserId =session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
+        User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
         List<User> userList = Follow.allUsersListContainingSubstring(pattern, session.getAttribute("userId").toString());
+
+        List<User> loggedInUsersFollowingList = new ArrayList<User>();
+        if( loggedInUser != null )
+            loggedInUsersFollowingList = Follow.getFollowedList(""+loggedInUser.getUserId());
+        for( User user : userList ) {
+            for( User loggedInUserIsFollowing : loggedInUsersFollowingList ) {
+                if( user.getUserId() == loggedInUserIsFollowing.getUserId() ) {
+                    user.setFollowStatus( "Following" );
+                    break;
+                }
+            }
+        }
+
         ModelAndView mv = new ModelAndView("/user-list");
         mv.addObject("userList", userList);
         mv.addObject( "message" , "Search results for " + pattern );

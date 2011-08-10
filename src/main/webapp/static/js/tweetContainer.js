@@ -18,6 +18,11 @@ dojo.declare("js.tweetContainer",
                 this.args.isFavorite = this.args.isFavorite.toString();
                 this.tweetNode.innerHTML = addTags(filterEscapeCharacters(this.args.tweet));
                 var domNode = this;
+                if (this.args.retweetedBy == '0') {
+                    this.whyHereNode.innerHTML = '';
+                } else {
+                    this.whyHereNode.innerHTML = "retweeted by <a href='/" + this.args.retweetedBy + "' >" + this.args.retweetedBy + '</a>';
+                }
                 if( this.args.tweetOptions == 'true' ) {
                     if( this.args.isFavorite ==  'false' ) {
                         dojo.addClass( this.favoriteNode , "fav" );
@@ -47,6 +52,9 @@ dojo.declare("js.tweetContainer",
             },
             getAttribute : function() {
                 return this.args;
+            },
+            getTimestamp : function () {
+                return this.args.timestamp;
             },
             appendChild : function() {
                 alert(' in append child here');
@@ -107,4 +115,3 @@ dojo.declare("js.tweetContainer",
             }
         }
 );
-

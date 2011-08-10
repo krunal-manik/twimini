@@ -1,6 +1,6 @@
         <!-- favicon -->
         <link href='/static/images/twitter_favicon.png' rel='shortcut icon' type='image/x-icon'/>
-        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/claro/claro.css"/>
+        <!--link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/claro/claro.css"/-->
         <!-- blueprint css -->
         <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection" />
         <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print" />
@@ -12,6 +12,8 @@
         <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
 
         <script src="/static/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad:false,modulePaths:{js:'/static/js'}"></script>
+        <!--script src="/static/js/dojo/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad:false,modulePaths:{js:'/'}"></script-->
+
         <script type="text/javascript" src="/static/js/functions.js"></script>
 
         <!-- jQuery script -->

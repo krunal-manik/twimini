@@ -47,7 +47,7 @@ function unEscapeCharacters(str) {
     str = str.replace( '&amp;', '&' );
     return str;
 }
-function appendTweetsToNewsFeedContainer(data) {
+function prependTweetsToNewsFeedContainer(data) {
     data.tweet = unEscapeCharacters(data.tweet);
     data.tweetOptions = "true";
     var widget = new js.tweetContainer(data);
@@ -123,18 +123,18 @@ function addTweet(){
         alert( 'You cannot tweet more than 140 characters' );
         return;
     }
-    dojo.xhrPost({
-           url : "tweet/addTweet",
-           content : {tweetContent:tweetContent},
-           handleAs : 'json',
-           load : function(data) {
-               appendTweetsToNewsFeedContainer(data);
-               document.getElementById("tweet").value = '';
-           },
-           error: function(data) {
-               alert( 'error ' + data );
-           }
-    });
+        dojo.xhrPost({
+               url : "tweet/addTweet",
+               content : {tweetContent:tweetContent},
+               handleAs : 'json',
+               load : function(data) {
+                   prependTweetsToNewsFeedContainer(data);
+                   document.getElementById("tweet").value = '';
+               },
+               error: function(data) {
+                   alert( 'error ' + data );
+               }
+        });
 }
 
 
@@ -367,8 +367,40 @@ function replyToTweet(replyTo) {
            url : "tweet/replyToTweet",
            data : { "tweetContent" : tweetContent ,  "replyTo" : replyTo } ,
            success : function( data ){
-                appendTweetsToNewsFeedContainer(data);
+               preendTweetsToNewsFeedContainer(data);
                dijit.byId("replyPopUp").hide();
            }
     });
+}
+
+function nTweetsBeforeTimestamp(timestamp, n) {
+    dojo.xhrGet({
+        url : "/nTweetsBeforeTimestamp?timestamp=" + timestamp + "&n=" + n,
+        handleAs : 'json',
+        load : function(data) {
+            if (data.length < n) {
+                //dojo.byId("more_newsfeed").hide();
+            }
+            for (var i =0; i < data.length; i++) {
+                data[i].tweet = unEscapeCharacters(data[i].tweet);
+                data[i].tweetOptions = "true";
+                var widget = new js.tweetContainer(data[i]);
+                widget.placeAt( dojo.byId("newsFeedContainer") , "last" );
+            }
+        },
+        error: function(data) {
+           alert( 'error ' + data );
+        }
+    });
+}
+
+dojo.require("dijit._Widget");
+dojo.require("dijit._Templated");
+
+var moreTweets = function(container) {
+    var x = dojo.byId(container);
+    var firstId = x.children[0].id;
+    var lastId = x.children[x.children.length - 1].id;
+    var ts = dijit.byId(lastId).getTimestamp();
+    nTweetsBeforeTimestamp(ts, 2);
 }

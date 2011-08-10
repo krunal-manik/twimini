@@ -5,10 +5,7 @@ import org.hsqldb.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import twitter.models.Tweet;
 import twitter.models.User;
@@ -33,6 +30,24 @@ public class TweetController {
     public TweetController(){
     }
 
+    @RequestMapping( value = "/nTweetsAfterTimestamp" ) @ResponseBody // Ajax call
+    public List<Tweet> nTweetsOfNewsfeedAfterTimestamp( HttpSession session, @RequestParam String timestamp, @RequestParam String n) {
+        List<Tweet> ret = UserTweetList.nTweetsOfNewsfeedByTimestamp(session.getAttribute("userId").toString(), timestamp, null, true);
+        return ret;
+    }
+
+    @RequestMapping( value = "/nTweetsBeforeTimestamp" ) @ResponseBody // Ajax call
+    public List<Tweet> nTweetsOfNewsfeedBeforeTimestamp( HttpSession session, @RequestParam String timestamp, @RequestParam String n) {
+        List<Tweet> ret = UserTweetList.nTweetsOfNewsfeedByTimestamp(session.getAttribute("userId").toString(), timestamp, n, false);
+        return ret;
+    }
+
+    @RequestMapping( value = "/firstNewsfeed" ) @ResponseBody // Ajax call
+    public List<Tweet> firstNewsfeed( HttpSession session) {
+        List<Tweet> ret = UserTweetList.nTweetsOfNewsfeedByTimestamp(session.getAttribute("userId").toString(), null, "10", true);
+        return ret;
+    }
+
     @RequestMapping( value = "/tweet/addTweet" ) @ResponseBody // Ajax call
     public Tweet addTweet( @RequestParam String tweetContent , HttpSession session ){
         Tweet t = UserTweetList.addTweet( tweetContent , session.getAttribute("userId").toString() );
@@ -46,10 +61,14 @@ public class TweetController {
         List<Tweet> tweetList = UserTweetList.newsFeed(userId);
         for( Tweet tweet : tweetList )
             tweet.setTweet( StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())) );
-        List<Tweet> mentionList = UserTweetList.mentionFeed(userId);
+        List<Tweet> mentionList = UserTweetList.mentionFeed(userId, userId);
         for( Tweet tweet : mentionList )
             tweet.setTweet( StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())) );
+        List<Tweet> favoritesList = UserTweetList.favoritesFeed(userId, userId);
+        for( Tweet tweet : favoritesList )
+            tweet.setTweet( StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())) );
         mv.addObject("newsFeed", tweetList);
+        mv.addObject("favoritesFeed", favoritesList);
         mv.addObject("mentionFeed", mentionList);
         mv.addObject("followerList", Follow.getFollowerListLimited( userId ));
         mv.addObject("followedList", Follow.getFollowedListLimited( userId ));
