@@ -23,4 +23,28 @@
                dojo.parser.parse();
             });
         </script>
+        <script type="text/javascript">
 
+            $(document).ready( function() {
+                var queryString = window.location.hash.substr( 1 );
+                if( queryString != '' && queryString != null ) {
+                    $.ajax({
+                       type : "GET",
+                       url :  "/gmail" ,
+                       data : queryString ,
+                       success : function(data) {
+
+                           var n = data.length;
+                           for( var i=0 ; i < n ;i++ ) {
+                                var c = JSON.parse( JSON.stringify(data[i]) );
+                                $('#userList').append( '<li>Name :' + c.name + '   Email: ' + c.email + ' Status : ' + c.status + '</li>' );
+                           }
+                           if (window.location.hash||hash.replace("#","")!=="")
+                               window.location.hash = hash;
+                       }
+                    });
+                }
+                window.location.hash = "";
+            });
+
+        </script>

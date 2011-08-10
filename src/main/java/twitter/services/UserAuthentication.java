@@ -193,4 +193,32 @@ public class UserAuthentication {
         }
         return user;
     }
+
+    public static User getUserByEmail(String email) {
+        if( email == null )
+            return null;
+        User data = null;
+        try{
+            data = db.queryForObject( "SELECT * from user where email = ?",
+                    new RowMapper<User>() {
+                        @Override
+                        public User mapRow(ResultSet rs, int i) throws SQLException {
+                            User ret = new User();
+                            ret.setUserId( rs.getInt("user_id"));
+                            ret.setUsername(rs.getString("username"));
+                            ret.setPassword(rs.getString("password"));
+                            ret.setName(rs.getString("name"));
+                            ret.setEmail(rs.getString("email"));
+                            return ret;
+                        }
+                    }, email );
+        }
+        catch( EmptyResultDataAccessException ex ){
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in email exists :(( " );
+            ex.printStackTrace();
+        }
+        return data;
+    }
 }

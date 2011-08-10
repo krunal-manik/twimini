@@ -1,6 +1,6 @@
 
 <head>
-    <%@include file="/static/includes.txt" %>
+    <%@include file="/static/includes.html" %>
 </head>
 <body>
     <form action="/email" method=post>

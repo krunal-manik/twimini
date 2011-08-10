@@ -4,7 +4,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-    <%@include file="/static/includes.txt" %>
+    <%@include file="/static/includes.html" %>
     <!--
     <script type="text/javascript">
 

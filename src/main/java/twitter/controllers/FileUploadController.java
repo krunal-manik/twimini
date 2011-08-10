@@ -1,10 +1,11 @@
-package twitter.testing;
+package twitter.controllers;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.json.simple.parser.Yytoken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
@@ -15,9 +16,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.ranges.RangeException;
+import twitter.models.Contact;
+import twitter.models.User;
+import twitter.services.Follow;
+import twitter.services.UserAuthentication;
 
 import javax.servlet.http.HttpSession;
 import javax.tools.JavaCompiler;
@@ -26,6 +32,9 @@ import java.net.URL;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +48,7 @@ import java.util.Map;
 public class FileUploadController {
 
     final SimpleJdbcTemplate db;
-    public static final String prefixPath = "C:\\Users\\rahul.pl\\Desktop\\photos\\";
+    public static final String prefixPath = "C:\\Users\\krunal.ma\\Desktop\\photos\\";
 
     @Autowired
     public FileUploadController(SimpleJdbcTemplate db) {
@@ -111,15 +120,19 @@ public class FileUploadController {
     }
 
 
+    @RequestMapping( value = "/import_contacts" )
+    public ModelAndView contactImporterGet(HttpSession session) {
+        return new ModelAndView("/contact-import");
+    }
+
+
     @RequestMapping( value = "/gmail" )
-    public ModelAndView contactImporter( String access_token , String token_type , String expires_in )throws Exception {
+    @ResponseBody
+    public List<Contact> contactImporter( String access_token , String token_type , String expires_in , HttpSession session )throws Exception {
         System.out.println(access_token);
         if( access_token == null ) {
-            return new ModelAndView("/login");
+            return new ArrayList<Contact>();
         }
-        System.out.println( access_token );
-        System.out.println( token_type );
-        System.out.println( expires_in );
 
         URL url = new URL( String.format( "https://www.google.com/m8/feeds/contacts/default/full?oauth_token=%s&max-results=500&alt=json"  , access_token ) );
         BufferedReader br = new BufferedReader( new InputStreamReader( url.openStream() ));
@@ -128,6 +141,9 @@ public class FileUploadController {
         while(  (s = br.readLine()) != null ) {
             json.append( s );
         }
+
+        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> emails = new ArrayList<String>();
 
         Object obj = JSONValue.parse( json.toString() );
         JSONObject jsonObject = (JSONObject)obj;
@@ -144,15 +160,44 @@ public class FileUploadController {
             if( arr != null && arr.size() > 0 ) {
                 JSONObject emailIdObject = (JSONObject)arr.get(0);
                 String email = emailIdObject.get("address").toString();
-                System.out.println( "Name : " +  contactName );
-                System.out.println( "Email : " + email );
+                if( contactName.equals("") ) contactName = email;
+
+                names.add( contactName );
+                emails.add( email );
             }
         }
 
-        ModelAndView mv = new ModelAndView( "/contact-import" );
-        String tp = "bah";
-        mv.addObject( "hello" , tp );
-        return mv;
+
+        List<User> followingList = Follow.getFollowedList(session.getAttribute("userId").toString());
+        for( User u : followingList ) {
+            System.out.println( u.getName() );
+            System.out.println( u.getEmail() );
+        }
+        System.out.println( followingList.size() );
+        ArrayList<Contact> contactList = new ArrayList<Contact>();
+        for(int i=0;i<emails.size();i++) {
+            User user = UserAuthentication.getUserByEmail( emails.get(i) );
+            Contact contact = new Contact();
+            contact.setEmail( emails.get(i) );
+            contact.setName(  names.get(i) );
+
+            if( user == null ) {
+                contact.setStatus( "Invite" );
+            }
+            else {
+
+                for( User u : followingList ) {
+                    System.out.println( u.getFollowStatus() );
+                    if( emails.get(i).equals(u.getEmail())) {
+                        contact.setStatus("Following");
+                        break;
+                    }
+                }
+            }
+            contactList.add( contact );
+        }
+
+        return contactList;
     }
 
 }

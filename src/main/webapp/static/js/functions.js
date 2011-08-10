@@ -64,9 +64,9 @@ function changeFollowStatus(userId) {
            url : "/all_users/addFollowing",
            data : "userId=" + userId ,
            success : function() {
-                button_Name.value = "Unfollow";
+                button_Name.value = "Following";
                 if (buttonName != null) {
-                    buttonName.value = "Unfollow";
+                    buttonName.value = "Following";
                 }
            }
         });
@@ -96,7 +96,7 @@ function changeFollowStatusForDivs(userId) {
            url : "/all_users/addFollowing",
            data : "userId=" + userId ,
            success : function() {
-                button_Name.innerHTML = "Unfollow";
+                button_Name.innerHTML = "Following";
                 $('#follow_' + userId).removeClass("fav");
                 $('#follow_' + userId).addClass("unfav");
            }
@@ -321,16 +321,6 @@ function checkPasswords( form ) {
     return true;
 }
 
-
-function loadContactImporter() {
-    alert( 'here' );
-    win = window.open( ["https://accounts.google.com/o/oauth2/auth?client_id=205184315336.apps.googleusercontent.com&redirect_uri=http://localhost:8080/gmail&response_type=token&scope=https://www.google.com/m8/feeds/"],
-            "Import Your Gmail Contacts",
-            "width=400,height=450,resizable=0,dependent=0,top=150,left=450" );
-    win.onunload = function() {
-        win.opener.location.href = "/krunalmanik";
-    }
-}
 
 function reply(tweetId) {
     dijit.byId("replyPopUp").attr("title", "Reply to Tweet ID " + tweetId);

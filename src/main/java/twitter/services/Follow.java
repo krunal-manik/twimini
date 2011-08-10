@@ -8,6 +8,7 @@ import twitter.models.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -113,6 +114,7 @@ public class Follow {
         catch( Exception ex ){
             ex.printStackTrace();
         }
+        if( userList == null )return new ArrayList<User>();
         return userList;
     }
 
@@ -152,6 +154,9 @@ public class Follow {
             System.out.println( "Followed List Exception :((((((" );
             ex.printStackTrace();
         }
+        if( followedList == null )return new ArrayList<User>();
+        for(int i=0;i<followedList.size();i++)
+            followedList.set( i , UserAuthentication.getUserByUsername( followedList.get(i).getUsername() ));
         return followedList;
     }
 
@@ -167,6 +172,9 @@ public class Follow {
             System.out.println( "Follower List Exception :(((((" );
             ex.printStackTrace();
         }
+        if( followerList == null ) return new ArrayList<User>();
+        for(int i=0;i<followerList.size();i++)
+            followerList.set( i , UserAuthentication.getUserByUsername( followerList.get(i).getUsername() ) );
         return followerList;
     }
 

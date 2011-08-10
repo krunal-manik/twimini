@@ -4,7 +4,7 @@
 
 <html>
     <head>
-    <%@include file="/static/includes.txt" %>
+    <%@include file="/static/includes.html" %>
     <script type="text/javascript">
         dojo.require("dijit.form.MultiSelect");
         dojo.require("dijit.Dialog");

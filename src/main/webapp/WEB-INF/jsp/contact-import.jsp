@@ -3,24 +3,38 @@
 
 <html>
     <head>
-        <%@include file="/static/includes.txt" %>
+        <%@include file="/static/includes.html" %>
     </head>
 
     <body class=" claro ">
-        <%@include file="/WEB-INF/jsp/header.jsp" %>
+        <% if( session.getAttribute("username") == null ) { %>
+            <%@include file="/WEB-INF/jsp/signin_header.jsp" %>
+        <% } else { %>
+            <%@include file="/WEB-INF/jsp/header.jsp" %>
+        <% } %>
 
-        <div class = "container body">
-            <div class="prepend-2 span-8 append-4">
+        <div class="container">
+            <div class="body">
+                <div class="prepend-9 span-6 append-9 last">
 
+                        <div class="span-2 append-1">
+                            Gmail emailid
+                        </div>
+                        <div class="span-2 append-1 last">
+                            <input type="email" value="" name="email" />
+                        </div>
 
-
+                        <div class="prepend-3 span-3 last">
+                            <a href="https://accounts.google.com/o/oauth2/auth?client_id=205184315336.apps.googleusercontent.com&redirect_uri=http://localhost:8080/import_contacts&response_type=token&scope=https://www.google.com/m8/feeds/">
+                                <input type="Submit" value="Import Contacts" />
+                            </a>
+                        </div>
+                </div>
             </div>
-            <div class="span-6 append-2 last">
-                 <div class="empty_box" style="height:150px; width:100%"></div>
-                 <img src="/static/images/twitter_bird.gif" />
-            </div>
+            <br>
+            <ul id="userList">
+
+            </ul>
         </div>
-
-
     </body>
 </html>

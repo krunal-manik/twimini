@@ -3,7 +3,7 @@
 
 <html>
     <head>
-    <%@include file="/static/includes.txt" %>
+    <%@include file="/static/includes.html" %>
     </head>
 
     <body>

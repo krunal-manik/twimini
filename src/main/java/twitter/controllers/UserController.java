@@ -107,7 +107,7 @@ public class UserController {
         session.setAttribute( "username" , user.getUsername() );
         session.setAttribute( "userId" , user.getUserId() );
         String session_userId = session.getAttribute("userId").toString();
-        ModelAndView mv = null;
+        ModelAndView mv = new ModelAndView("/login");
         mv.addObject("followerList", 0);
         mv.addObject("followedList", 0);
         if( session.getAttribute("userId") != null ) {

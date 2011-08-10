@@ -42,5 +42,5 @@
         <property name="maxUploadSize" value="1000000"/>
     </bean>
 
-    <bean id="fileUploadController" class="twitter.testing.FileUploadController" />
+    <bean id="fileUploadController" class="twitter.controllers.FileUploadController" />
 </beans>
