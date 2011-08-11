@@ -209,7 +209,7 @@ a{
     cursor: pointer;
 }
 
-[class="as_link"]:hover {
+[class="as-link"]:hover {
     color:#666666;
     text-decoration: underline;
 }
@@ -254,7 +254,7 @@ a{
 }
 
 .sidebar_heading {
-    background:color:#AAAAAA;
+    background-color:#AAAAAA;
 }
 
 .sidebar li {

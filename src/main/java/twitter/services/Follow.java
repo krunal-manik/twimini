@@ -160,6 +160,98 @@ public class Follow {
         return followedList;
     }
 
+
+
+
+
+
+    public static List<User> nFollowedInLimits( String userId, String loggedInUser, String from, String n ){
+        String numLimiter = "";
+        if (n.equals(null) || n == null || n.equals("null")) {
+            if (from != null) {
+                numLimiter = " LIMIT 0, " + n + " ";
+            } else {
+                System.out.println(from + " " + n);
+                int to = Integer.parseInt(from) + Integer.parseInt(n);
+                numLimiter = " LIMIT " + from + ", " + to + " ";
+            }
+        }
+
+        List<User> followedList = null;
+        List<User> loggedInFollowedList = null;
+        try{
+            String query = "SELECT user_id, username, name from user " +
+                                    "where user_id in (SELECT followed from follower_followed " +
+                                    "where follower = ?)" + numLimiter;
+            followedList = db.query(query
+                    , Follow.rowMapperForFollow , userId );
+            query = "SELECT user_id, username, name from user " +
+                                    "where user_id in (SELECT followed from follower_followed " +
+                                    "where follower = ?)" + numLimiter;
+            if (loggedInUser != null) {
+                loggedInFollowedList = db.query(query
+                        , Follow.rowMapperForFollow , loggedInUser );
+                if( followedList == null )return new ArrayList<User>();
+                for(int i=0;i<followedList.size();i++) {
+                    if (loggedInFollowedList.contains(followedList.get(i))) {
+                        followedList.get(i).setFollowStatus("Following");
+                    }
+                }
+            }
+        }
+        catch( Exception ex ){
+            System.out.println( "Followed List Exception :((((((" );
+            ex.printStackTrace();
+        }
+        return followedList;
+    }
+
+
+    public static List<User> nFollowingInLimits( String userId, String loggedInUser, String from, String n ){
+        String numLimiter = "";
+        if (n.equals(null) || n == null || n.equals("null")) {
+            if (from != null) {
+                numLimiter = " LIMIT 0, " + n + " ";
+            } else {
+                System.out.println(from + " " + n);
+                int to = Integer.parseInt(from) + Integer.parseInt(n);
+                numLimiter = " LIMIT " + from + ", " + to + " ";
+            }
+        }
+
+        List<User> followedList = null;
+        List<User> loggedInFollowedList = null;
+        try{
+            String query = "SELECT user_id, username, name from user " +
+                                    "where user_id in (SELECT follower from follower_followed " +
+                                    "where followed = ?)" + numLimiter;
+            followedList = db.query(query
+                    , Follow.rowMapperForFollow , userId );
+            query = "SELECT user_id, username, name from user " +
+                                    "where user_id in (SELECT followed from follower_followed " +
+                                    "where follower = ?)" + numLimiter;
+            if (loggedInUser != null) {
+                loggedInFollowedList = db.query(query
+                        , Follow.rowMapperForFollow , loggedInUser );
+                if( followedList == null )return new ArrayList<User>();
+                for(int i=0;i<followedList.size();i++) {
+                    if (loggedInFollowedList.contains(followedList.get(i))) {
+                        followedList.get(i).setFollowStatus("Following");
+                    }
+                }
+            }
+        }
+        catch( Exception ex ){
+            System.out.println( "Followed List Exception :((((((" );
+            ex.printStackTrace();
+        }
+        return followedList;
+    }
+
+
+
+
+
     public static List<User> getFollowerList( String userId ){
         List<User> followerList = null;
         try{

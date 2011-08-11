@@ -4,9 +4,15 @@
 <html>
     <head>
     <%@include file="/static/includes.html" %>
+
+    <script>
+        dojo.require("dijit.layout.TabContainer");
+        dojo.require("dijit.layout.ContentPane");
+
+    </script>
     </head>
 
-    <body>
+    <body class=" claro ">
         <% if( session.getAttribute("username") == null ) { %>
             <%@include file="/WEB-INF/jsp/signin_header.jsp" %>
         <% } else { %>
@@ -19,6 +25,7 @@
                     <div class = "span-16">
                         <div id="userListContainer">
                             ${message}
+                            <!--
                             <div id="userList">
                                 <c:forEach var='item' items='${userList}'>
                                     <div data-dojo-type="js.userContainer"
@@ -28,6 +35,11 @@
                                     loggedInUser : '<%= session.getAttribute("userId") != null ? session.getAttribute("userId").toString() : null %>'">
                                     </div>
                                 </c:forEach>
+                            </div>
+                            -->
+                            <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false" widgetsInTemplate="true">
+                                <div data-dojo-type="js.userBoxContainer" data-dojo-props="title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                                </div>
                             </div>
                         </div>
                     </div>

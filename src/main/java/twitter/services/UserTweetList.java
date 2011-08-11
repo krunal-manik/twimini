@@ -161,6 +161,45 @@ public class UserTweetList {
         return ret;
     }
 
+    public static List<Tweet> nTweetsOfUserfeedByTimestamp(String userId, String favoriter, String timestamp, String n, boolean after) {
+        List<Tweet> ret = null;
+        String tsLimiter = "";
+                String whereTsLimiter = "";
+                String andTsLimiter = "";
+                String numLimiter = "";
+                if (timestamp != null) {
+                    if (after) {
+                        tsLimiter = " timestamp > '" + timestamp + "' ";
+                    } else {
+                        tsLimiter = " timestamp < '" + timestamp + "' ";
+                    }
+                    whereTsLimiter = " WHERE " + tsLimiter;
+                    andTsLimiter = " AND " + tsLimiter;
+                }
+                if (n != null) {
+                    numLimiter = " LIMIT 0, " + n + " ";
+                }
+        try{
+            String query = "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
+                    "'0' as retweeted_by, T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to " +
+                    "FROM tweets as T INNER JOIN user as U " +
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? " + andTsLimiter + " ORDER BY timestamp DESC " + numLimiter;
+            ret = db.query(query
+                    , UserTweetList.newsFeedMapperWithRetweet, userId );
+            if (favoriter != null) {
+                int favoritesList[] = getFavoriteTweetsOfUser( favoriter );
+                for(int i=0;i<ret.size();i++) {
+                   ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+                }
+            }
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in newsFeed :((" );
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
     public static int[] getFavoriteTweetsOfUser( String userId ) {
 
         if( userId == null )return new int[0];
@@ -368,6 +407,48 @@ public class UserTweetList {
         return ret;
     }
 
+    public static List<Tweet> nTweetsOfMentionsByTimestamp(String userId, String favoriter, String timestamp, String n, boolean after) {
+        List<Tweet> ret = null;
+        String tsLimiter = "";
+                String whereTsLimiter = "";
+                String andTsLimiter = "";
+                String numLimiter = "";
+                if (timestamp != null) {
+                    if (after) {
+                        tsLimiter = " timestamp > '" + timestamp + "' ";
+                    } else {
+                        tsLimiter = " timestamp < '" + timestamp + "' ";
+                    }
+                    whereTsLimiter = " WHERE " + tsLimiter;
+                    andTsLimiter = " AND " + tsLimiter;
+                }
+                if (n != null) {
+                    numLimiter = " LIMIT 0, " + n + " ";
+                }
+        try{
+            String query = "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
+                    "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to," +
+                    "'0' as retweeted_by " +
+                    "from tweets as T inner join user as U " +
+                    "ON T.tweeted_by = U.user_id " +
+                    "WHERE " +
+                    "T.tweet_id in (SELECT tweet_id from mentions where user_id = ?) " + andTsLimiter + " ORDER BY timestamp DESC " + numLimiter;
+            ret = db.query(query
+                    , UserTweetList.newsFeedMapperWithRetweet, userId );
+            if (favoriter != null) {
+                int favoritesList[] = getFavoriteTweetsOfUser( favoriter );
+                for(int i=0;i<ret.size();i++) {
+                   ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+                }
+            }
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in newsFeed :((" );
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
     public static List<Tweet> favoritesFeed(String userId, String favoriter) {
         List<Tweet> ret = null;
         try{
@@ -378,6 +459,48 @@ public class UserTweetList {
                     "ON T.tweeted_by = U.user_id " +
                     "WHERE " +
                     "T.tweet_id in (SELECT tweet_id from favorite where user_id = ?)"
+                    , UserTweetList.newsFeedMapperWithRetweet, userId );
+            if (favoriter != null) {
+                int favoritesList[] = getFavoriteTweetsOfUser( favoriter );
+                for(int i=0;i<ret.size();i++) {
+                   ret.get(i).setFavorite( binarySearch(favoritesList, ret.get(i).getTweetId()) );
+                }
+            }
+        }
+        catch( Exception ex ) {
+            System.out.println( "Bug in newsFeed :((" );
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
+    public static List<Tweet> nTweetsOfFavoritesByTimestamp(String userId, String favoriter, String timestamp, String n, boolean after) {
+        List<Tweet> ret = null;
+        String tsLimiter = "";
+                String whereTsLimiter = "";
+                String andTsLimiter = "";
+                String numLimiter = "";
+                if (timestamp != null) {
+                    if (after) {
+                        tsLimiter = " timestamp > '" + timestamp + "' ";
+                    } else {
+                        tsLimiter = " timestamp < '" + timestamp + "' ";
+                    }
+                    whereTsLimiter = " WHERE " + tsLimiter;
+                    andTsLimiter = " AND " + tsLimiter;
+                }
+                if (n != null) {
+                    numLimiter = " LIMIT 0, " + n + " ";
+                }
+        try{
+            String query = "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
+                    "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to," +
+                    "'0' as retweeted_by " +
+                    "from tweets as T inner join user as U " +
+                    "ON T.tweeted_by = U.user_id " +
+                    "WHERE " +
+                    "T.tweet_id in (SELECT tweet_id from favorite where user_id = ?) "  + andTsLimiter + " ORDER BY timestamp DESC " + numLimiter;
+            ret = db.query(query
                     , UserTweetList.newsFeedMapperWithRetweet, userId );
             if (favoriter != null) {
                 int favoritesList[] = getFavoriteTweetsOfUser( favoriter );

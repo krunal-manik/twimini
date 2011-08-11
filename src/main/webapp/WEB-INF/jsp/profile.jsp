@@ -39,6 +39,8 @@
 
                         <div id="userTweetsContainer">
                             <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false">
+
+                                <!--
                                 <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="${currentUsername}'s Tweets" selected="true">
                                     <div id="tweetsList">
                                         <c:forEach var='item' items='${userTweets}'>
@@ -71,6 +73,13 @@
                                             </div>
                                         </c:forEach>
                                     </div>
+                                </div>
+                                -->
+                                <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'userfeed', user:'${currentUserId}', favoriter:'<%=session.getAttribute("userId")%>'">
+                                </div>
+                                <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'mentions', user:'${currentUserId}', favoriter:'<%=session.getAttribute("userId")%>'">
+                                </div>
+                                <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'favorites', user:'${currentUserId}', favoriter:'<%=session.getAttribute("userId")%>'">
                                 </div>
                             </div>
                         </div>

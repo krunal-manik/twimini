@@ -1,4 +1,4 @@
-<div class = "span-7" style="padding:7px; padding-bottom:0px; border-width:1px; border-color:#AAAAAA; border-style:solid">
+<div class = "span-7 last" style="padding:7px; padding-bottom:0px; border-width:1px; border-color:#AAAAAA; border-style:solid">
     <div class = "span-7 last sidebar">
         <div class = "padding">
             <ul class = "border">

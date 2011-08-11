@@ -49,8 +49,9 @@
                             </div>
                             <input type = "button" value = "Tweet" onclick="addTweet()"/>
                         </form>
-                    <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false">
+                    <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false" widgetsInTemplate="true">
 
+                        <!--
                         <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="newsFeed" selected="true">
                             <div id="more_newsfeed" style="cursor:pointer; margin-bottom:5px; padding:3px; width:584px"
                                  onclick="moreTweets('newsFeedContainer')" class="border">
@@ -88,6 +89,18 @@
                                     </div>
                                 </c:forEach>
                             </div>
+                        </div>
+                        -->
+
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        </div>
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        </div>
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'favorites', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        </div>
+                        <div data-dojo-type="js.userBoxContainer" data-dojo-props="title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        </div>
+                        <div data-dojo-type="js.userBoxContainer" data-dojo-props="title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
 
                     </div>

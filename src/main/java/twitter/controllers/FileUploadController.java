@@ -48,7 +48,7 @@ import java.util.Map;
 public class FileUploadController {
 
     final SimpleJdbcTemplate db;
-    public static final String prefixPath = "C:\\Users\\krunal.ma\\Desktop\\photos\\";
+    public static final String prefixPath = "C:\\Users\\rahul.pl\\Desktop\\photos\\";
 
     @Autowired
     public FileUploadController(SimpleJdbcTemplate db) {

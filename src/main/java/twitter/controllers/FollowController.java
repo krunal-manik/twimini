@@ -54,6 +54,40 @@ public class FollowController {
         return mv;
     }
 
+    /*
+    @RequestMapping("{username}/followers")
+    public ModelAndView firstFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower) {
+        List<User> followedList = Follow.getFollowedList( user );
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("followedList", followedList );
+        return mv;
+    }
+    */
+
+    @RequestMapping("/first_following") @ResponseBody
+    public List<User> firstFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower ) {
+        List<User> followings = Follow.nFollowedInLimits(user, follower, null, "10");
+        return followings;
+    }
+
+    @RequestMapping("/more_following") @ResponseBody
+    public List<User> moreFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower ,@RequestParam String from) {
+        List<User> followings = Follow.nFollowedInLimits(user, follower, from, "10");
+        return followings;
+    }
+
+    @RequestMapping("/first_follower") @ResponseBody
+    public List<User> firstFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower ) {
+        List<User> followings = Follow.nFollowingInLimits(user, follower, null, "10");
+        return followings;
+    }
+
+    @RequestMapping("/more_follower") @ResponseBody
+    public List<User> moreFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower ,@RequestParam String from) {
+        List<User> followings = Follow.nFollowingInLimits(user, follower, from, "10");
+        return followings;
+    }
+
     @RequestMapping("/follower")
     public ModelAndView followerList(HttpSession session) {
         List<User> followerList = Follow.getFollowerList( session.getAttribute("userId").toString() );
