@@ -17,15 +17,15 @@ import javax.sql.DataSource;
 @Configuration
 public class DBConfig {
 
-    public static final String DRIVER   = "com.mysql.jdbc.Driver";
+    public static final String DRIVER = "com.mysql.jdbc.Driver";
     public static final String JDBC_URL = "jdbc:mysql://localhost/twimini";
     public static final String USERNAME = "root";
     public static final String PASSWORD = "";
 
     @Bean
-    public SimpleJdbcTemplate simpleJdbcTemplate(){
+    public SimpleJdbcTemplate simpleJdbcTemplate() {
         DataSource dataSource = getDataSource();
-        SimpleJdbcTemplate db = new SimpleJdbcTemplate( dataSource );
+        SimpleJdbcTemplate db = new SimpleJdbcTemplate(dataSource);
         return db;
     }
 
@@ -35,7 +35,7 @@ public class DBConfig {
         // the required parameters such as the Jdbc Driver class,
         // Jdbc URL, database user name and password.
         //
-        System.out.println( "Connected to db" );
+        System.out.println("Connected to db");
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(DBConfig.DRIVER);
         dataSource.setUrl(DBConfig.JDBC_URL);

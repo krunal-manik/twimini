@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class Tweet {
 
-    int tweetId , tweetedBy;
+    int tweetId, tweetedBy;
     String tweet;
     int inReplyTo;
     String timestamp;
@@ -28,7 +28,8 @@ public class Tweet {
     boolean isFavorite;
 
     public static final RowMapper<Tweet> rowMapper = new RowMapper<Tweet>() {
-        @Override public Tweet mapRow( ResultSet rs , int i ) throws SQLException {
+        @Override
+        public Tweet mapRow(ResultSet rs, int i) throws SQLException {
             return new Tweet(rs);
         }
     };
@@ -37,7 +38,7 @@ public class Tweet {
         isFavorite = false;
     }
 
-    public Tweet( ResultSet rs ) throws SQLException {
+    public Tweet(ResultSet rs) throws SQLException {
         tweetId = rs.getInt("tweet_id");
         tweet = rs.getString("tweet");
         tweetedBy = rs.getInt("tweeted_by");
@@ -45,19 +46,19 @@ public class Tweet {
         isFavorite = false;
     }
 
-    public int getTweetId(){
+    public int getTweetId() {
         return tweetId;
     }
 
-    public String getTweet(){
+    public String getTweet() {
         return tweet;
     }
 
-    public int getTweetedBy(){
+    public int getTweetedBy() {
         return tweetedBy;
     }
 
-    public String getTimestamp(){
+    public String getTimestamp() {
         return timestamp;
     }
 
@@ -73,35 +74,35 @@ public class Tweet {
         return username;
     }
 
-    public void setTweetId( int tweetId ) {
+    public void setTweetId(int tweetId) {
         this.tweetId = tweetId;
     }
 
-    public void setTweet( String tweet ) {
+    public void setTweet(String tweet) {
         this.tweet = tweet;
     }
 
-    public void setTweetedBy( int tweetedBy ) {
+    public void setTweetedBy(int tweetedBy) {
         this.tweetedBy = tweetedBy;
     }
 
-    public void setUserId( String userId ) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public void setTimestamp( String timestamp ) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
-    public void setUsername( String username ) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setFavorite( boolean isFavorite ) {
+    public void setFavorite(boolean isFavorite) {
         this.isFavorite = isFavorite;
     }
 
@@ -109,12 +110,12 @@ public class Tweet {
         return this.isFavorite;
     }
 
-    public String toString(){
-        Hashtable<String,String> ret = new Hashtable<String, String>();
-        ret.put( "tweetId" , "" + tweetId );
-        ret.put( "tweet" , tweet );
-        ret.put( "tweetedBy" , "" + tweetedBy );
-        ret.put( "timestamp" , timestamp );
+    public String toString() {
+        Hashtable<String, String> ret = new Hashtable<String, String>();
+        ret.put("tweetId", "" + tweetId);
+        ret.put("tweet", tweet);
+        ret.put("tweetedBy", "" + tweetedBy);
+        ret.put("timestamp", timestamp);
         ret.put("name", name);
         ret.put("username", username);
         return ret.toString();
@@ -124,7 +125,7 @@ public class Tweet {
         return inReplyTo;
     }
 
-    public void setInReplyTo( int inReplyTo ) {
+    public void setInReplyTo(int inReplyTo) {
         this.inReplyTo = inReplyTo;
     }
 

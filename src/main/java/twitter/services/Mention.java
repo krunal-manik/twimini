@@ -24,17 +24,17 @@ public class Mention {
 
     public static RowMapper<User> rowMapperForMention = new RowMapper<User>() {
         @Override
-        public User mapRow(ResultSet rs , int i) throws SQLException {
+        public User mapRow(ResultSet rs, int i) throws SQLException {
             User ret = new User();
-            ret.setUserId( rs.getInt("user_id"));
-            ret.setUsername( rs.getString("username"));
-            ret.setName( rs.getString("name"));
+            ret.setUserId(rs.getInt("user_id"));
+            ret.setUsername(rs.getString("username"));
+            ret.setName(rs.getString("name"));
             return ret;
         }
     };
 
     @Autowired
-    public Mention( SimpleJdbcTemplate db ){
+    public Mention(SimpleJdbcTemplate db) {
         this.db = db;
     }
 
@@ -44,7 +44,7 @@ public class Mention {
             userList = db.query("select user_id, username, name from user " +
                     "where user_id in (select user_id from mentions where tweet_id = ?)"
                     , Mention.rowMapperForMention, tweetId);
-        } catch( Exception ex ){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return userList;
@@ -55,7 +55,7 @@ public class Mention {
         try {
             System.out.println(userId + ":" + tweetId);
             db.update("insert into mentions (tweet_id, user_id) values (?, ?)", tweetId, userId);
-        } catch ( Exception ex ) {
+        } catch (Exception ex) {
             System.out.println("Error in updating mentions !!!");
             ex.printStackTrace();
             return false;

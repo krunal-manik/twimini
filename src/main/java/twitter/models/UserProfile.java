@@ -13,7 +13,7 @@ public class UserProfile {
     String username;
     String email;
 
-    public UserProfile( User user ) {
+    public UserProfile(User user) {
         userId = user.getUserId();
         name = user.getName();
         username = user.getUsername();

@@ -27,13 +27,13 @@ public class TweetAPI {
 
     @RequestMapping("/api/tweets/{username}")
     @ResponseBody
-    public static Hashtable<String,Object> getUserTweets( @PathVariable String username ) {
-        System.out.println( username );
-        Hashtable<String,Object> userTweets = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> getUserTweets(@PathVariable String username) {
+        System.out.println(username);
+        Hashtable<String, Object> userTweets = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             List<Tweet> tweetsList = UserTweetList.userTweetList(String.valueOf(user.getUserId()), null);
-            userTweets.put( "tweets" , tweetsList );
+            userTweets.put("tweets", tweetsList);
             userTweets.put("success", "true");
             userTweets.put("status code", "200 OK");
         } catch (NullPointerException ex) {
@@ -49,12 +49,12 @@ public class TweetAPI {
 
     @RequestMapping("/api/newsfeed/{username}")
     @ResponseBody
-    public static Hashtable<String,Object> getUsersNewsFeed( @PathVariable String username , String token ) {
-        Hashtable<String,Object> userTweets = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> getUsersNewsFeed(@PathVariable String username, String token) {
+        Hashtable<String, Object> userTweets = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             List<Tweet> newsFeed = UserTweetList.newsFeed(String.valueOf(user.getUserId()));
-            userTweets.put( "tweets" , newsFeed );
+            userTweets.put("tweets", newsFeed);
             userTweets.put("success", "true");
             userTweets.put("status code", "200 OK");
         } catch (NullPointerException ex) {
@@ -70,11 +70,11 @@ public class TweetAPI {
 
     @RequestMapping("/api/publish-tweet/{username}")
     @ResponseBody
-    public static Hashtable<String,Object> publistTweet( @PathVariable String username , String token , String tweetContent ) {
-        Hashtable<String,Object> userTweet = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> publistTweet(@PathVariable String username, String token, String tweetContent) {
+        Hashtable<String, Object> userTweet = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
-            Tweet tweet = UserTweetList.addTweet( tweetContent ,String.valueOf(user.getUserId()));
+            Tweet tweet = UserTweetList.addTweet(tweetContent, String.valueOf(user.getUserId()));
             userTweet.put("tweetInformation", tweet);
             userTweet.put("success", "true");
             userTweet.put("status code", "200 OK");
@@ -89,14 +89,14 @@ public class TweetAPI {
         return userTweet;
     }
 
-    @RequestMapping( "/api/{username}/favorite" )
+    @RequestMapping("/api/{username}/favorite")
     @ResponseBody
-    public static Hashtable<String,Object> markFavorite( @PathVariable String username , String tweetId , String token ) {
-        Hashtable<String,Object> favoriteStatus = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> markFavorite(@PathVariable String username, String tweetId, String token) {
+        Hashtable<String, Object> favoriteStatus = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             boolean success = UserTweetList.markFavorite(tweetId, String.valueOf(user.getUserId()));
-            if( !success )
+            if (!success)
                 throw new Exception();
             favoriteStatus.put("success", "true");
             favoriteStatus.put("status code", "200 OK");
@@ -111,14 +111,14 @@ public class TweetAPI {
         return favoriteStatus;
     }
 
-    @RequestMapping( "/api/{username}/unfavorite" )
+    @RequestMapping("/api/{username}/unfavorite")
     @ResponseBody
-    public static Hashtable<String,Object> markUnfavorite( @PathVariable String username , String tweetId , String token ) {
-        Hashtable<String,Object> unFavoriteStatus = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> markUnfavorite(@PathVariable String username, String tweetId, String token) {
+        Hashtable<String, Object> unFavoriteStatus = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             boolean success = UserTweetList.deleteFavorite(tweetId, String.valueOf(user.getUserId()));
-            if( !success )
+            if (!success)
                 throw new Exception();
             unFavoriteStatus.put("success", "true");
             unFavoriteStatus.put("status code", "200 OK");

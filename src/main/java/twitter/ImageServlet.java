@@ -14,28 +14,27 @@ import java.net.URLDecoder;
  * Time: 10:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ImageServlet extends HttpServlet{
+public class ImageServlet extends HttpServlet {
 
     private String imagePath;
-    private static final int DEFAULT_BUFFER_SIZE = 1024 * 5 ;
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 5;
 
     public void init() throws ServletException {
-        imagePath = "C:\\Users\\rahul.pl\\Desktop\\photos\\";
+        imagePath = "C:\\Users\\krunal.ma\\Desktop\\photos\\";
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestedImage = request.getPathInfo();
         if (requestedImage == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        File image = new File( imagePath, URLDecoder.decode(requestedImage, "UTF-8"));
+        File image = new File(imagePath, URLDecoder.decode(requestedImage, "UTF-8"));
 
         if (!image.exists()) {
             requestedImage = "default-user.jpg";
-            image = new File( imagePath,URLDecoder.decode(requestedImage,"UTF-8"));
+            image = new File(imagePath, URLDecoder.decode(requestedImage, "UTF-8"));
         }
 
         String contentType = getServletContext().getMimeType(image.getName());
@@ -61,13 +60,13 @@ public class ImageServlet extends HttpServlet{
             while ((length = input.read(buffer)) > 0) {
                 output.write(buffer, 0, length);
             }
-        } catch(Exception ex) {
-            System.out.println( "Bug in imageServlet :(" );
+        } catch (Exception ex) {
+            System.out.println("Bug in imageServlet :(");
             ex.printStackTrace();
         } finally {
-            if( input != null )
+            if (input != null)
                 input.close();
-            if( output != null )
+            if (output != null)
                 output.close();
         }
     }

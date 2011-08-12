@@ -48,21 +48,21 @@ import java.util.Map;
 public class FileUploadController {
 
     final SimpleJdbcTemplate db;
-    public static final String prefixPath = "C:\\Users\\rahul.pl\\Desktop\\photos\\";
+    public static final String prefixPath = "C:\\Users\\krunal.ma\\Desktop\\photos\\";
 
     @Autowired
     public FileUploadController(SimpleJdbcTemplate db) {
         this.db = db;
     }
 
-    @RequestMapping( value = { "/edit_profile" } )
+    @RequestMapping(value = {"/edit_profile"})
     public ModelAndView editProfileGet(HttpSession session) {
-        if( session.getAttribute( "username" ) == null ) {
+        if (session.getAttribute("username") == null) {
             return new ModelAndView("/error404");
         } else {
             final String username = session.getAttribute("username").toString();
-            return new ModelAndView("/profile-edit"){{
-                addObject( "image", "/photos/" + username + ".jpg" );
+            return new ModelAndView("/profile-edit") {{
+                addObject("image", "/photos/" + username + ".jpg");
             }};
         }
     }
@@ -74,19 +74,19 @@ public class FileUploadController {
         try {
             File photo = new File(photoPath);
 
-            if( photo.exists() ) {
+            if (photo.exists()) {
                 photo.delete();
             }
             photo.createNewFile();
 
-            if( !file.isEmpty() ) {
+            if (!file.isEmpty()) {
                 byte imagesBytes[] = file.getBytes();
                 FileOutputStream outputStream = new FileOutputStream(photo);
                 outputStream.write(imagesBytes);
                 outputStream.close();
             }
         } catch (Exception ex) {
-            System.out.println( "Bug in fileupload :(" );
+            System.out.println("Bug in fileupload :(");
             ex.printStackTrace();
         }
     }
@@ -100,12 +100,12 @@ public class FileUploadController {
         try {
             File photo = new File(photoPath);
 
-            if( photo.exists() ) {
+            if (photo.exists()) {
                 photo.delete();
             }
             photo.createNewFile();
 
-            if( !file.isEmpty() ) {
+            if (!file.isEmpty()) {
                 byte imagesBytes[] = file.getBytes();
                 FileOutputStream outputStream = new FileOutputStream(photo);
                 outputStream.write(imagesBytes);
@@ -113,88 +113,87 @@ public class FileUploadController {
                 mv.addObject("image", "/photos/" + usrname + ".jpg");
             }
         } catch (Exception ex) {
-            System.out.println( "Bug in fileupload :(" );
+            System.out.println("Bug in fileupload :(");
             ex.printStackTrace();
         }
         return mv;
     }
 
 
-    @RequestMapping( value = "/import_contacts" )
+    @RequestMapping(value = "/import_contacts")
     public ModelAndView contactImporterGet(HttpSession session) {
         return new ModelAndView("/contact-import");
     }
 
 
-    @RequestMapping( value = "/gmail" )
+    @RequestMapping(value = "/gmail")
     @ResponseBody
-    public List<Contact> contactImporter( String access_token , String token_type , String expires_in , HttpSession session )throws Exception {
+    public List<Contact> contactImporter(String access_token, String token_type, String expires_in, HttpSession session) throws Exception {
         System.out.println(access_token);
-        if( access_token == null ) {
+        if (access_token == null) {
             return new ArrayList<Contact>();
         }
 
-        URL url = new URL( String.format( "https://www.google.com/m8/feeds/contacts/default/full?oauth_token=%s&max-results=500&alt=json"  , access_token ) );
-        BufferedReader br = new BufferedReader( new InputStreamReader( url.openStream() ));
+        URL url = new URL(String.format("https://www.google.com/m8/feeds/contacts/default/full?oauth_token=%s&max-results=500&alt=json", access_token));
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
         StringBuffer json = new StringBuffer("");
         String s = "";
-        while(  (s = br.readLine()) != null ) {
-            json.append( s );
+        while ((s = br.readLine()) != null) {
+            json.append(s);
         }
 
         ArrayList<String> names = new ArrayList<String>();
         ArrayList<String> emails = new ArrayList<String>();
 
-        Object obj = JSONValue.parse( json.toString() );
-        JSONObject jsonObject = (JSONObject)obj;
-        obj = jsonObject.get( "feed" );
-        obj = ((JSONObject) obj).get("entry") ;
-        JSONArray array = (JSONArray)obj;
-        for(int i=0;i<array.size();i++) {
-            JSONObject entryObject = (JSONObject)array.get(i);
-            entryObject = (JSONObject)entryObject.get("title") ;
+        Object obj = JSONValue.parse(json.toString());
+        JSONObject jsonObject = (JSONObject) obj;
+        obj = jsonObject.get("feed");
+        obj = ((JSONObject) obj).get("entry");
+        JSONArray array = (JSONArray) obj;
+        for (int i = 0; i < array.size(); i++) {
+            JSONObject entryObject = (JSONObject) array.get(i);
+            entryObject = (JSONObject) entryObject.get("title");
             String contactName = entryObject.get("$t").toString();
 
-            JSONObject emailObject = (JSONObject)array.get(i);
-            JSONArray arr = (JSONArray)emailObject.get( "gd$email" );
-            if( arr != null && arr.size() > 0 ) {
-                JSONObject emailIdObject = (JSONObject)arr.get(0);
+            JSONObject emailObject = (JSONObject) array.get(i);
+            JSONArray arr = (JSONArray) emailObject.get("gd$email");
+            if (arr != null && arr.size() > 0) {
+                JSONObject emailIdObject = (JSONObject) arr.get(0);
                 String email = emailIdObject.get("address").toString();
-                if( contactName.equals("") ) contactName = email;
+                if (contactName.equals("")) contactName = email;
 
-                names.add( contactName );
-                emails.add( email );
+                names.add(contactName);
+                emails.add(email);
             }
         }
 
 
         List<User> followingList = Follow.getFollowedList(session.getAttribute("userId").toString());
-        for( User u : followingList ) {
-            System.out.println( u.getName() );
-            System.out.println( u.getEmail() );
+        for (User u : followingList) {
+            System.out.println(u.getName());
+            System.out.println(u.getEmail());
         }
-        System.out.println( followingList.size() );
+        System.out.println(followingList.size());
         ArrayList<Contact> contactList = new ArrayList<Contact>();
-        for(int i=0;i<emails.size();i++) {
-            User user = UserAuthentication.getUserByEmail( emails.get(i) );
+        for (int i = 0; i < emails.size(); i++) {
+            User user = UserAuthentication.getUserByEmail(emails.get(i));
             Contact contact = new Contact();
-            contact.setEmail( emails.get(i) );
-            contact.setName(  names.get(i) );
+            contact.setEmail(emails.get(i));
+            contact.setName(names.get(i));
 
-            if( user == null ) {
-                contact.setStatus( "Invite" );
-            }
-            else {
+            if (user == null) {
+                contact.setStatus("Invite");
+            } else {
 
-                for( User u : followingList ) {
-                    System.out.println( u.getFollowStatus() );
-                    if( emails.get(i).equals(u.getEmail())) {
+                for (User u : followingList) {
+                    System.out.println(u.getFollowStatus());
+                    if (emails.get(i).equals(u.getEmail())) {
                         contact.setStatus("Following");
                         break;
                     }
                 }
             }
-            contactList.add( contact );
+            contactList.add(contact);
         }
 
         return contactList;

@@ -19,22 +19,23 @@ public class Email {
 
     private MailSender mailSender;
 
-    public void setMailSender( MailSender mailSender ) {
+    public void setMailSender(MailSender mailSender) {
         this.mailSender = mailSender;
     }
+
     public MailSender getMailSender() {
         return this.mailSender;
     }
 
-	public void sendMail( String from, String to, String subject, String body ) {
+    public void sendMail(String from, String to, String subject, String body) {
 
-		SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
 
-		message.setFrom( from );
-		message.setTo( to );
-		message.setSubject( subject );
-		message.setText( body );
-        System.out.println( "MailSender : " + mailSender );
-		mailSender.send( message );
-	}
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+        System.out.println("MailSender : " + mailSender);
+        mailSender.send(message);
+    }
 }

@@ -25,32 +25,34 @@ import java.util.Map;
 @Controller
 public class FollowController {
 
-    public FollowController(){
+    public FollowController() {
     }
 
     @RequestMapping("/all_users")
     public ModelAndView allUserGet(HttpSession session) {
-        List<User> ret = Follow.allUsersList( session.getAttribute("userId").toString() );
+        List<User> ret = Follow.allUsersList(session.getAttribute("userId").toString());
         ModelAndView mv = new ModelAndView();
-        mv.addObject("userList",  ret);
+        mv.addObject("userList", ret);
         return mv;
     }
 
-    @RequestMapping(value="/all_users/addFollowing", method= RequestMethod.POST) @ResponseBody // Ajax call
+    @RequestMapping(value = "/all_users/addFollowing", method = RequestMethod.POST)
+    @ResponseBody // Ajax call
     public void addFollowing(HttpSession session, @RequestParam String userId) {
-        Follow.addFollowing( userId , session.getAttribute("userId").toString() );
+        Follow.addFollowing(userId, session.getAttribute("userId").toString());
     }
 
-    @RequestMapping(value="/all_users/removeFollowing", method= RequestMethod.POST) @ResponseBody // Ajax call
+    @RequestMapping(value = "/all_users/removeFollowing", method = RequestMethod.POST)
+    @ResponseBody // Ajax call
     public void removeFollowingPost(HttpSession session, @RequestParam String userId) {
         Follow.removeFollowing(userId, session.getAttribute("userId").toString());
     }
 
     @RequestMapping("/followed")
     public ModelAndView followedList(HttpSession session) {
-        List<User> followedList = Follow.getFollowedList( session.getAttribute("userId").toString() );
+        List<User> followedList = Follow.getFollowedList(session.getAttribute("userId").toString());
         ModelAndView mv = new ModelAndView();
-        mv.addObject("followedList", followedList );
+        mv.addObject("followedList", followedList);
         return mv;
     }
 
@@ -64,51 +66,55 @@ public class FollowController {
     }
     */
 
-    @RequestMapping("/first_following") @ResponseBody
-    public List<User> firstFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower ) {
+    @RequestMapping("/first_following")
+    @ResponseBody
+    public List<User> firstFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower) {
         List<User> followings = Follow.nFollowedInLimits(user, follower, null, "10");
         return followings;
     }
 
-    @RequestMapping("/more_following") @ResponseBody
-    public List<User> moreFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower ,@RequestParam String from) {
+    @RequestMapping("/more_following")
+    @ResponseBody
+    public List<User> moreFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower, @RequestParam String from) {
         List<User> followings = Follow.nFollowedInLimits(user, follower, from, "10");
         return followings;
     }
 
-    @RequestMapping("/first_follower") @ResponseBody
-    public List<User> firstFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower ) {
+    @RequestMapping("/first_follower")
+    @ResponseBody
+    public List<User> firstFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower) {
         List<User> followings = Follow.nFollowingInLimits(user, follower, null, "10");
         return followings;
     }
 
-    @RequestMapping("/more_follower") @ResponseBody
-    public List<User> moreFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower ,@RequestParam String from) {
+    @RequestMapping("/more_follower")
+    @ResponseBody
+    public List<User> moreFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower, @RequestParam String from) {
         List<User> followings = Follow.nFollowingInLimits(user, follower, from, "10");
         return followings;
     }
 
     @RequestMapping("/follower")
     public ModelAndView followerList(HttpSession session) {
-        List<User> followerList = Follow.getFollowerList( session.getAttribute("userId").toString() );
+        List<User> followerList = Follow.getFollowerList(session.getAttribute("userId").toString());
         ModelAndView mv = new ModelAndView();
-        mv.addObject("followerList", followerList );
+        mv.addObject("followerList", followerList);
         return mv;
     }
 
     @RequestMapping("/profile/follower")
-    public ModelAndView getSpecificUsersFollowers(String userId){
-        List<User> ret = Follow.getFollowerList( userId );
+    public ModelAndView getSpecificUsersFollowers(String userId) {
+        List<User> ret = Follow.getFollowerList(userId);
         ModelAndView mv = new ModelAndView("/follower");
-        mv.addObject( "followerList" , ret );
+        mv.addObject("followerList", ret);
         return mv;
     }
 
     @RequestMapping("/profile/followed")
-    public ModelAndView getSpecificUsersFollowed(String userId){
-        List<User> ret = Follow.getFollowedList( userId );
+    public ModelAndView getSpecificUsersFollowed(String userId) {
+        List<User> ret = Follow.getFollowedList(userId);
         ModelAndView mv = new ModelAndView("/followed");
-        mv.addObject( "followedList" , ret );
+        mv.addObject("followedList", ret);
         return mv;
     }
 

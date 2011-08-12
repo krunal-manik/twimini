@@ -25,16 +25,16 @@ import java.util.List;
 @Controller
 public class FollowAPI {
 
-    @RequestMapping( "/api/{username}/followers" )
+    @RequestMapping("/api/{username}/followers")
     @ResponseBody
-    public static Hashtable<String,Object> getFollowerList( @PathVariable String username ) {
-        Hashtable<String,Object> followers = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> getFollowerList(@PathVariable String username) {
+        Hashtable<String, Object> followers = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             List<User> userList = Follow.getFollowerList(String.valueOf(user.getUserId()));
             List<UserProfile> followerList = new ArrayList<UserProfile>();
-            for( User u : userList ) {
-                followerList.add( new UserProfile(u) );
+            for (User u : userList) {
+                followerList.add(new UserProfile(u));
             }
             followers.put("followers", followerList);
             followers.put("success", "true");
@@ -50,15 +50,15 @@ public class FollowAPI {
         return followers;
     }
 
-    @RequestMapping( "/api/{username}/following" )
+    @RequestMapping("/api/{username}/following")
     @ResponseBody
-    public static Hashtable<String,Object> getFollowingList( @PathVariable String username ) {
-        Hashtable<String,Object> following = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> getFollowingList(@PathVariable String username) {
+        Hashtable<String, Object> following = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             List<User> userList = Follow.getFollowedList(String.valueOf(user.getUserId()));
             List<UserProfile> followingList = new ArrayList<UserProfile>();
-            for( User u : userList ) {
+            for (User u : userList) {
                 followingList.add(new UserProfile(u));
             }
             following.put("followers", followingList);
@@ -75,16 +75,16 @@ public class FollowAPI {
         return following;
     }
 
-    @RequestMapping( "/api/{username}/follow" )
+    @RequestMapping("/api/{username}/follow")
     @ResponseBody
-    public static Hashtable<String,Object> followUser( @PathVariable String username , String toFollow , String token ) {
-        Hashtable<String,Object> followStatus = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> followUser(@PathVariable String username, String toFollow, String token) {
+        Hashtable<String, Object> followStatus = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             User userToFollow = UserAuthentication.getUserByUsername(toFollow);
             boolean success = Follow.addFollowing(String.valueOf(userToFollow.getUserId()),
                     String.valueOf(user.getUserId()));
-            if( !success )
+            if (!success)
                 throw new Exception();
             followStatus.put("success", "true");
             followStatus.put("status code", "200 OK");
@@ -99,16 +99,16 @@ public class FollowAPI {
         return followStatus;
     }
 
-    @RequestMapping( "/api/{username}/unfollow" )
+    @RequestMapping("/api/{username}/unfollow")
     @ResponseBody
-    public static Hashtable<String,Object> unFollowUser( @PathVariable String username , String toUnFollow , String token ) {
-        Hashtable<String,Object> unfollowStatus = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> unFollowUser(@PathVariable String username, String toUnFollow, String token) {
+        Hashtable<String, Object> unfollowStatus = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.getUserByUsername(username);
             User userToFollow = UserAuthentication.getUserByUsername(toUnFollow);
             boolean success = Follow.removeFollowing(String.valueOf(userToFollow.getUserId()),
                     String.valueOf(user.getUserId()));
-            if( !success )
+            if (!success)
                 throw new Exception();
             unfollowStatus.put("success", "true");
             unfollowStatus.put("status code", "200 OK");

@@ -15,7 +15,8 @@ public class Contact {
     public Contact() {
         status = "Follow";
     }
-    public Contact( String name , String email , String status ) {
+
+    public Contact(String name, String email, String status) {
         this.name = name;
         this.email = email;
         this.status = status;
@@ -33,15 +34,15 @@ public class Contact {
         return status;
     }
 
-    public void setEmail( String email ){
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setStatus( String status ) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -20,17 +20,18 @@ public class User {
     String email;
     String followStatus;
 
-    public User(){
+    public User() {
         followStatus = "Follow";
     }
 
     public static final RowMapper<User> rowMapper = new RowMapper<User>() {
-        @Override public User mapRow( ResultSet rs , int i ) throws SQLException {
+        @Override
+        public User mapRow(ResultSet rs, int i) throws SQLException {
             return new User(rs);
         }
     };
 
-    public User( ResultSet rs ) throws SQLException {
+    public User(ResultSet rs) throws SQLException {
         userId = rs.getInt("user_id");
         username = rs.getString("username");
         name = rs.getString("name");
@@ -38,23 +39,23 @@ public class User {
         email = rs.getString("email");
     }
 
-    public int getUserId(){
+    public int getUserId() {
         return userId;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return email;
     }
 
@@ -62,27 +63,27 @@ public class User {
         return followStatus;
     }
 
-    public void setUserId( int userId ){
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public void setUsername( String username ){
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setPassword( String password ){
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setName( String name ){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setEmail( String email ){
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setFollowStatus( String followStatus ) {
+    public void setFollowStatus(String followStatus) {
         this.followStatus = followStatus;
     }
 }

@@ -89,3 +89,5 @@ CREATE TABLE retweets(
 	FOREIGN KEY (original_user_id) REFERENCES User(user_id),
 	FOREIGN KEY (tweet_id) REFERENCES Tweets(tweet_id)
 );
+
+ALTER TABLE follower_followed ADD COLUMN last_followed timestamp NULL;

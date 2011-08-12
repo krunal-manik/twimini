@@ -24,199 +24,183 @@ public class UserAuthentication {
     private static SimpleJdbcTemplate db;
 
     @Autowired
-    public UserAuthentication(SimpleJdbcTemplate db){
+    public UserAuthentication(SimpleJdbcTemplate db) {
         this.db = db;
     }
 
-    public static User authenticateUser( String username , String password ){
-        System.out.println( username + password );
+    public static User authenticateUser(String username, String password) {
+        System.out.println(username + password);
         User data = null;
-        try{
-            data = db.queryForObject( "SELECT user_id, username , password from user where username = ?",
+        try {
+            data = db.queryForObject("SELECT user_id, username , password from user where username = ?",
                     new RowMapper<User>() {
                         @Override
                         public User mapRow(ResultSet rs, int i) throws SQLException {
                             User ret = new User();
-                            ret.setUserId( rs.getInt("user_id"));
+                            ret.setUserId(rs.getInt("user_id"));
                             ret.setUsername(rs.getString("username"));
                             ret.setPassword(rs.getString("password"));
                             return ret;
                         }
-                    }, username );
-        }
-        catch( EmptyResultDataAccessException ex ){
-        }
-        catch( Exception ex ){
-            System.out.println( "Bug in user authentication :((" );
+                    }, username);
+        } catch (EmptyResultDataAccessException ex) {
+        } catch (Exception ex) {
+            System.out.println("Bug in user authentication :((");
             ex.printStackTrace();
         }
-        if( data == null )return data;
+        if (data == null) return data;
         return data.getPassword().equals(password) ? data : null;
     }
 
-    public static void registerUser( String username , String password , String name , String email ){
-        try{
+    public static void registerUser(String username, String password, String name, String email) {
+        try {
             db.update("INSERT INTO User(username,password,name,email) VALUES ( ? , ? , ? , ? )", username, password, name, email);
-        }
-        catch( Exception ex ){
-            System.out.println( "Register User Exception :((((((" );
+        } catch (Exception ex) {
+            System.out.println("Register User Exception :((((((");
             ex.printStackTrace();
         }
     }
 
-    public static User getUserByUsername( String username ) {
-        if( username == null )
+    public static User getUserByUsername(String username) {
+        if (username == null)
             return null;
         User data = null;
-        try{
-            data = db.queryForObject( "SELECT * from user where username = ?",
+        try {
+            data = db.queryForObject("SELECT * from user where username = ?",
                     new RowMapper<User>() {
                         @Override
                         public User mapRow(ResultSet rs, int i) throws SQLException {
                             User ret = new User();
-                            ret.setUserId( rs.getInt("user_id"));
+                            ret.setUserId(rs.getInt("user_id"));
                             ret.setUsername(rs.getString("username"));
                             ret.setPassword(rs.getString("password"));
                             ret.setName(rs.getString("name"));
                             ret.setEmail(rs.getString("email"));
                             return ret;
                         }
-                    }, username );
-        }
-        catch( EmptyResultDataAccessException ex ){
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in user exists :(( " );
+                    }, username);
+        } catch (EmptyResultDataAccessException ex) {
+        } catch (Exception ex) {
+            System.out.println("Bug in user exists :(( ");
             ex.printStackTrace();
         }
         return data;
     }
 
-    public static User getPassword( String email ){
+    public static User getPassword(String email) {
         User data = null;
-        try{
-            data = db.queryForObject( "SELECT user_id, username , password from user where email = ?",
+        try {
+            data = db.queryForObject("SELECT user_id, username , password from user where email = ?",
                     new RowMapper<User>() {
                         @Override
                         public User mapRow(ResultSet rs, int i) throws SQLException {
                             User ret = new User();
-                            ret.setUserId( rs.getInt("user_id"));
+                            ret.setUserId(rs.getInt("user_id"));
                             ret.setUsername(rs.getString("username"));
                             ret.setPassword(rs.getString("password"));
                             return ret;
                         }
-                    }, email );
-        }
-        catch( EmptyResultDataAccessException ex ){
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in user exists :(( " );
+                    }, email);
+        } catch (EmptyResultDataAccessException ex) {
+        } catch (Exception ex) {
+            System.out.println("Bug in user exists :(( ");
             ex.printStackTrace();
         }
         return data;
     }
 
-    public static void insertToken( User user , String token ) {
+    public static void insertToken(User user, String token) {
 
-        try{
-            db.update( "INSERT into tokens values( ? , ? , NOW() )" , user.getUsername() , token );
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in insertToken :(( " );
+        try {
+            db.update("INSERT into tokens values( ? , ? , NOW() )", user.getUsername(), token);
+        } catch (Exception ex) {
+            System.out.println("Bug in insertToken :(( ");
             ex.printStackTrace();
         }
     }
 
-    public static boolean tokenExists( String username , String token ) {
+    public static boolean tokenExists(String username, String token) {
         int count = 0;
-        try{
-            count = db.queryForInt( "SELECT count(*) from tokens where username = ? and token = ? " ,
-                    username , token );
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in tokenExists :(( " );
+        try {
+            count = db.queryForInt("SELECT count(*) from tokens where username = ? and token = ? ",
+                    username, token);
+        } catch (Exception ex) {
+            System.out.println("Bug in tokenExists :(( ");
             ex.printStackTrace();
         }
         return count == 1;
     }
 
-    public static void deleteToken( String username , String token ) {
-        try{
-            db.update( "delete from tokens where username = ? and token = ? " ,
-                    username , token );
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in deleteToken :(( " );
+    public static void deleteToken(String username, String token) {
+        try {
+            db.update("delete from tokens where username = ? and token = ? ",
+                    username, token);
+        } catch (Exception ex) {
+            System.out.println("Bug in deleteToken :(( ");
             ex.printStackTrace();
         }
     }
 
-    public static void updatePassword( String username , String password ) {
-        try{
-            db.update( "update user set password = ? where username = ?" ,
-                    password , username );
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in updatePassword :(( " );
+    public static void updatePassword(String username, String password) {
+        try {
+            db.update("update user set password = ? where username = ?",
+                    password, username);
+        } catch (Exception ex) {
+            System.out.println("Bug in updatePassword :(( ");
             ex.printStackTrace();
         }
     }
 
-    public static void registerTemporaryUser( String username, String password, String name , String email , String token ) {
-        try{
-            db.update( "insert into temp_user values ( ? , ? , ? , ? , ? )" ,
-                    username , password , name , email , token );
-            System.out.println( "Temp user regd" );
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in updatePassword :(( " );
+    public static void registerTemporaryUser(String username, String password, String name, String email, String token) {
+        try {
+            db.update("insert into temp_user values ( ? , ? , ? , ? , ? )",
+                    username, password, name, email, token);
+            System.out.println("Temp user regd");
+        } catch (Exception ex) {
+            System.out.println("Bug in updatePassword :(( ");
             ex.printStackTrace();
         }
     }
 
-    public static User makeUserPermanent( String token ) {
+    public static User makeUserPermanent(String token) {
         User user = null;
-        try{
-            Map<String,Object> t = db.queryForList("select * from temp_user where token = ?", token ).get(0);
-            db.update( "INSERT into user (username,password,name,email) VALUES ( ? , ? , ? , ? )" ,
-                    t.get("username").toString() , t.get("password").toString() ,
-                    t.get("name").toString() , t.get("email").toString() );
-            db.update( "delete from temp_user where token = ? " , token );
+        try {
+            Map<String, Object> t = db.queryForList("select * from temp_user where token = ?", token).get(0);
+            db.update("INSERT into user (username,password,name,email) VALUES ( ? , ? , ? , ? )",
+                    t.get("username").toString(), t.get("password").toString(),
+                    t.get("name").toString(), t.get("email").toString());
+            db.update("delete from temp_user where token = ? ", token);
             user = UserAuthentication.getUserByUsername(t.get("username").toString());
 
-        }
-        catch( EmptyResultDataAccessException ex ) {
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in makeUserPermanent :(( " );
+        } catch (EmptyResultDataAccessException ex) {
+        } catch (Exception ex) {
+            System.out.println("Bug in makeUserPermanent :(( ");
             ex.printStackTrace();
         }
         return user;
     }
 
     public static User getUserByEmail(String email) {
-        if( email == null )
+        if (email == null)
             return null;
         User data = null;
-        try{
-            data = db.queryForObject( "SELECT * from user where email = ?",
+        try {
+            data = db.queryForObject("SELECT * from user where email = ?",
                     new RowMapper<User>() {
                         @Override
                         public User mapRow(ResultSet rs, int i) throws SQLException {
                             User ret = new User();
-                            ret.setUserId( rs.getInt("user_id"));
+                            ret.setUserId(rs.getInt("user_id"));
                             ret.setUsername(rs.getString("username"));
                             ret.setPassword(rs.getString("password"));
                             ret.setName(rs.getString("name"));
                             ret.setEmail(rs.getString("email"));
                             return ret;
                         }
-                    }, email );
-        }
-        catch( EmptyResultDataAccessException ex ){
-        }
-        catch( Exception ex ) {
-            System.out.println( "Bug in email exists :(( " );
+                    }, email);
+        } catch (EmptyResultDataAccessException ex) {
+        } catch (Exception ex) {
+            System.out.println("Bug in email exists :(( ");
             ex.printStackTrace();
         }
         return data;
