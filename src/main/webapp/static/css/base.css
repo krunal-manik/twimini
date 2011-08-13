@@ -362,3 +362,8 @@ a{
     display: none;
 }
 
+.error-field {
+    font-size: 12px;
+    color: red;
+    height: 36px;
+}

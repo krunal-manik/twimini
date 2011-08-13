@@ -3,6 +3,8 @@
     <%@include file="/static/includes.html" %>
 </head>
 <body>
+<input  type="text" name="pattern" id = "pattern" onkeyup="getSearchResults()"/>
+<br>
     <form action="/email" method=post>
         <input type="text" name = "email" value = "" />
         <input type="Submit" />

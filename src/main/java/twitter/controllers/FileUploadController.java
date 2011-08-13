@@ -60,47 +60,25 @@ public class FileUploadController {
         if (session.getAttribute("username") == null) {
             return new ModelAndView("/error404");
         } else {
-            final String username = session.getAttribute("username").toString();
-            return new ModelAndView("/profile-edit") {{
-                addObject("image", "/photos/" + username + ".jpg");
-            }};
+            String username = session.getAttribute("username").toString();
+            ModelAndView mv = new ModelAndView("/profile-edit");
+            mv.addObject( "image" , "/photos/" + username + ".jpg" );
+            User user = UserAuthentication.getUserByUsername( username );
+            mv.addObject("name",user.getName());
+            mv.addObject("aboutMe",user.getAboutMe());
+            return mv;
         }
     }
-
-    @RequestMapping(value = "/upload_image", method = RequestMethod.POST)
-    public void uploadImage(HttpSession session, @RequestParam MultipartFile file) throws Exception {
-        final String username = session.getAttribute("username").toString();
-        String photoPath = prefixPath + session.getAttribute("username").toString() + ".jpg";
-        try {
-            File photo = new File(photoPath);
-
-            if (photo.exists()) {
-                photo.delete();
-            }
-            photo.createNewFile();
-
-            if (!file.isEmpty()) {
-                byte imagesBytes[] = file.getBytes();
-                FileOutputStream outputStream = new FileOutputStream(photo);
-                outputStream.write(imagesBytes);
-                outputStream.close();
-            }
-        } catch (Exception ex) {
-            System.out.println("Bug in fileupload :(");
-            ex.printStackTrace();
-        }
-    }
-
 
     @RequestMapping(value = "/edit_profile", method = RequestMethod.POST)
-    public ModelAndView uploadPost(HttpSession session, @RequestParam MultipartFile file, @RequestParam String name, @RequestParam String username, @RequestParam String email) throws Exception {
-        final String usrname = session.getAttribute("username").toString();
-        String photoPath = prefixPath + session.getAttribute("username").toString() + ".jpg";
-        ModelAndView mv = new ModelAndView("profile-edit");
+    public ModelAndView uploadPost(HttpSession session, @RequestParam MultipartFile file, @RequestParam String name, @RequestParam String aboutMe) throws Exception {
+        String username = session.getAttribute("username").toString();
+        String photoPath = prefixPath + username + ".jpg";
+        ModelAndView mv = new ModelAndView("/profile-edit");
         try {
             File photo = new File(photoPath);
 
-            if (photo.exists()) {
+            if ( photo.exists()) {
                 photo.delete();
             }
             photo.createNewFile();
@@ -110,12 +88,14 @@ public class FileUploadController {
                 FileOutputStream outputStream = new FileOutputStream(photo);
                 outputStream.write(imagesBytes);
                 outputStream.close();
-                mv.addObject("image", "/photos/" + usrname + ".jpg");
             }
         } catch (Exception ex) {
             System.out.println("Bug in fileupload :(");
             ex.printStackTrace();
         }
+
+        UserAuthentication.updateUserInformation( username , name , aboutMe );
+        mv.setViewName("redirect:/edit_profile");
         return mv;
     }
 
@@ -197,6 +177,11 @@ public class FileUploadController {
         }
 
         return contactList;
+    }
+
+    @RequestMapping("/test")
+    public ModelAndView tp(){
+        return new ModelAndView("/testing");
     }
 
 }

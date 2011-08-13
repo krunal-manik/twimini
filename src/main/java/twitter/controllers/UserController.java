@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,21 +48,180 @@ public class UserController {
 
     public UserController() {
     }
+	public static boolean isValidEmailAddress(String emailAddress)
+	{
+		String  expression=""+
+			"(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t]"+
+			")+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:"+
+			"\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:("+
+			"?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?["+
+			"\\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\0"+
+			"31]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\"+
+			"](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+"+
+			"(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:"+
+			"(?:\\r\\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z"+
+			"|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)"+
+			"?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\"+
+			"r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?["+
+			"\\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)"+
+			"?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t]"+
+			")*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?["+
+			"\\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*"+
+			")(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t]"+
+			")+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)"+
+			"*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+"+
+			"|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r"+
+			"\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:"+
+			"\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t"+
+			"]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031"+
+			"]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\]("+
+			"?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?"+
+			":(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?"+
+			":\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*)|(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?"+
+			":(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?"+
+			"[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*:(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()<>@,;:\\\\\".\\[\\]"+
+			"\\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|"+
+			"\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>"+
+			"@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\""+
+			"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t]"+
+			")*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\"+
+			"\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?"+
+			":[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\["+
+			"\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\n)?[ \\t])*))*|(?:[^()<>@,;:\\\\\".\\[\\] \\000-"+
+			"\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|("+
+			"?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()<>@,;"+
+			":\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[(["+
+			"^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\""+
+			".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\"+
+			"]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\"+
+			"[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\"+
+			"r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\]"+
+			"\\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]"+
+			"|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()<>@,;:\\\\\".\\[\\] \\0"+
+			"00-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\"+
+			".|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\n)?[ \\t])*(?:[^()<>@,"+
+			";:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?"+
+			":[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*"+
+			"(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\"."+
+			"\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:["+
+			"^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]"+
+			"]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:(?:\\r\\n)?[ \\t])*)(?:,\\s*("+
+			"?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\"+
+			"\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:("+
+			"?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=["+
+			"\\[\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t"+
+			"])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t"+
+			"])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?"+
+			":\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|"+
+			"\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:"+
+			"[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\"+
+			"]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\<(?:(?:\\r\\n)"+
+			"?[ \\t])*(?:@(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\""+
+			"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)"+
+			"?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>"+
+			"@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?["+
+			 "\\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,"+
+			";:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t]"+
+			")*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\"+
+			"\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?"+
+			"(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()<>@,;:\\\\\"."+
+			"\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:"+
+			"\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\["+
+			"\"()<>@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])"+
+			"*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])"+
+			"+|\\Z|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\"+
+			".(?:(?:\\r\\n)?[ \\t])*(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z"+
+			"|(?=[\\[\"()<>@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\>(?:("+
+			"?:\\r\\n)?[ \\t])*))*)?;\\s*)";
 
-    @RequestMapping(value = {"/", "/login"})
-    public ModelAndView loginGet(HttpSession session) {
+		CharSequence inputStr = emailAddress;
+
+		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(inputStr);
+
+		return matcher.matches();
+	}
+
+    public static String validateName( String name ) {
+        for(int i=0;i<name.length();i++)
+            if( !(Character.isLetter(name.charAt(i)) || name.charAt(i) == ' ') )
+                return "Name should only contain charcters a-z,' ',A-Z";
+        return " ";
+    }
+
+    public static String validateUsername( String username ) {
+        System.out.println( username );
+        for(int i=0;i<username.length();i++)
+            if( !(Character.isLowerCase(username.charAt(i)) ||
+                    username.charAt(i) == '-' ||
+                    Character.isDigit(username.charAt(i)) ) )
+                return "Username should only contain characters a-z,'-',0-9";
+        return " ";
+    }
+
+    public static String validatePassword( String password ) {
+        if( password.length() < 6 )
+            return "Password length should be minimum 6 characters";
+        String specialCharacters = "\"/\\#%;:\'~`<>";
+        for(int i=0;i<password.length();i++)
+            if( specialCharacters.indexOf(password.charAt(i)) != -1 )
+                return specialCharacters + " not allowed for password";
+        return " ";
+    }
+
+    public static String validateEmailAddress( String email ) {
+        if( isValidEmailAddress(email) )
+            return " ";
+        return "Invalid email address";
+    }
+
+
+    @RequestMapping(value = "/" )
+    public ModelAndView landingPageGet(HttpSession session) {
         if (session.getAttribute("username") == null)
             return new ModelAndView("/login");
         return TweetController.tweetsList(session);
     }
 
-    @RequestMapping(value = {"/", "/login"}, method = RequestMethod.POST)
-    public ModelAndView login(@RequestParam("username") String username,
+    @RequestMapping( value = "/login" )
+    public ModelAndView loginGet(HttpSession session) {
+        ModelAndView mv = new ModelAndView("/login-new-attempt");
+        if( session.getAttribute("username") != null )
+            mv.setViewName("redirect:/");
+        return mv;
+    }
+
+    @RequestMapping( value = "/login" , method = RequestMethod.POST )
+    public ModelAndView login(@RequestParam String username , @RequestParam String password , HttpSession session) {
+        if( session.getAttribute("username") != null ) {
+            ModelAndView mv = new ModelAndView();
+            mv.setViewName("redirect:/");
+            return mv;
+        }
+
+        ModelAndView mv = new ModelAndView("/login-new-attempt");
+        String usernameError = validateUsername(username);
+        User user = UserAuthentication.authenticateUser(username,password);
+        if( user != null && usernameError.equals(" ") ) {
+            session.setAttribute("userId" , user.getUserId());
+            session.setAttribute("username",user.getUsername());
+            mv.setViewName("redirect:/");
+        } else {
+            mv.addObject("usernameError",usernameError);
+            mv.addObject("loginError","Invalid username/password combination");
+        }
+        return mv;
+
+
+    }
+    @RequestMapping(value ="/", method = RequestMethod.POST)
+    public ModelAndView landingPage(@RequestParam("username") String username,
                               @RequestParam("password") String password,
                               HttpSession session) {
 
-        if (session.getAttribute("username") != null)
+        if (session.getAttribute("username") != null) {
             return TweetController.tweetsList(session);
+        }
 
         ModelAndView mv = new ModelAndView("/login");
         User currentUser = UserAuthentication.authenticateUser(username, password);
@@ -73,18 +235,44 @@ public class UserController {
         return mv;
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String registerGet() {
-        return "register";
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    public ModelAndView signUpGet(HttpSession session) {
+        ModelAndView mv = new ModelAndView("/register");
+        if( session.getAttribute("username") != null )
+            mv.setViewName("redirect:/");
+        return mv;
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ModelAndView register(@RequestParam("username") String username,
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+    public ModelAndView signup(@RequestParam("username") String username,
                                  @RequestParam("password") String password,
+                                 @RequestParam("confirm_password") String confirmPassword,
                                  @RequestParam("name") String name,
                                  @RequestParam("email") String email,
                                  HttpSession session) {
-
+        if( session.getAttribute("username") != null ) {
+            ModelAndView mv = new ModelAndView();
+            mv.setViewName("redirect:/");
+            return mv;
+        }
+        String usernameError = validateUsername(username);
+        String nameError = validateName(name);
+        String passwordError = validatePassword(password);
+        String emailError = validateEmailAddress(email);
+        String passwordsError = password.equals(confirmPassword) ? " " : "Passwords don't match";
+        boolean noErrors = usernameError.equals(" ") && nameError.equals(" ") && passwordError.equals(" ") && emailError.equals( " " ) && passwordsError.equals(" ");
+        if( !noErrors ) {
+            ModelAndView mv = new ModelAndView("/register");
+            mv.addObject("usernameError" , usernameError);
+            mv.addObject("emailError" , emailError);
+            mv.addObject("passwordError" , passwordError);
+            mv.addObject("nameError" , nameError);
+            mv.addObject("passwordsError" , passwordsError);
+            mv.addObject("name",name);
+            mv.addObject("username",username);
+            mv.addObject("email",email);
+            return mv;
+        }
         String registerToken = getRandomToken();
         UserAuthentication.registerTemporaryUser(username, password, name, email, registerToken);
         emailSender.sendMail("manikkrunal@gmail.com", email, "Activate your twitter account",
@@ -109,6 +297,9 @@ public class UserController {
         session.setAttribute("userId", user.getUserId());
         String session_userId = session.getAttribute("userId").toString();
         ModelAndView mv = new ModelAndView("/login");
+        mv.setViewName("redirect:/");
+        return mv;
+        /*
         mv.addObject("followerList", 0);
         mv.addObject("followedList", 0);
         if (session.getAttribute("userId") != null) {
@@ -116,7 +307,8 @@ public class UserController {
             session_userId = session.getAttribute("userId").toString();
             mv.addObject("allUserList", Follow.allUsersList(session_userId));
         }
-        return mv;
+        mv.setViewName("redirect:/");
+        return mv;*/
     }
 
     @RequestMapping("/logout")
@@ -128,7 +320,7 @@ public class UserController {
 
     @RequestMapping("/search_user")
     @ResponseBody
-    public List<User> search_user(HttpSession session, @RequestParam final String pattern) {
+    public List<User> search_user(HttpSession session, @RequestParam String pattern) {
         System.out.println("session userId is null -> " + session.getAttribute("userId") == null);
         List<User> userList = Follow.allUsersListbyPattern(pattern, session.getAttribute("userId").toString());
         return userList;
@@ -136,6 +328,7 @@ public class UserController {
 
     @RequestMapping("/{username}")
     public ModelAndView getUserProfile(@PathVariable String username, HttpSession session) {
+
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
         if (urlMappedUser == null) {
             ModelAndView mv = new ModelAndView("/error404");

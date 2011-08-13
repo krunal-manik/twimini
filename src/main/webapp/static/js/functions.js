@@ -396,3 +396,24 @@ var moreTweets = function(container) {
     var ts = dijit.byId(lastId).getTimestamp();
     nTweetsBeforeTimestamp(ts, 2);
 }
+
+function getSearchResults() {
+    dojo.xhrGet({
+         url : "/search_user",
+         content:{pattern:dojo.byId('pattern').value},
+         handleAs:'json',
+         load : function(data) {
+             var k = new Array();
+             alert(data.length);
+             for(var i=0;i<data.length;i++) {
+                 var c = JSON.parse( JSON.stringify(data[i]) );
+                 k[i] = c.name;
+             }
+             var xx = [ 'a' , 'b' ];
+             $("#pattern").autocomplete({source: xx});
+         },
+         error : function(data) {
+           alert( 'error ' + data );
+         }
+    });
+}

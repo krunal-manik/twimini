@@ -28,7 +28,7 @@
         <%@include file="/WEB-INF/jsp/header.jsp" %>
 
         <div class = "container body">
-            <div class="prepend-2 span-8 append-4">
+            <div class="prepend-2 span-8 append-14 last">
                 <div class="empty_box" style="height:20px; width:100%"></div>
 
                 Update Your Profile <br><br>
@@ -38,21 +38,35 @@
                 <form action="/edit_profile" method="post" enctype="multipart/form-data" style="padding-top: 10px;">
                     <input type="file" name="file" />
                     <br>
-                    <div class="span-3 append-1"> Full Name </div>
-                    <div class="span-4 last"> <input type="text" name="name" value= "" class="textbox" /> </div>
-                    <div class="span-3 append-1"> Username </div>
-                    <div class="span-4 last"> <input type="text" name="username" value="" class="textbox" /> </div>
-                    <div class="span-3 append-1"> Email address </div>
-                    <div class="span-4 last"> <input type="email" name="email" value = "" class="textbox" /> </div>
-                    <div class="span-3 prepend-5 last"> <input type="Submit" value="SAVE" class="signup_button"/> </div>
+                    <div class="span-3 append-1">
+                        <label for="Full Name">
+                            Full Name
+                        </label>
+                    </div>
+                    <div class="span-4 last">
+                        <input type="text" name="name" value="${name}" class="textbox" />
+                    </div>
+                   <div class="span-3 append-1">
+                       <label for="Username">
+                            Username
+                        </label>
+                   </div>
+                   <div class="span-4 last">
+                        <input type="text" name="username" value="<%= session.getAttribute("username").toString() %>" class="textbox" />
+                   </div>
+                   <div class="span-3 append-1">
+                        <label for="aboutMe">
+                            About Me
+                        </label>
+                   </div>
+                   <div class="span-4 last">
+                        <textarea rows="4" cols="10" name="aboutMe">${aboutMe}</textarea>
+                   </div>
+                   <div class="span-3 prepend-5 last">
+                        <input type="Submit" value="SAVE" class="signup_button"/>
+                   </div>
                 </form>
             </div>
-            <div class="span-6 append-2 last">
-                 <div class="empty_box" style="height:150px; width:100%"></div>
-                 <img src="/static/images/twitter_bird.gif" />
-            </div>
         </div>
-
-
     </body>
 </html>

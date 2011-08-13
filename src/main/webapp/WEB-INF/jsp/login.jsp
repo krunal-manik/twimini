@@ -4,28 +4,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-    <%@include file="/static/includes.html" %>
-    <!--
-    <script type="text/javascript">
-
-        $(document).ready( function() {
-            var queryString = window.location.hash.substr( 1 );
-            if( queryString != '' && queryString != null ) {
-                $.ajax({
-                   type : "GET",
-                   url :  "/gmail" ,
-                   data : queryString ,
-                   success : function() {
-                       if (window.location.hash||hash.replace("#","")!=="")
-                           window.location.hash = hash;
-                   }
-                });
-            }
-            window.location.hash = "";
-        });
-
-    </script>
-        -->
+        <%@include file="/static/includes.html" %>
     </head>
 
     <body>
@@ -39,18 +18,50 @@
         <div class="prepend-8 span-8 last">
                 <div class="empty_box" style="height:100px; width=100%"></div>
                 Want to Tweet? Join us.<br>
-                <form action="/register" method="post" style="padding-top: 10px;">
-                    <div class="span-3 append-1"> Full Name </div>
-                    <div class="span-4 last"> <input type="text" name="name" value= "" class="textbox" /> </div>
-                    <div class="span-3 append-1"> Username </div>
-                    <div class="span-4 last"> <input type="text" name="username" value="" class="textbox" /> </div>
-                    <div class="span-3 append-1"> Email address </div>
-                    <div class="span-4 last"> <input type="email" name="email" value = "" class="textbox" /> </div>
-                    <div class="span-3 append-1"> Password </div>
-                    <div class="span-4 last"> <input type="password" name="password" class="textbox" /> </div>
-                    <div class="span-3 append-1"> Confirm password </div>
-                    <div class="span-4 last"> <input type="password" name="password2" class="textbox" /> </div>
-                    <div class="span-3 prepend-5 last"> <input type="Submit" value="Sign up" class="signup_button"/> </div>
+                <form action="/signup" method="post" style="padding-top: 10px;">
+                    <div class="span-3 append-1">
+                        <label for="Full Name">
+                            Full Name
+                        </label>
+                    </div>
+                    <div class="span-4 last">
+                        <input type="text" name="name" value= "" class="textbox" />
+                    </div>
+                    <div class="span-3 append-1">
+                        <label for="Username">
+                            Username
+                        </label>
+                    </div>
+                    <div class="span-4 last">
+                        <input type="text" name="username" value="" class="textbox" />
+                    </div>
+                    <div class="span-3 append-1">
+                        <label for="Email address">
+                            Email address
+                        </label>
+                    </div>
+                    <div class="span-4 last">
+                        <input type="email" name="email" value = "" class="textbox" />
+                    </div>
+                    <div class="span-3 append-1">
+                        <label for="Password">
+                            Password
+                        </label>
+                    </div>
+                    <div class="span-4 last">
+                        <input type="password" name="password" class="textbox" />
+                    </div>
+                    <div class="span-3 append-1">
+                        <label for="Confirm password">
+                            Confirm password
+                        </label>
+                    </div>
+                    <div class="span-4 last">
+                        <input type="password" name="confirm_password" class="textbox" />
+                    </div>
+                    <div class="span-3 prepend-5 last">
+                        <input type="Submit" value="Sign up" class="signup_button"/>
+                    </div>
                 </form>
         </div>
     </div>

@@ -13,12 +13,13 @@ import java.sql.SQLException;
  * To change this template use File | Settings | File Templates.
  */
 public class User {
-    int userId;
-    String username;
-    String name;
-    String password;
-    String email;
-    String followStatus;
+    private int userId;
+    private String username;
+    private String name;
+    private String password;
+    private String email;
+    private String followStatus;
+    private String aboutMe;
 
     public User() {
         followStatus = "Follow";
@@ -85,5 +86,13 @@ public class User {
 
     public void setFollowStatus(String followStatus) {
         this.followStatus = followStatus;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
     }
 }

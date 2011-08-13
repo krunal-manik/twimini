@@ -76,6 +76,7 @@ public class UserAuthentication {
                             ret.setPassword(rs.getString("password"));
                             ret.setName(rs.getString("name"));
                             ret.setEmail(rs.getString("email"));
+                            ret.setAboutMe( rs.getString("about_me"));
                             return ret;
                         }
                     }, username);
@@ -195,6 +196,7 @@ public class UserAuthentication {
                             ret.setPassword(rs.getString("password"));
                             ret.setName(rs.getString("name"));
                             ret.setEmail(rs.getString("email"));
+                            ret.setAboutMe(rs.getString("about_me"));
                             return ret;
                         }
                     }, email);
@@ -204,5 +206,13 @@ public class UserAuthentication {
             ex.printStackTrace();
         }
         return data;
+    }
+
+    public static void updateUserInformation(String username, String name, String aboutMe) {
+        try{
+            db.update("UPDATE user SET name = ?,about_me = ? WHERE username = ?",name,aboutMe,username);
+        }catch (Exception ex) {
+            System.out.println( "Bug in updating userInformation :(" );
+        }
     }
 }
