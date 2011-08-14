@@ -32,9 +32,9 @@
                 </div>
             </div>
             <br>
-            <ul id="userList">
-
-            </ul>
+            <div id="contactList">
+            </div>
+            <br>
         </div>
     </body>
 </html>

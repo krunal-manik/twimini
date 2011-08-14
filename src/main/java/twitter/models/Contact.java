@@ -8,9 +8,12 @@ package twitter.models;
  * To change this template use File | Settings | File Templates.
  */
 public class Contact {
-    String name;
-    String email;
-    String status;
+    private String name;
+    private String email;
+    private String status;
+    private String bio;
+    private String username;
+    private int userId;
 
     public Contact() {
         status = "Follow";
@@ -34,6 +37,18 @@ public class Contact {
         return status;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -46,4 +61,15 @@ public class Contact {
         this.status = status;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }

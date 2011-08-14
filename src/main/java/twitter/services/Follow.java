@@ -31,6 +31,7 @@ public class Follow {
             ret.setUserId(rs.getInt("user_id"));
             ret.setUsername(rs.getString("username"));
             ret.setName(rs.getString("name"));
+            ret.setAboutMe(rs.getString("about_me"));
             return ret;
         }
     };
@@ -45,7 +46,7 @@ public class Follow {
             return true;
         } else {
             List<User> followers = db.query(
-                    "SELECT user_id, username, name from user                      " +
+                    "SELECT user_id, username, name, about_me from user                      " +
                             "where user_id IN (select followed from follower_followed      " +
                             "where follower = ? and followed = ? AND last_followed IS NULL)",
                     Follow.rowMapperForFollow, follower, followed);
@@ -59,7 +60,7 @@ public class Follow {
         List<User> userList = null;
         try {
             userList = db.query(
-                    "SELECT user_id, username, name from user               " +
+                    "SELECT user_id, username, name, about_me from user               " +
                             "where user_id != ? and username like '" + pattern + "%'",
                     Follow.rowMapperForFollow, userId);
         } catch (Exception ex) {
@@ -72,7 +73,7 @@ public class Follow {
         List<User> userList = null;
         try {
             userList = db.query(
-                    "SELECT user_id, username, name from user                   " +
+                    "SELECT user_id, username, name, about_me from user                   " +
                             "where user_id != ? and username like '%" + pattern + "%'   " +
                             "and user_id not in (select followed from follower_followed " +
                             "where follower = ? AND last_followed IS NULL)              ",
@@ -80,7 +81,7 @@ public class Follow {
             for (int i = 0; i < userList.size(); i++)
                 userList.get(i).setFollowStatus("Follow");
             List<User> followers = db.query(
-                    "SELECT user_id, username, name from user                         " +
+                    "SELECT user_id, username, name, about_me from user                         " +
                             "where user_id != ? and username like '%" + pattern + "%'         " +
                             "and user_id IN (select followed from follower_followed           " +
                             "where follower = ? AND last_followed IS NULL)                    ",
@@ -99,14 +100,14 @@ public class Follow {
         List<User> userList = null;
         try {
             userList = db.query(
-                    "SELECT user_id, username, name from user                                      " +
+                    "SELECT user_id, username, name, about_me from user                                      " +
                             "where user_id != ? and user_id not in (select followed from follower_followed " +
                             "where follower = ? AND last_followed IS NULL)                                 ",
                     Follow.rowMapperForFollow, userId, userId);
             for (int i = 0; i < userList.size(); i++)
                 userList.get(i).setFollowStatus("Follow");
             List<User> followers = db.query(
-                    "SELECT user_id, username, name from user                                  " +
+                    "SELECT user_id, username, name, about_me from user                                  " +
                             "where user_id != ? and user_id IN (select followed from follower_followed " +
                             "where follower = ? AND last_followed IS NULL)                             ",
                     Follow.rowMapperForFollow, userId, userId);
@@ -152,7 +153,7 @@ public class Follow {
         List<User> followedList = null;
         try {
             followedList = db.query(
-                    "SELECT user_id, username, name from user                 " +
+                    "SELECT user_id, username, name, about_me from user                 " +
                             "where user_id in (SELECT followed from follower_followed " +
                             "where follower = ? AND last_followed IS NULL)            ",
                     Follow.rowMapperForFollow, userId);
@@ -182,12 +183,12 @@ public class Follow {
         List<User> loggedInFollowedList = null;
         try {
             String query =
-                    "SELECT user_id, username, name from user                 " +
+                    "SELECT user_id, username, name, about_me from user                 " +
                             "where user_id in (SELECT followed from follower_followed " +
                             "where follower = ? AND last_followed IS NULL)" +
                             numLimiter;
             followedList = db.query(query, Follow.rowMapperForFollow, userId);
-            query = "SELECT user_id, username, name from user                " +
+            query = "SELECT user_id, username, name, about_me from user                " +
                     "where user_id in (SELECT followed from follower_followed " +
                     "where follower = ? AND last_followed IS NULL)" +
                     numLimiter;
@@ -224,12 +225,12 @@ public class Follow {
         List<User> loggedInFollowedList = null;
         try {
             String query =
-                    "SELECT user_id, username, name from user                " +
+                    "SELECT user_id, username, name, about_me from user                " +
                             "where user_id in (SELECT follower from follower_followed " +
                             "where followed = ? AND last_followed IS NULL)" +
                             numLimiter;
             followedList = db.query(query, Follow.rowMapperForFollow, userId);
-            query = "SELECT user_id, username, name from user                 " +
+            query = "SELECT user_id, username, name, about_me from user                 " +
                     "where user_id in (SELECT followed from follower_followed " +
                     "where follower = ? AND last_followed IS NULL)" +
                     numLimiter;
@@ -253,7 +254,7 @@ public class Follow {
         List<User> followerList = null;
         try {
             followerList = db.query(
-                    "SELECT user_id, username, name from user                 " +
+                    "SELECT user_id, username, name, about_me from user                 " +
                             "where user_id in (SELECT follower from follower_followed " +
                             "where followed = ? AND last_followed IS NULL)            ",
                     Follow.rowMapperForFollow, userId);
@@ -272,7 +273,7 @@ public class Follow {
         List<User> followedList = null;
         try {
             followedList = db.query(
-                    "SELECT user_id, username, name from user                 " +
+                    "SELECT user_id, username, name, about_me from user                 " +
                             "where user_id in (SELECT followed from follower_followed " +
                             "where follower = ? AND last_followed IS NULL) LIMIT 0,7  ",
                     Follow.rowMapperForFollow, userId);
@@ -288,7 +289,7 @@ public class Follow {
         List<User> followerList = null;
         try {
             followerList = db.query(
-                    "SELECT user_id, username, name from user                 " +
+                    "SELECT user_id, username, name, about_me from user                 " +
                             "where user_id in (SELECT follower from follower_followed " +
                             "where followed = ? AND last_followed IS NULL) LIMIT 0,7  ",
                     Follow.rowMapperForFollow, userId);

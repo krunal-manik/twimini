@@ -30,7 +30,7 @@
                         <% } else if((session.getAttribute("username").equals(request.getAttribute("currentUsername")))) { %>
                             <div class="topbox" style="padding:17px; border:1px #AAAAAA solid">
                                 <a href="/edit_profile" class="as-link">Edit your profile</a>
-                                <div class="as-link" onclick="loadContactImporter();">Import Contacts</div>
+                                <a href="/import_contacts">Import Your Gmail Contacts</a>
                             </div>
                         <% } else { %>
                             <input type = "button" id = 'follow${currentUserId}' class = "btn border"

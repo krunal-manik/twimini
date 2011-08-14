@@ -149,11 +149,7 @@ public class FileUploadController {
 
 
         List<User> followingList = Follow.getFollowedList(session.getAttribute("userId").toString());
-        for (User u : followingList) {
-            System.out.println(u.getName());
-            System.out.println(u.getEmail());
-        }
-        System.out.println(followingList.size());
+
         ArrayList<Contact> contactList = new ArrayList<Contact>();
         for (int i = 0; i < emails.size(); i++) {
             User user = UserAuthentication.getUserByEmail(emails.get(i));
@@ -163,10 +159,13 @@ public class FileUploadController {
 
             if (user == null) {
                 contact.setStatus("Invite");
+                contact.setUsername("");
+                contact.setBio("");
             } else {
-
+                contact.setUsername(user.getUsername());
+                contact.setBio(user.getAboutMe());
+                contact.setUserId(user.getUserId());
                 for (User u : followingList) {
-                    System.out.println(u.getFollowStatus());
                     if (emails.get(i).equals(u.getEmail())) {
                         contact.setStatus("Following");
                         break;

@@ -3,6 +3,8 @@ dojo.require("js.tweetContainer");
 dojo.require("js.tweetBoxContainer");
 dojo.require("js.userBoxContainer");
 dojo.require("js.userContainer");
+dojo.require("js.contactContainer");
+
 function addTags(tweetContent) {
    var parts = tweetContent.split("@");
 
