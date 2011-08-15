@@ -60,8 +60,8 @@ public class InvitationController {
     @RequestMapping("/sendInvites")
     public ModelAndView sendInvites() {
         Invitation.makeInvitesPermanent();
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("redirect:/");
+        ModelAndView mv = new ModelAndView("/message");
+        mv.addObject("message","Invitations to the marked people would be sent shortly.");
         return mv;
     }
 }

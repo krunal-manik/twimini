@@ -20,7 +20,7 @@
         <!-- jQuery script -->
 
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.timeago.js"></script>
         <script type="text/javascript">
             dojo.ready( function() {
                dojo.parser.parse();
@@ -29,6 +29,7 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
+                updateTimestamps();
                 var queryString = window.location.hash.substr( 1 );
                 if( queryString != '' && queryString != null ) {
                     dojo.byId('contactList').innerHTML = "<img src='/static/images/loader.gif' height='66' width='66'  class='prepend-9 span-3 append-13 last' alt='Loading contacts...'/>"
@@ -51,4 +52,10 @@
                 window.location.hash = "";
             });
 
+        </script>
+
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+              jQuery("abbr.tweet_time").timeago();
+            });
         </script>

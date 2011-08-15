@@ -180,16 +180,16 @@ label{
     text-decoration: underline;
 }
 
-.tweeter_name {
+.tweeter-name {
     font-size:16px;
     color:#BBE4E4;
 }
 
-.tweet_content {
+.tweet-content {
     word-wrap:break-word;
 }
 
-.tweet_time {
+.tweet-time {
     font-size:10px;
     color:#AAAAAA;
 }
@@ -219,7 +219,7 @@ a{
     text-decoration: underline;
 }
 
-.comment_arrow {
+.comment-arrow {
     left: -17px;
     position: absolute;
     top: 20px;
@@ -293,20 +293,23 @@ a{
     text-decoration : underline;
 }
 
-.fav {
-    background: url("../images/empty_star.png") no-repeat scroll left bottom;
+.favorite {
+    background: url("../images/favorite.png") no-repeat scroll left bottom;
+}
+.favorite:hover {
+    background: url("../images/favorite_hover.png") no-repeat scroll left bottom;
 }
 
-.unfav {
-    background: url("../images/filled_star.png") no-repeat scroll left bottom;
+.unfavorite {
+    background: url("../images/favorite_on.png") no-repeat scroll left bottom;
 }
 
 
-.rep {
+.reply {
     background: url("../images/reply.png") no-repeat scroll left bottom;
 }
 
-.rt {
+.retweet {
     background: url("../images/retweet.png") no-repeat scroll left bottom;
 }
 
@@ -368,4 +371,9 @@ a{
     color: red;
     height: 36px;
     margin-top: 6px;
+}
+
+.timeago {
+    font-size:10px;
+    color:#AAAAAA;
 }

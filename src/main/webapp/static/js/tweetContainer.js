@@ -14,6 +14,8 @@ dojo.declare("js.tweetContainer",
             templateString : dojo.cache( "js/widgets", "tweetContainer.html"),
             postCreate : function() {
                 this.inherited(arguments);
+                this.args.timestamp = getISO8601formattedTime(this.args.timestamp);
+                this.timestampNode.innerHTML = this.args.timestamp;
                 this.args.tweetOptions = this.args.tweetOptions.toString();
                 this.args.isFavorite = this.args.isFavorite.toString();
                 this.tweetNode.innerHTML = addTags(filterEscapeCharacters(this.args.tweet));
@@ -25,11 +27,11 @@ dojo.declare("js.tweetContainer",
                 }
                 if( this.args.tweetOptions == 'true' ) {
                     if( this.args.isFavorite ==  'false' ) {
-                        dojo.addClass( this.favoriteNode , "fav" );
+                        dojo.addClass( this.favoriteNode , "favorite" );
                         this.favoriteNode.innerHTML = "Favorite";
                     }
                     else {
-                        dojo.addClass( this.favoriteNode , "unfav" );
+                        dojo.addClass( this.favoriteNode , "unfavorite" );
                         this.favoriteNode.innerHTML = "Unfavorite";
                     }
                     dojo.connect( this.favoriteNode , "onclick" , function() {
@@ -66,8 +68,8 @@ dojo.declare("js.tweetContainer",
             _toggleFavorite : function(domNode) {
 
                 var urlString = "tweet/markFavorite";
-                var favClassName = "unfav";
-                var unfavClassName = "fav";
+                var favClassName = "unfavorite";
+                var unfavClassName = "favorite";
 
                 if( domNode.args.isFavorite == "true" ) {
                     urlString = "tweet/deleteFavorite";

@@ -5,6 +5,18 @@ dojo.require("js.userBoxContainer");
 dojo.require("js.userContainer");
 dojo.require("js.contactContainer");
 
+function getISO8601formattedTime(timeStamp) {
+    var times = timeStamp.split(" ");
+    var ret = times[0] + " " + times[1].substring(0,8);
+    return ret;
+}
+
+function updateTimestamps() {
+    setTimeout( function() {
+        jQuery('abbr.tweet-time').timeago();
+        updateTimestamps();
+    } , 2000 );
+}
 function addTags(tweetContent) {
    var parts = tweetContent.split("@");
 
@@ -389,6 +401,7 @@ function nTweetsBeforeTimestamp(timestamp, n) {
                 var widget = new js.tweetContainer(data[i]);
                 widget.placeAt( dojo.byId("newsFeedContainer") , "last" );
             }
+            jQuery('abbr.tweet_time').timeago();
         },
         error: function(data) {
            alert( 'error ' + data );
