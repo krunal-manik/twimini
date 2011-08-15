@@ -91,3 +91,13 @@ CREATE TABLE retweets(
 );
 
 ALTER TABLE follower_followed ADD COLUMN last_followed timestamp NULL;
+
+CREATE TABLE temporary_invites(
+	id INT NOT NULL AUTO_INCREMENT,
+	sender_email VARCHAR(30) NOT NULL,
+	receiver_email VARCHAR(30) NOT NULL,
+	sender_name VARCHAR(30) NOT NULL,
+	receiver_name VARCHAR(30) NOT NULL,
+	message MEDIUMTEXT,
+	PRIMARY KEY( id )
+);

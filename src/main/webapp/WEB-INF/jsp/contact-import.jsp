@@ -17,24 +17,19 @@
             <div class="body">
                 <div class="prepend-9 span-6 append-9 last">
 
-                        <div class="span-2 append-1">
-                            Gmail emailid
-                        </div>
-                        <div class="span-2 append-1 last">
-                            <input type="email" value="" name="email" />
-                        </div>
-
-                        <div class="prepend-3 span-3 last">
+                        <div class="prepend-1 span-4 append-1 last">
                             <a href="https://accounts.google.com/o/oauth2/auth?client_id=205184315336.apps.googleusercontent.com&redirect_uri=http://localhost:8080/import_contacts&response_type=token&scope=https://www.google.com/m8/feeds/">
-                                <input type="Submit" value="Import Contacts" />
+                                <img src='/static/images/Gmail-logo.jpeg' height="80px" width="150px" />
                             </a>
                         </div>
+                    <br>
                 </div>
             </div>
-            <br>
+            <br><br>
             <div id="contactList">
             </div>
             <br>
         </div>
+        <br>
     </body>
 </html>

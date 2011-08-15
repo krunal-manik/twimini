@@ -41,7 +41,6 @@ dojo.declare("js.contactContainer",
                         domNode._changeFollowStatus(domNode);
                    }
                    else {
-                       alert(domNode.args.status);
                        domNode._changeInviteStatus(domNode);
                    }
 
@@ -81,14 +80,36 @@ dojo.declare("js.contactContainer",
                 });
             },
             _changeInviteStatus : function(domNode) {
-                if( domNode.args.status == 'Marked For Invite' ) {
-                    domNode.args.status = 'Invite';
-                    domNode.args.statusNode.innerHTML = 'Invite';
+                var urlString = "/addInvite";
+                if(domNode.args.status == 'Marked For Invite' ) {
+                    urlString = "/deleteInvite";
                 }
-                else {
-                    domNode.args.status = 'Marked For Invite';
-                    domNode.args.statusNode.innerHTML = 'Marked For Invite';
-                }
+
+                dojo.xhrPost({
+                    url: urlString,
+                    content:{ receiverName: domNode.args.name , email: domNode.args.email},
+                    handleAs: 'json',
+                    load: function(data) {
+                        if( data.success == 'false' ) {
+                            alert( 'Oops! It seems that your session has expired. Please login and try again' );
+                            return;
+                        }
+                        if( domNode.args.status == 'Marked For Invite' ) {
+                            domNode.args.status = 'Invite';
+                            domNode.statusNode.innerHTML = 'Invite';
+                        }
+                        else {
+                            domNode.args.status = 'Marked For Invite';
+                            //domNode.statusNode.innerHTML = 'Marked For Invite';
+                        }
+
+                    },
+                    error: function(data) {
+                        alert(data);
+                        alert(JSON.stringify(data));
+                        alert('error in invite/uninvite');
+                    }
+                });
             }
         }
 );
