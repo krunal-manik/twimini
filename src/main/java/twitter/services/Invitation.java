@@ -10,6 +10,8 @@ import twitter.models.User;
 
 import javax.servlet.http.HttpSession;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,8 +38,8 @@ public class Invitation {
 
     public static void insertTemporaryInvitation(String receiverName,User sender, String receiver) {
         try {
-            db.update( "INSERT INTO temporary_invites(sender_name,sender_email,receiver_name,receiver_email,message) VALUES (?,?,?,?,?)" ,
-                    sender.getName() , sender.getEmail() , receiverName , receiver , getInvitationTemplate(sender.getName(), sender.getUsername(), receiverName) );
+            db.update( "INSERT INTO temporary_invites(sender_name,sender_email,receiver_name,receiver_email,message,subject) VALUES (?,?,?,?,?,?)" ,
+                    sender.getName() , sender.getEmail() , receiverName , receiver , getInvitationTemplate(sender.getName(), sender.getUsername(), receiverName) , "Invitation to Twitter" );
         } catch (Exception ex) {
             System.out.println( "Bug in temporary invitation :((" );
             ex.printStackTrace();
@@ -50,6 +52,21 @@ public class Invitation {
                     receiverName , receiverEmail , sender.getEmail() );
         } catch (Exception ex) {
             System.out.println("Bug in deleting temporary invite :(");
+            ex.printStackTrace();
+        }
+    }
+
+    public static void makeInvitesPermanent() {
+        try{
+            List<Map<String,Object>> mails = db.queryForList( "SELECT * from temporary_invites" );
+            for(int i=0;i<mails.size();i++) {
+                Map<String,Object> map = mails.get(i);
+                db.update( "INSERT INTO emails(sender,receiver,subject,body) VALUES (?,?,?,?)" , map.get("sender_email").toString() , map.get("receiver_email").toString() ,
+                        map.get("subject").toString() , map.get("message").toString() );
+            }
+            db.update( "DELETE FROM temporary_invites" );
+        } catch (Exception ex) {
+            System.out.println("Bug in make invites permanent :(");
             ex.printStackTrace();
         }
     }

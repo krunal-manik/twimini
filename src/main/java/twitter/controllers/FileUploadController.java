@@ -55,46 +55,93 @@ public class FileUploadController {
         this.db = db;
     }
 
+    private static String validateName( String name ) {
+        if( name.equals("") || name == null )
+            return "Name cannot be empty";
+
+        for(int i=0;i<name.length();i++)
+            if( !(Character.isLetter(name.charAt(i)) || name.charAt(i) == ' ') )
+                return "Name should only contain charcters a-z,' ',A-Z";
+        return " ";
+    }
+
+    private static String validateUsername( String username ) {
+        if( username.equals("") || username == null )
+            return "Username cannot be empty";
+
+        for(int i=0;i<username.length();i++)
+            if( !(Character.isLowerCase(username.charAt(i)) ||
+                    username.charAt(i) == '-' ||
+                    Character.isDigit(username.charAt(i)) ) )
+                return "Username should only contain characters a-z,'-',0-9";
+        return " ";
+    }
+
     @RequestMapping(value = {"/edit_profile"})
-    public ModelAndView editProfileGet(HttpSession session) {
+    public ModelAndView editProfileGet(String nameError,String usernameError,HttpSession session) {
         if (session.getAttribute("username") == null) {
             return new ModelAndView("/error404");
         } else {
             String username = session.getAttribute("username").toString();
             ModelAndView mv = new ModelAndView("/profile-edit");
-            mv.addObject( "image" , "/photos/" + username + ".jpg" );
+            mv.addObject( "image" , "/photos/" + session.getAttribute("userId") + ".jpg" );
             User user = UserAuthentication.getUserByUsername( username );
             mv.addObject("name",user.getName());
             mv.addObject("aboutMe",user.getAboutMe());
+            mv.addObject("username",user.getUsername());
+            mv.addObject( "nameError" , nameError );
+            mv.addObject( "usernameError" , usernameError );
             return mv;
         }
     }
 
     @RequestMapping(value = "/edit_profile", method = RequestMethod.POST)
-    public ModelAndView uploadPost(HttpSession session, @RequestParam MultipartFile file, @RequestParam String name, @RequestParam String aboutMe) throws Exception {
-        String username = session.getAttribute("username").toString();
-        String photoPath = prefixPath + username + ".jpg";
+    public ModelAndView uploadPost(HttpSession session, @RequestParam MultipartFile file, @RequestParam String name, @RequestParam String username ,@RequestParam String aboutMe) throws Exception {
+        String loggedInusername = session.getAttribute("username").toString();
+        String photoPath = prefixPath + session.getAttribute("userId").toString() + ".jpg";
         ModelAndView mv = new ModelAndView("/profile-edit");
-        try {
-            File photo = new File(photoPath);
+        if( !file.isEmpty() ) {
+            try {
+                File photo = new File(photoPath);
 
-            if ( photo.exists()) {
-                photo.delete();
-            }
-            photo.createNewFile();
+                if ( photo.exists()) {
+                    photo.delete();
+                }
+                photo.createNewFile();
 
-            if (!file.isEmpty()) {
-                byte imagesBytes[] = file.getBytes();
-                FileOutputStream outputStream = new FileOutputStream(photo);
-                outputStream.write(imagesBytes);
-                outputStream.close();
+                if (!file.isEmpty()) {
+                    byte imagesBytes[] = file.getBytes();
+                    FileOutputStream outputStream = new FileOutputStream(photo);
+                    outputStream.write(imagesBytes);
+                    outputStream.close();
+                }
+            } catch (Exception ex) {
+                System.out.println("Bug in fileupload :(");
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            System.out.println("Bug in fileupload :(");
-            ex.printStackTrace();
+       }
+
+        String isValidName = validateName(name);
+        String isValidUsername = validateUsername(username);
+
+        boolean isUsernameAvailable = UserAuthentication.checkUsernameAvailabilty(loggedInusername,username);
+        System.out.println( isUsernameAvailable );
+        if( !(isValidName.equals(" ") && isValidUsername.equals(" ") && isUsernameAvailable) ) {
+            if( !isValidName.equals( " " ) )
+                mv.addObject( "nameError" , isValidName );
+            if( !isValidUsername.equals(" ") )
+                mv.addObject( "usernameError" ,isValidUsername );
+            else if ( !isUsernameAvailable )
+                mv.addObject( "usernameError" , "Username already taken" );
+
+            mv.addObject("username" , username );
+            mv.addObject("name",name);
+            mv.addObject("aboutMe",aboutMe);
         }
-
-        UserAuthentication.updateUserInformation( username , name , aboutMe );
+        else {
+            UserAuthentication.updateUserInformation( loggedInusername , username , name , aboutMe );
+            session.setAttribute("username",username);
+        }
         mv.setViewName("redirect:/edit_profile");
         return mv;
     }
@@ -102,13 +149,22 @@ public class FileUploadController {
 
     @RequestMapping(value = "/import_contacts")
     public ModelAndView contactImporterGet(HttpSession session) {
-        return new ModelAndView("/contact-import");
+        if( session.getAttribute("userId") != null ) {
+            return new ModelAndView("/contact-import");
+        }
+        return new ModelAndView(){{
+            setViewName("redirect:/");
+        }};
     }
 
 
     @RequestMapping(value = "/gmail")
     @ResponseBody
     public List<Contact> contactImporter(String access_token, String token_type, String expires_in, HttpSession session) throws Exception {
+        if( session.getAttribute("userId") == null ) {
+            return new ArrayList<Contact>();
+        }
+
         System.out.println(access_token);
         if (access_token == null) {
             return new ArrayList<Contact>();

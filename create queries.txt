@@ -99,5 +99,25 @@ CREATE TABLE temporary_invites(
 	sender_name VARCHAR(30) NOT NULL,
 	receiver_name VARCHAR(30) NOT NULL,
 	message MEDIUMTEXT,
+	subject VARCHAR(30) NOT NULL,
+	PRIMARY KEY( id )
+);
+
+CREATE TABLE emails(
+	id INT NOT NULL AUTO_INCREMENT,
+	sender VARCHAR(30) NOT NULL,
+	receiver VARCHAR(30) NOT NULL,
+	subject VARCHAR(30) NOT NULL,
+	body MEDIUMTEXT,
+	PRIMARY KEY( id )
+);
+
+CREATE TABLE inactive_users(
+	id INT NOT NULL AUTO_INCREMENT,
+	sender VARCHAR(30) NOT NULL,
+	receiver VARCHAR(30) NOT NULL,
+	subject VARCHAR(30) NOT NULL,
+	body MEDIUMTEXT,
+	token VARCHAR(64) NOT NULL,
 	PRIMARY KEY( id )
 );

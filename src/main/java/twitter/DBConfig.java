@@ -4,7 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import twitter.controllers.UserController;
+import twitter.services.Email;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 /**
@@ -28,6 +31,8 @@ public class DBConfig {
         SimpleJdbcTemplate db = new SimpleJdbcTemplate(dataSource);
         return db;
     }
+
+
 
     private static DataSource getDataSource() {
         //

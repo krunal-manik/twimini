@@ -313,16 +313,24 @@ function imposeMaxLength(Event, Object, MaxLen, TagBox) {
 }
 
 function checkPasswords( form ) {
-    if( form.password.value != form.cpassword.value ) {
+    var no_error = true;
+    dojo.byId('confirmPasswordError').innerHTML = '';
+    dojo.byId('passwordError').innerHTML = '';
+    if( form.password.value != form.confirm_password.value ) {
+        dojo.byId("confirmPasswordError").innerHTML = "Passwords don't match";
         alert( "Passwords dont match" );
-        return false;
+        no_error = false;
     }
 
     if( form.password.value == "" ) {
-        alert( "Password cannot be blank" );
-        return false;
+        dojo.byId("passwordError").innerHTML = "Password cannot be blank";
+        no_error = false;
     }
-    return true;
+    if(form.password.value.length < 6) {
+        dojo.byId( "passwordError" ).innerHTML = "Password has to be atleast 6 characters";
+        no_error = false;
+    }
+    return no_error;
 }
 
 

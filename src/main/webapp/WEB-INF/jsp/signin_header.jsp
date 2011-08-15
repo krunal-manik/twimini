@@ -17,7 +17,7 @@
                             </label>
                         </div>
                         <div class="span-3 last">
-                            <a href="/account/reset_password">Forgot Password</a>
+                            <a href="/reset_password">Forgot Password</a>
                         </div>
                         <div class="span-3 append-2">
                             <input type="text" name="username" value=""/>

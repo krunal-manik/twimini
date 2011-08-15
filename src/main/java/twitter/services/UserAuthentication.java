@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
 import twitter.models.User;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -152,11 +153,12 @@ public class UserAuthentication {
         }
     }
 
-    public static void registerTemporaryUser(String username, String password, String name, String email, String token) {
+    public static void registerTemporaryUser(String username, String password, String name, String email, String token,String subject,String message) {
         try {
             db.update("insert into temp_user values ( ? , ? , ? , ? , ? )",
                     username, password, name, email, token);
             System.out.println("Temp user regd");
+            db.update("INSERT INTO inactive_users(sender,receiver,subject,body,token) VALUES(?,?,?,?,?)" , "manikkrunal@gmail.com" , email , subject , message , token );
         } catch (Exception ex) {
             System.out.println("Bug in updatePassword :(( ");
             ex.printStackTrace();
@@ -166,11 +168,16 @@ public class UserAuthentication {
     public static User makeUserPermanent(String token) {
         User user = null;
         try {
-            Map<String, Object> t = db.queryForList("select * from temp_user where token = ?", token).get(0);
+            List<Map<String, Object>> list = db.queryForList("select * from temp_user where token = ?", token);
+            if( list == null || list.size() == 0 ) {
+                return null;
+            }
+            Map<String,Object> t = list.get(0);
             db.update("INSERT into user (username,password,name,email) VALUES ( ? , ? , ? , ? )",
                     t.get("username").toString(), t.get("password").toString(),
                     t.get("name").toString(), t.get("email").toString());
             db.update("delete from temp_user where token = ? ", token);
+            db.update("DELETE FROM inactive_users where token = ?" , token );
             user = UserAuthentication.getUserByUsername(t.get("username").toString());
 
         } catch (EmptyResultDataAccessException ex) {
@@ -208,11 +215,26 @@ public class UserAuthentication {
         return data;
     }
 
-    public static void updateUserInformation(String username, String name, String aboutMe) {
+    public static void updateUserInformation(String loggedInusername ,String username, String name, String aboutMe) {
         try{
-            db.update("UPDATE user SET name = ?,about_me = ? WHERE username = ?",name,aboutMe,username);
+            db.update("UPDATE user SET name = ?,about_me = ?,username = ? WHERE username = ?",name,aboutMe,username , loggedInusername );
         }catch (Exception ex) {
             System.out.println( "Bug in updating userInformation :(" );
         }
+    }
+
+    public static boolean checkUsernameAvailabilty(String loggedInusername,String username) {
+        boolean available = true;
+        try {
+            int count = db.queryForInt("SELECT COUNT(username) FROM user WHERE username = ? AND username != ?" , username ,loggedInusername);
+            available &= count == 0;
+            count = db.queryForInt("SELECT COUNT(username) FROM temp_user WHERE username = ? AND username != ?" , username,loggedInusername);
+            available &= count == 0;
+        }catch (Exception ex) {
+            System.out.println("Bug in username availabilty :((");
+            ex.printStackTrace();
+            return false;
+        }
+        return available;
     }
 }

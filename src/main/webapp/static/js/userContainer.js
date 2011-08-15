@@ -15,6 +15,7 @@ dojo.declare("js.userContainer",
             postCreate : function() {
                 this.inherited(arguments);
                 var domNode = this;
+
                 dojo.connect( this.followNode , "onmouseover" , function() {
                     if( domNode.args.followStatus == 'Following' ) {
                         domNode.followNode.innerHTML = 'Unfollow';

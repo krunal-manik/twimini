@@ -20,8 +20,11 @@
         <div class = "body">
             <div class = "container">
                 <div class="reset-box">
-                    <form action="/email" method=post>
+                    <form action="/reset_password" method=post>
                         <div class="prepend-5 span-9 append-8 last">
+                            <div class="prepend-3 span-3 append-3 last error-field">
+                                ${errorMessage}
+                            </div>
                             <div class="span-3 append-1">
                                 Email :
                             </div>

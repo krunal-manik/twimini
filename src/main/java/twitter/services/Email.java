@@ -18,9 +18,11 @@ import org.springframework.stereotype.Service;
 public class Email {
 
     private MailSender mailSender;
+    private SimpleMailMessage message;
 
     public void setMailSender(MailSender mailSender) {
         this.mailSender = mailSender;
+        message = new SimpleMailMessage();
     }
 
     public MailSender getMailSender() {
@@ -28,14 +30,11 @@ public class Email {
     }
 
     public void sendMail(String from, String to, String subject, String body) {
-
-        SimpleMailMessage message = new SimpleMailMessage();
-
+        System.out.println( "Sending to " + to  );
         message.setFrom(from);
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
-        System.out.println("MailSender : " + mailSender);
         mailSender.send(message);
     }
 }

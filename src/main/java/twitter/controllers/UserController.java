@@ -15,13 +15,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import twitter.EmailThread;
 import twitter.models.Tweet;
 import twitter.models.User;
-import twitter.services.Email;
-import twitter.services.Follow;
-import twitter.services.UserAuthentication;
-import twitter.services.UserTweetList;
+import twitter.services.*;
 
+import javax.annotation.PostConstruct;
+import javax.mail.Message;
 import javax.servlet.http.HttpSession;
 import javax.swing.plaf.multi.MultiViewportUI;
 import javax.xml.transform.Source;
@@ -43,12 +43,21 @@ import java.util.regex.Pattern;
 @Controller
 public class UserController {
 
-    @Autowired
-    Email emailSender;
 
-    public UserController() {
+    public static Email emailSender;
+
+    @Autowired
+    public UserController(Email email) {
+        emailSender = email;
     }
-	public static boolean isValidEmailAddress(String emailAddress)
+
+    @PostConstruct
+    public void instantiateEmailThread() {
+        EmailThread emailThread = new EmailThread(emailSender);
+        emailThread.start();
+    }
+
+	private static boolean isValidEmailAddress(String emailAddress)
 	{
 		String  expression=""+
 			"(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()<>@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t]"+
@@ -142,14 +151,14 @@ public class UserController {
 		return matcher.matches();
 	}
 
-    public static String validateName( String name ) {
+    private static String validateName( String name ) {
         for(int i=0;i<name.length();i++)
             if( !(Character.isLetter(name.charAt(i)) || name.charAt(i) == ' ') )
                 return "Name should only contain charcters a-z,' ',A-Z";
         return " ";
     }
 
-    public static String validateUsername( String username ) {
+    private static String validateUsername( String username ) {
         System.out.println( username );
         for(int i=0;i<username.length();i++)
             if( !(Character.isLowerCase(username.charAt(i)) ||
@@ -159,7 +168,7 @@ public class UserController {
         return " ";
     }
 
-    public static String validatePassword( String password ) {
+    private static String validatePassword( String password ) {
         if( password.length() < 6 )
             return "Password length should be minimum 6 characters";
         String specialCharacters = "\"/\\#%;:\'~`<>";
@@ -169,7 +178,7 @@ public class UserController {
         return " ";
     }
 
-    public static String validateEmailAddress( String email ) {
+    private static String validateEmailAddress( String email ) {
         if( isValidEmailAddress(email) )
             return " ";
         return "Invalid email address";
@@ -274,41 +283,31 @@ public class UserController {
             return mv;
         }
         String registerToken = getRandomToken();
-        UserAuthentication.registerTemporaryUser(username, password, name, email, registerToken);
-        emailSender.sendMail("manikkrunal@gmail.com", email, "Activate your twitter account",
-                String.format("Hi %s!\n" +
+        String message = String.format("Hi %s!\n" +
                         "To start tweeting, just click on the link below to activate your account: " +
                         "http://localhost:8080/activateAccount?token=%s\n" +
-                        "Regards,\nTeam Twitter", name, registerToken));
+                        "Regards,\nTeam Twitter", name, registerToken);
 
-        ModelAndView mv = new ModelAndView("/activate");
+        UserAuthentication.registerTemporaryUser(username, password, name, email, registerToken ,
+                "Activate your twitter account" , message );
+
+
+        ModelAndView mv = new ModelAndView("/message");
+        mv.addObject("message","An activation mail has been sent to your account.Please click on the link in the mail to activate your account. Your account will be activated once you click that link.Please wait for a while if you don't receive the mail instantly.");
         return mv;
     }
-
-    @RequestMapping("/activate")
-    public ModelAndView getActivatePage() {
-        return new ModelAndView("/activate");
-    }
-
     @RequestMapping(value = "/activateAccount", method = RequestMethod.GET)
     public ModelAndView activateAccount(String token, HttpSession session) {
         User user = UserAuthentication.makeUserPermanent(token);
+        if( user == null ) {
+            return new ModelAndView("/error404");
+        }
         session.setAttribute("username", user.getUsername());
         session.setAttribute("userId", user.getUserId());
         String session_userId = session.getAttribute("userId").toString();
-        ModelAndView mv = new ModelAndView("/login");
-        mv.setViewName("redirect:/");
+        ModelAndView mv = new ModelAndView("/message");
+        mv.addObject("message","Your twitter account has been activated successfully.You can now login and start tweeting.");
         return mv;
-        /*
-        mv.addObject("followerList", 0);
-        mv.addObject("followedList", 0);
-        if (session.getAttribute("userId") != null) {
-            mv = new ModelAndView("/tweet");
-            session_userId = session.getAttribute("userId").toString();
-            mv.addObject("allUserList", Follow.allUsersList(session_userId));
-        }
-        mv.setViewName("redirect:/");
-        return mv;*/
     }
 
     @RequestMapping("/logout")
@@ -432,17 +431,26 @@ public class UserController {
         return mv;
     }
 
-    @RequestMapping(value = "/account/reset_password")
-    public ModelAndView resetPassword() {
-        return new ModelAndView("/reset_password");
+    @RequestMapping(value = "/reset_password")
+    public ModelAndView resetPassword(HttpSession session) {
+        if( session.getAttribute("userId") == null )
+            return new ModelAndView("/reset-password");
+        return new ModelAndView(){{
+            setViewName("redirect:/");
+        }};
     }
 
 
-    @RequestMapping(value = "/email", method = RequestMethod.POST)
+    @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
     public ModelAndView test(@RequestParam String email,
                              @RequestParam("recaptcha_challenge_field") String challenge,
                              @RequestParam("recaptcha_response_field") String response,
                              HttpSession session) {
+        if( session.getAttribute("userId") != null ) {
+            return new ModelAndView() {{
+                setViewName("redirect:/");
+            }};
+        }
         String remoteAddr = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest().getRemoteAddr();
         System.out.println(remoteAddr);
@@ -461,47 +469,78 @@ public class UserController {
             System.out.println("VALID !!!!!!!!!!");
             User user = UserAuthentication.getPassword(email);
             if (user == null) {
-                return new ModelAndView("/error404");
+                return new ModelAndView("/reset-password"){{
+                    addObject( "errorMessage" , "No user registered with this email id" );
+                }};
             }
             String token = getRandomToken();
+            String message = String.format("Hi %s!\n" +
+                    "It seems you have lost your password.But no worries, you can reset your password." +
+                    "Just click the link below to reset your password." +
+                    "http://localhost:8080/%s/changePassword?token=%s\n" +
+                    "\nRegards,\n" +
+                    "Team Twitter\n", user.getUsername(), user.getUsername(), token);
+
             UserAuthentication.insertToken(user, token);
-            emailSender.sendMail("manikkrunal@gmail.com", email, "Password recovery",
-                    String.format("Hi %s!\n" +
-                            "It seems you have lost your password.But no worries, you can reset your password." +
-                            "Just click the link below to activate." +
-                            "http://localhost:8080/%s/changePassword?token=%s\n" +
-                            "\nRegards,\n" +
-                            "Team Twitter\n", user.getUsername(), user.getUsername(), token));
-            ModelAndView mv = new ModelAndView("/login");
+            EmailService.sendResetPasswordMail( "manikkrunal@gmail.com" , email , "Twitter Password recovery" , message );
+            ModelAndView mv = new ModelAndView("/message");
+            mv.addObject( "message", "Reset password instructions have been mailed to you.Please check your inbox for the mail.Please wait for a while if you don't receive the mail instantly." );
             return mv;
         } else {
             System.out.println("Invalid !!!!");
-            ModelAndView mv = new ModelAndView("reset_password");
+            ModelAndView mv = new ModelAndView("/reset-password");
+            mv.addObject( "errorMessage" , "Captcha check failed" );
             return mv;
         }
     }
 
     @RequestMapping(value = "/{username}/changePassword", method = RequestMethod.GET)
-    public ModelAndView tokenQueryString(@PathVariable String username, String token) {
+    public ModelAndView tokenQueryString(@PathVariable String username, @RequestParam String token,String passwordError,String confirmPasswordError) {
 
         boolean tokenExists = UserAuthentication.tokenExists(username, token);
         if (!tokenExists) {
             return new ModelAndView("/error404");
         }
+
         ModelAndView mv = new ModelAndView("/confirm_passwords");
         mv.addObject("username", username);
         mv.addObject("token", token);
+        mv.addObject("passwordError",passwordError);
+        mv.addObject("confirmPasswordError",confirmPasswordError);
         return mv;
     }
 
-    @RequestMapping(value = "/{username}/updatePassword")
-    public ModelAndView updatePassword(@PathVariable String username, @RequestParam String password, @RequestParam String token) {
+    @RequestMapping(value = "/{username}/updatePassword" , method=RequestMethod.POST)
+    public ModelAndView updatePassword(@PathVariable String username, @RequestParam String password, @RequestParam String token,@RequestParam String confirm_password) {
+
+        boolean passwordsMatch = password != null && password.equals(confirm_password);
+        boolean passwordLength = password.length() >= 6;
+        boolean passwordNotEmpty = password != null && !password.equals("");
+
+        boolean noError = passwordsMatch && passwordLength && passwordNotEmpty;
+
+        if( !noError ) {
+            ModelAndView mv = new ModelAndView("/confirm_passwords");
+            if( !passwordsMatch ) {
+                mv.addObject( "confirmPasswordError" , "Passwords don't match" );
+            }
+            if( !passwordLength ) {
+                mv.addObject( "passwordError" , "Password has to be atleast 6 characters" );
+            }
+            mv.setViewName( String.format("redirect:/%s/changePassword?token=%s",username,token));
+            return mv;
+        }
 
         UserAuthentication.deleteToken(username, token);
         UserAuthentication.updatePassword(username, password);
-        ModelAndView mv = new ModelAndView("/login");
-        mv.setViewName("redirect:/login");
+        ModelAndView mv = new ModelAndView("/message");
+        mv.addObject( "message", "Password changed successfully" );
         return mv;
+    }
+
+    @RequestMapping(value = "/{username}/updatePassword" , method=RequestMethod.GET)
+    public ModelAndView updatePasswordGet() {
+        return new ModelAndView("/error404");
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)

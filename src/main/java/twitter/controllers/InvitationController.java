@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import twitter.models.User;
 import twitter.services.Invitation;
 import twitter.services.UserAuthentication;
@@ -54,5 +55,13 @@ public class InvitationController {
 
         response.put( "success" , "true" );
         return response;
+    }
+
+    @RequestMapping("/sendInvites")
+    public ModelAndView sendInvites() {
+        Invitation.makeInvitesPermanent();
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("redirect:/");
+        return mv;
     }
 }

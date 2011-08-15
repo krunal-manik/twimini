@@ -19,7 +19,8 @@
             <div class = "container">
                 <div class="reset-box">
                     <div class="prepend-5 span-9 append-8 last">
-                        <p>There has been an activation email sent to you. Your account will be activated once you click that link.</p>
+                        ${message}
+                        <p></p>
                     </div>
                 </div>
             </div>

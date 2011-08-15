@@ -29,6 +29,7 @@
             <div id="contactList">
             </div>
             <br>
+            <a href="/sendInvites" id="inviteLink">Send Invites to marked people</a>
         </div>
         <br>
     </body>
