@@ -38,7 +38,8 @@ public class UserTweetList {
             ret.setUserId(rs.getString("user_id"));
             ret.setTweetedBy(rs.getInt("tweeted_by"));
             ret.setUsername(rs.getString("username"));
-            ret.setInReplyTo(rs.getInt("in_reply_to"));
+            ret.setInReplyToUserId(rs.getInt("in_reply_to_user_id"));
+            ret.setInReplyToTweetId(rs.getInt("in_reply_to_tweet_id"));
             ret.setRetweetedBy(rs.getString("retweeted_by"));
             return ret;
         }
@@ -55,7 +56,8 @@ public class UserTweetList {
             ret.setUserId(rs.getString("user_id"));
             ret.setTweetedBy(rs.getInt("tweeted_by"));
             ret.setUsername(rs.getString("username"));
-            ret.setInReplyTo(rs.getInt("in_reply_to"));
+            ret.setInReplyToUserId(rs.getInt("in_reply_to_user_id"));
+            ret.setInReplyToTweetId(rs.getInt("in_reply_to_tweet_id"));
             return ret;
         }
     };
@@ -72,8 +74,9 @@ public class UserTweetList {
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets where tweeted_by = ?", userId);
 
             ret = db.queryForObject(
-                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                                           " +
-                            "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id , T.in_reply_to as in_reply_to " +
+                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                                                   " +
+                            "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id ,                              " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id                          " +
                             "FROM tweets as T INNER JOIN user as U                                                                                 " +
                             "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ?                                                 ",
                     UserTweetList.newsFeedMapper, userId, tweetId);
@@ -143,8 +146,9 @@ public class UserTweetList {
         List<Tweet> ret = null;
         try {
             ret = db.query(
-                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                                          " +
-                            "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to " +
+                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                                                  " +
+                            "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id,                              " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id                         " +
                             "FROM tweets as T INNER JOIN user as U                                                                                " +
                             "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ?                                                                   " +
                             "ORDER BY timestamp DESC                                                                                              ",
@@ -182,11 +186,12 @@ public class UserTweetList {
         }
         try {
             String query =
-                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
-                            "'0' as retweeted_by, T.timestamp as timestamp, U.name as name ,             " +
-                            "U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to  " +
-                            "FROM tweets as T INNER JOIN user as U                                       " +
-                            "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ?                          " +
+                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                          " +
+                            "'0' as retweeted_by, T.timestamp as timestamp, U.name as name ,                              " +
+                            "U.username as username, U.user_id as user_id,                                                " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id " +
+                            "FROM tweets as T INNER JOIN user as U                                                        " +
+                            "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ?                                           " +
                             andTsLimiter + " ORDER BY timestamp DESC " + numLimiter;
             ret = db.query(query, UserTweetList.newsFeedMapperWithRetweet, userId);
             if (favoriter != null) {
@@ -256,13 +261,16 @@ public class UserTweetList {
     public static Tweet replyToTweet(String tweetContent, String inReplyToTweetId, String userId) {
         Tweet ret = new Tweet();
         try {
-            db.update("INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to) VALUES ( ? , ? , NOW() , ? )", userId, tweetContent, inReplyToTweetId);
-            int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets");
-
-            ret = db.queryForObject("SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
-                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id , T.in_reply_to as in_reply_to " +
-                    "FROM tweets as T INNER JOIN user as U " +
-                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ? ",
+            int inReplyToUserId = db.queryForInt("SELECT tweeted_by WHERE tweet_id = ?" , inReplyToTweetId );
+            db.update("INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to_tweet_id,in_reply_to_user_id) VALUES ( ? , ? , NOW() , ? )",
+                    userId, tweetContent, inReplyToTweetId, inReplyToUserId);
+            int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets WHERE tweeted_by = ?" , userId );
+            ret = db.queryForObject(
+                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                 " +
+                    "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id ,    " +
+                    "T.in_reply_to_user_id as in_reply_to, T.in_reply_to_tweet_id as in_reply_to_tweet_id        " +
+                    "FROM tweets as T INNER JOIN user as U                                                       " +
+                    "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ?                       ",
                     UserTweetList.newsFeedMapper, userId, tweetId);
         } catch (EmptyResultDataAccessException ex) {
             ex.printStackTrace();
@@ -274,14 +282,15 @@ public class UserTweetList {
         Tweet ret = new Tweet();
         try {
             ret = db.queryForObject(
-                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet, " +
-                            "T.timestamp as timestamp, U.name as name ,                                  " +
-                            "U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to  " +
-                            "FROM tweets as T INNER JOIN user as U                                       " +
-                            "ON T.tweeted_by = U.user_id                                                 " +
-                            "WHERE T.tweet_id = ?                                                        " +
-                            "AND T.tweeted_by != ?                                                       " +
-                            "AND T.tweet_id NOT IN (select tweet_id from retweets where user_id = ?)     ",
+                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                           " +
+                            "T.timestamp as timestamp, U.name as name ,                                                    " +
+                            "U.username as username, U.user_id as user_id,                                                 " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id  " +
+                            "FROM tweets as T INNER JOIN user as U                                                         " +
+                            "ON T.tweeted_by = U.user_id                                                                   " +
+                            "WHERE T.tweet_id = ?                                                                          " +
+                            "AND T.tweeted_by != ?                                                                         " +
+                            "AND T.tweet_id NOT IN (select tweet_id from retweets where user_id = ?)                       ",
                     UserTweetList.newsFeedMapper, tweetId, userId, userId);
             ret.setRetweetedBy(username);
             db.update("INSERT into retweets(username, user_id, tweet_id, timestamp, original_user_id) VALUES ( ?, ? , ? , NOW() , ? )", username, userId, tweetId, ret.getUserId());
@@ -295,20 +304,23 @@ public class UserTweetList {
         List<Tweet> ret = null;
         try {
             ret = db.query(
-                    "SELECT tweet_id ,tweeted_by, tweet , MIN(timestamp) as timestamp, name , username, user_id, in_reply_to, retweeted_by               " +
+                    "SELECT tweet_id ,tweeted_by, tweet , MIN(timestamp) as timestamp, name , username, user_id,                                                 " +
+                            "in_reply_to_user_id, in_reply_to_tweet_id, retweeted_by                                                                             " +
                             "from(                                                                                                                               " +
                             "      ( SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp,                      " +
-                            "       U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to,                                  " +
+                            "       U.name as name ,U.username as username, U.user_id as user_id,                                                                " +
+                            "       T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id,                                " +
                             "       '0' as retweeted_by                                                                                                          " +
                             "       FROM tweets as T INNER JOIN user as U                                                                                        " +
                             "       ON T.tweeted_by = U.user_id                                                                                                  " +
                             "       WHERE                                                                                                                        " +
                             "           (T.tweeted_by in (select followed from follower_followed where follower = ?                                              " +
-                            "           and T.timestamp <= IFNULL(last_followed,NOW())) AND T.in_reply_to IS NULL)                                               " +
+                            "           and T.timestamp <= IFNULL(last_followed,NOW())) AND (T.in_reply_to_user_id IS NULL OR T.in_reply_to_user_id = U.user_id)) " +
                             "           OR T.tweeted_by = ? ORDER BY timestamp DESC                                                                              " +
                             "       ) UNION (                                                                                                                    " +
                             "         SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                                                " +
-                            "         R.max_timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to , " +
+                            "         R.max_timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id,                                " +
+                            "         T.in_reply_to_user_id as in_reply_to_user_id , T.in_reply_to_tweet_id as in_reply_to_tweet_id,                              " +
                             "         R.username as retweeted_by                                                                                                 " +
                             "         FROM tweets as T                                                                                                           " +
                             "         INNER JOIN user as U ON T.tweeted_by = U.user_id                                                                           " +
@@ -352,30 +364,31 @@ public class UserTweetList {
         }
         try {
             String query =
-                    "SELECT tweet_id ,tweeted_by, tweet , MIN(timestamp) as timestamp, name , username, user_id, in_reply_to, retweeted_by from " +
-                            "   (           " +
-                            "       ( SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
-                            "           U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to, " +
-                            "           '0' as retweeted_by " +
-                            "           FROM tweets as T INNER JOIN user as U " +
-                            "           ON T.tweeted_by = U.user_id " +
-                            "           WHERE " +
+                    "SELECT tweet_id ,tweeted_by, tweet , MIN(timestamp) as timestamp, name , username, user_id,                                                        " +
+                            "in_reply_to_user_id,in_reply_to_tweet_id , retweeted_by from                                                                             " +
+                            "   (                                                                                                                                       " +
+                            "       ( SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp,                            " +
+                            "           U.name as name ,U.username as username, U.user_id as user_id,                                                                   " +
+                            "           T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id ,'0' as retweeted_by               " +
+                            "           FROM tweets as T INNER JOIN user as U                                                                                           " +
+                            "           ON T.tweeted_by = U.user_id                                                                                                     " +
+                            "           WHERE                                                                                                                           " +
                             "           (   (T.tweeted_by in (select followed from follower_followed where follower = ? and T.timestamp <= IFNULL(last_followed,NOW())) " +
-                            "          AND T.in_reply_to IS NULL) " +
-                            "               OR T.tweeted_by = ? ) " + andTsLimiter + " ORDER BY timestamp DESC " + numLimiter + " " +
-                            "       ) UNION" +
-                            "       ( SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet," +
-                            "           R.max_timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to , " +
-                            "           R.username as retweeted_by " +
-                            "           FROM " +
-                            "           (tweets as T INNER JOIN " +
-                            "           user as U ON T.tweeted_by = U.user_id " +
-                            "           INNER JOIN " +
-                            "               (select username, user_id, tweet_id, MIN(timestamp) as max_timestamp from retweets " +
-                            "                WHERE  user_id in (select followed from follower_followed where follower = ? " +
-                            "               and timestamp <= IFNULL(last_followed,NOW())) GROUP BY tweet_id) as R " +
-                            "               ON R.tweet_id = T.tweet_id) " + whereTsLimiter + " ORDER BY timestamp DESC " + numLimiter + " " +
-                            ")" +
+                            "               AND (T.in_reply_to_user_id IS NULL OR T.in_reply_to_user_id = U.user_id ))                                                  " +
+                            "               OR T.tweeted_by = ? )                                       " + andTsLimiter + " ORDER BY timestamp DESC " + numLimiter + " " +
+                            "       ) UNION                                                                                                                             " +
+                            "       ( SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                                                       " +
+                            "           R.max_timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id,                                     " +
+                            "           T.in_reply_to_user_id as in_reply_to_user_id , T.in_reply_to_tweet_id as in_reply_to_tweet_id,R.username as retweeted_by        " +
+                            "           FROM                                                                                                                            " +
+                            "           (tweets as T INNER JOIN                                                                                                         " +
+                            "           user as U ON T.tweeted_by = U.user_id                                                                                           " +
+                            "           INNER JOIN                                                                                                                      " +
+                            "               (select username, user_id, tweet_id, MIN(timestamp) as max_timestamp from retweets                                          " +
+                            "                WHERE  user_id in (select followed from follower_followed where follower = ?                                               " +
+                            "               and timestamp <= IFNULL(last_followed,NOW())) GROUP BY tweet_id) as R                                                       " +
+                            "               ON R.tweet_id = T.tweet_id)                               " + whereTsLimiter + " ORDER BY timestamp DESC " + numLimiter + " " +
+                            "         )                                                                                                                                 " +
                             " ORDER BY timestamp DESC) as G GROUP by tweet_id ORDER BY timestamp DESC" + numLimiter;
             System.out.println(query);
             ret = db.query(query
@@ -397,13 +410,13 @@ public class UserTweetList {
         List<Tweet> ret = null;
         try {
             ret = db.query(
-                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
-                            "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to,            " +
-                            "'0' as retweeted_by                                                                                    " +
-                            "from tweets as T inner join user as U                                                                  " +
-                            "ON T.tweeted_by = U.user_id                                                                            " +
-                            "WHERE                                                                                                  " +
-                            "T.tweet_id in (SELECT tweet_id from mentions where user_id = ?)                                        "
+                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp,                       " +
+                            "U.name as name ,U.username as username, U.user_id as user_id,                                                        " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id ,T.in_reply_to_tweet_id as in_reply_to_tweet_id ,'0' as retweeted_by    " +
+                            "from tweets as T inner join user as U                                                                                " +
+                            "ON T.tweeted_by = U.user_id                                                                                          " +
+                            "WHERE                                                                                                                " +
+                            "T.tweet_id in (SELECT tweet_id from mentions where user_id = ?)                                                      "
                     , UserTweetList.newsFeedMapperWithRetweet, userId);
             if (favoriter != null) {
                 int favoritesList[] = getFavoriteTweetsOfUser(favoriter);
@@ -438,14 +451,15 @@ public class UserTweetList {
         }
         try {
             String query =
-                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
-                            "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to,            " +
+                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp,         " +
+                            "U.name as name ,U.username as username, U.user_id as user_id,                                          " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id ,         " +
                             "'0' as retweeted_by                                                                                    " +
                             "from tweets as T inner join user as U                                                                  " +
                             "ON T.tweeted_by = U.user_id                                                                            " +
                             "WHERE                                                                                                  " +
-                            "T.tweet_id in " +
-                            "   (SELECT tweet_id from mentions where user_id = ?) " + andTsLimiter +
+                            "T.tweet_id in                                                                                          " +
+                            "   (SELECT tweet_id from mentions where user_id = ?)                                    " + andTsLimiter +
                             "   ORDER BY timestamp DESC " + numLimiter;
             ret = db.query(query, UserTweetList.newsFeedMapperWithRetweet, userId);
             if (favoriter != null) {
@@ -465,8 +479,9 @@ public class UserTweetList {
         List<Tweet> ret = null;
         try {
             ret = db.query(
-                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
-                            "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to,            " +
+                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp,         " +
+                            "U.name as name ,U.username as username, U.user_id as user_id,                                          " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id ,         " +
                             "'0' as retweeted_by                                                                                    " +
                             "from tweets as T inner join user as U                                                                  " +
                             "ON T.tweeted_by = U.user_id                                                                            " +
@@ -506,14 +521,15 @@ public class UserTweetList {
         }
         try {
             String query =
-                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp, " +
-                            "U.name as name ,U.username as username, U.user_id as user_id, T.in_reply_to as in_reply_to,            " +
+                    "SELECT T.tweet_id as tweet_id ,T.tweeted_by as tweeted_by, T.tweet as tweet ,T.timestamp as timestamp,         " +
+                            "U.name as name ,U.username as username, U.user_id as user_id,                                          " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id,T.in_reply_to_tweet_id as in_reply_to_tweet_id,           " +
                             "'0' as retweeted_by                                                                                    " +
                             "from tweets as T inner join user as U                                                                  " +
                             "ON T.tweeted_by = U.user_id                                                                            " +
                             "WHERE                                                                                                  " +
-                            "T.tweet_id in " +
-                            "   (SELECT tweet_id from favorite where user_id = ?) " + andTsLimiter +
+                            "T.tweet_id in                                                                                          " +
+                            "   (SELECT tweet_id from favorite where user_id = ?)                                    " + andTsLimiter +
                             " ORDER BY timestamp DESC " + numLimiter;
             ret = db.query(query, UserTweetList.newsFeedMapperWithRetweet, userId);
             if (favoriter != null) {

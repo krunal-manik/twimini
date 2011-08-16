@@ -15,15 +15,16 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class Tweet {
 
-    int tweetId, tweetedBy;
-    String tweet;
-    int inReplyTo;
-    String timestamp;
+    private int tweetId, tweetedBy;
+    private String tweet;
+    private int inReplyToUserId;
+    private int inReplyToTweetId;
+    private String timestamp;
     private String retweetedBy;
 
-    String userId;
-    String username;
-    String name;
+    private String userId;
+    private String username;
+    private String name;
 
     boolean isFavorite;
 
@@ -121,19 +122,27 @@ public class Tweet {
         return ret.toString();
     }
 
-    public int getInReplyTo() {
-        return inReplyTo;
-    }
-
-    public void setInReplyTo(int inReplyTo) {
-        this.inReplyTo = inReplyTo;
-    }
-
     public String getRetweetedBy() {
         return retweetedBy;
     }
 
     public void setRetweetedBy(String retweetedBy) {
         this.retweetedBy = retweetedBy;
+    }
+
+    public int getInReplyToUserId() {
+        return inReplyToUserId;
+    }
+
+    public void setInReplyToUserId(int inReplyToUserId) {
+        this.inReplyToUserId = inReplyToUserId;
+    }
+
+    public int getInReplyToTweetId() {
+        return inReplyToTweetId;
+    }
+
+    public void setInReplyToTweetId(int inReplyToTweetId) {
+        this.inReplyToTweetId = inReplyToTweetId;
     }
 }

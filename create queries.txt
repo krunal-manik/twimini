@@ -121,3 +121,8 @@ CREATE TABLE inactive_users(
 	token VARCHAR(64) NOT NULL,
 	PRIMARY KEY( id )
 );
+
+ALTER TABLE tweets DROP FOREIGN KEY tweets_ibfk_2;
+ALTER TABLE tweets DROP COLUMN in_reply_to;
+ALTER TABLE tweets ADD COLUMN in_reply_to_tweet_id INT;
+ALTER TABLE tweets ADD COLUMN in_reply_to_user_id INT;
