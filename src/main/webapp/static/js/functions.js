@@ -17,6 +17,7 @@ function updateTimestamps() {
         updateTimestamps();
     } , 500 );
 }
+
 function addTags(tweetContent) {
    var parts = tweetContent.split("@");
 
@@ -74,8 +75,9 @@ function unEscapeCharacters(str) {
 function prependTweetsToNewsFeedContainer(data) {
     data.tweet = unEscapeCharacters(data.tweet);
     data.tweetOptions = "true";
+    data.retweetedBy = '0';
     var widget = new js.tweetContainer(data);
-    widget.placeAt( dojo.byId("newsFeedContainer") , "first" );
+    widget.placeAt( dojo.byId("newsfeedContainer") , "first" );
 }
 
 

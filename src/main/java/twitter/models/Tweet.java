@@ -27,6 +27,7 @@ public class Tweet {
     private String name;
 
     boolean isFavorite;
+    boolean canRetweet;
 
     public static final RowMapper<Tweet> rowMapper = new RowMapper<Tweet>() {
         @Override
@@ -37,6 +38,7 @@ public class Tweet {
 
     public Tweet() {
         isFavorite = false;
+        canRetweet = true;
     }
 
     public Tweet(ResultSet rs) throws SQLException {
@@ -109,6 +111,14 @@ public class Tweet {
 
     public boolean getIsFavorite() {
         return this.isFavorite;
+    }
+
+    public void setCanRetweet(boolean canRetweet) {
+        this.canRetweet = canRetweet;
+    }
+
+    public boolean getCanRetweet() {
+        return this.canRetweet;
     }
 
     public String toString() {

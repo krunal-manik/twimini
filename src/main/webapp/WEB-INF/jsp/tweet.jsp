@@ -34,7 +34,7 @@
         <div class = "body">
         <div class = "container">
             <div class = "span-24">
-                <div class = "span-15">
+                <div class = "span-16">
                         <form name = "tweet_form">
                             <div style = "position:relative">
                                 <textarea id = "tweet" onkeypress ="return imposeMaxLength(event, this, 140, dojo.byId('tagging_dropdown'));"
@@ -92,15 +92,17 @@
                         </div>
                         -->
 
-                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id:'newsfeed', title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" href="#newsfeed" data-dojo-props="id:'newsfeed', title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'mentions', title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" href="#mentions" data-dojo-props="id: 'mentions', title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'favorites', title:'favorites', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" href="#favorites" data-dojo-props="id: 'favorites', title:'favorites', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer"  data-dojo-props="id: 'follower' , title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" href="#following" data-dojo-props="id: 'retweets', title:'retweets', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer" data-dojo-props="id: 'following', title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.userBoxContainer" href="#follower"  data-dojo-props="id: 'follower' , title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        </div>
+                        <div data-dojo-type="js.userBoxContainer" href="#following" data-dojo-props="id: 'following', title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
 
                     </div>

@@ -45,7 +45,11 @@ dojo.declare("js.tweetContainer",
                     });
                     dojo.addClass( this.favoriteNode , "display-inline" );
                     dojo.addClass( this.replyNode , "display-inline" );
-                    dojo.addClass( this.retweetNode , "display-inline" );
+                    if (this.args.canRetweet) {
+                        dojo.addClass( this.retweetNode , "display-inline" );
+                    } else {
+                        dojo.addClass( this.retweetNode , "display-none" );
+                    }
                 } else {
                     dojo.addClass( this.favoriteNode , "display-none" );
                     dojo.addClass( this.replyNode , "display-none" );
@@ -108,6 +112,8 @@ dojo.declare("js.tweetContainer",
                          content: {tweetId:domNode.args.tweetId},
                          load: function(data) {
                              alert("retweet done");
+                             dojo.removeClass( domNode.retweetNode , "display-inline" );
+                             dojo.addClass( domNode.retweetNode , "display-none" );
                          },
                          error: function(data) {
                             alert( 'error' + data );

@@ -107,10 +107,32 @@ public class TweetController {
         return ret;
     }
 
+
     @RequestMapping(value = "/latest_userfeed")
     @ResponseBody // Ajax call
     public List<Tweet> latestUserfeed(HttpSession session, @RequestParam String favoriter, @RequestParam String timestamp) {
         List<Tweet> ret = UserTweetList.nTweetsOfUserfeedByTimestamp(session.getAttribute("userId").toString(), favoriter, timestamp, null, true);
+        return ret;
+    }
+
+    @RequestMapping(value = "/first_retweets")
+    @ResponseBody // Ajax call
+    public List<Tweet> firstRetweets(HttpSession session, @RequestParam String user, @RequestParam String favoriter) {
+        List<Tweet> ret = UserTweetList.nTweetsOfRetweetsByTimestamp(user, favoriter, null, "10", true);
+        return ret;
+    }
+
+    @RequestMapping(value = "/more_retweets")
+    @ResponseBody // Ajax call
+    public List<Tweet> moreRetweets(HttpSession session, @RequestParam String favoriter, @RequestParam String timestamp, @RequestParam String n) {
+        List<Tweet> ret = UserTweetList.nTweetsOfRetweetsByTimestamp(session.getAttribute("userId").toString(), favoriter, timestamp, n, false);
+        return ret;
+    }
+
+    @RequestMapping(value = "/latest_retweets")
+    @ResponseBody // Ajax call
+    public List<Tweet> latestRetweets(HttpSession session, @RequestParam String favoriter, @RequestParam String timestamp) {
+        List<Tweet> ret = UserTweetList.nTweetsOfRetweetsByTimestamp(session.getAttribute("userId").toString(), favoriter, timestamp, null, true);
         return ret;
     }
 

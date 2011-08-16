@@ -158,6 +158,10 @@ public class UserTweetList {
                 for (int i = 0; i < ret.size(); i++) {
                     ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
                 }
+                int cantRetweetList[] = getCantRetweetOfUser(favoriter);
+                for (int i = 0; i < ret.size(); i++) {
+                    ret.get(i).setCanRetweet(!binarySearch(cantRetweetList, ret.get(i).getTweetId()));
+                }
             }
         } catch (Exception ex) {
             System.out.println("Bug in userTweetList :((");
@@ -199,6 +203,53 @@ public class UserTweetList {
                 for (int i = 0; i < ret.size(); i++) {
                     ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
                 }
+                int cantRetweetList[] = getCantRetweetOfUser(favoriter);
+                for (int i = 0; i < ret.size(); i++) {
+                    ret.get(i).setCanRetweet(!binarySearch(cantRetweetList, ret.get(i).getTweetId()));
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Bug in newsFeed :((");
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
+    public static List<Tweet> nTweetsOfRetweetsByTimestamp(String userId, String favoriter, String timestamp, String n, boolean after) {
+        List<Tweet> ret = null;
+        String tsLimiter = "";
+        String whereTsLimiter = "";
+        String andTsLimiter = "";
+        String numLimiter = "";
+        if (timestamp != null) {
+            if (after) {
+                tsLimiter = " timestamp > '" + timestamp + "' ";
+            } else {
+                tsLimiter = " timestamp < '" + timestamp + "' ";
+            }
+            whereTsLimiter = " WHERE " + tsLimiter;
+            andTsLimiter = " AND " + tsLimiter;
+        }
+        if (n != null) {
+            numLimiter = " LIMIT 0, " + n + " ";
+        }
+        try {
+            String query =
+                    "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                          " +
+                            "R.username as retweeted_by, R.timestamp as timestamp, U.name as name ,                              " +
+                            "U.username as username, U.user_id as user_id,                                                " +
+                            "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id " +
+                            "FROM tweets as T INNER JOIN retweets as R                                                    " +
+                            "on R.tweet_id = T.tweet_id                                                                   " +
+                            "INNER JOIN user as U ON T.tweeted_by = U.user_id                                             " +
+                            "WHERE R.user_id = ?                                                                          " +
+                            andTsLimiter + " ORDER BY timestamp DESC " + numLimiter;
+            ret = db.query(query, UserTweetList.newsFeedMapperWithRetweet, userId);
+            if (favoriter != null) {
+                int favoritesList[] = getFavoriteTweetsOfUser(favoriter);
+                for (int i = 0; i < ret.size(); i++) {
+                    ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
+                }
             }
         } catch (Exception ex) {
             System.out.println("Bug in newsFeed :((");
@@ -216,6 +267,25 @@ public class UserTweetList {
             favoritesList = new int[favorites.size()];
             for (int i = 0; i < favorites.size(); i++)
                 favoritesList[i] = (Integer.valueOf(favorites.get(i).get("tweet_id").toString())).intValue();
+        } catch (Exception ex) {
+            System.out.println("Bug in favoriteTweetsOfUser :((");
+            ex.printStackTrace();
+        }
+        return favoritesList;
+    }
+
+    public static int[] getCantRetweetOfUser(String userId) {
+
+        if (userId == null) return new int[0];
+        int favoritesList[] = new int[0];
+        try {
+            List<Map<String, Object>> favorites = db.queryForList("SELECT tweet_id from ((SELECT tweet_id from tweets where tweeted_by = ?) UNION (SELECT tweet_id from retweets WHERE user_id = ?)) as A ORDER BY tweet_id", userId, userId);
+            System.out.println("------------ > " + userId);
+            System.out.println("++++++++" + favorites.size());
+            favoritesList = new int[favorites.size()];
+            for (int i = 0; i < favorites.size(); i++) {
+                favoritesList[i] = (Integer.valueOf(favorites.get(i).get("tweet_id").toString())).intValue();
+            }
         } catch (Exception ex) {
             System.out.println("Bug in favoriteTweetsOfUser :((");
             ex.printStackTrace();
@@ -398,6 +468,12 @@ public class UserTweetList {
             for (int i = 0; i < ret.size(); i++) {
                 ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
             }
+            int cantRetweetList[] = getCantRetweetOfUser(userId);
+            for (int i = 0; i < ret.size(); i++) {
+                System.out.println("-- ++ ++ ->" + ret.get(i).getTweetId());
+                ret.get(i).setCanRetweet(!binarySearch(cantRetweetList, ret.get(i).getTweetId()));
+                System.out.println("-- ++ ++ ->" + ret.get(i).getCanRetweet());
+            }
             System.out.println(ret.size());
         } catch (Exception ex) {
             System.out.println("Bug in newsFeed :((");
@@ -422,6 +498,10 @@ public class UserTweetList {
                 int favoritesList[] = getFavoriteTweetsOfUser(favoriter);
                 for (int i = 0; i < ret.size(); i++) {
                     ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
+                }
+                int cantRetweetList[] = getCantRetweetOfUser(favoriter);
+                for (int i = 0; i < ret.size(); i++) {
+                    ret.get(i).setCanRetweet(!binarySearch(cantRetweetList, ret.get(i).getTweetId()));
                 }
             }
         } catch (Exception ex) {
@@ -467,6 +547,10 @@ public class UserTweetList {
                 for (int i = 0; i < ret.size(); i++) {
                     ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
                 }
+                int cantRetweetList[] = getCantRetweetOfUser(favoriter);
+                for (int i = 0; i < ret.size(); i++) {
+                    ret.get(i).setCanRetweet(!binarySearch(cantRetweetList, ret.get(i).getTweetId()));
+                }
             }
         } catch (Exception ex) {
             System.out.println("Bug in newsFeed :((");
@@ -492,6 +576,10 @@ public class UserTweetList {
                 int favoritesList[] = getFavoriteTweetsOfUser(favoriter);
                 for (int i = 0; i < ret.size(); i++) {
                     ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
+                }
+                int cantRetweetList[] = getCantRetweetOfUser(favoriter);
+                for (int i = 0; i < ret.size(); i++) {
+                    ret.get(i).setCanRetweet(!binarySearch(cantRetweetList, ret.get(i).getTweetId()));
                 }
             }
         } catch (Exception ex) {
@@ -536,6 +624,10 @@ public class UserTweetList {
                 int favoritesList[] = getFavoriteTweetsOfUser(favoriter);
                 for (int i = 0; i < ret.size(); i++) {
                     ret.get(i).setFavorite(binarySearch(favoritesList, ret.get(i).getTweetId()));
+                }
+                int cantRetweetList[] = getCantRetweetOfUser(favoriter);
+                for (int i = 0; i < ret.size(); i++) {
+                    ret.get(i).setCanRetweet(!binarySearch(cantRetweetList, ret.get(i).getTweetId()));
                 }
             }
         } catch (Exception ex) {

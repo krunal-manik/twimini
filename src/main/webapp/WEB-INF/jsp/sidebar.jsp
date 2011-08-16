@@ -1,28 +1,41 @@
-<div class = "prepend-2 span-8 last" style="padding:7px; padding-bottom:0px; border-width:1px; border-color:#AAAAAA; border-style:solid">
-    <div class = "span-8 last sidebar">
-        <div class = "padding">
+<div class = "span-7 last" style="padding:7px; padding-bottom:0px; border-width:1px; border-color:#AAAAAA; border-style:solid">
+    <div class = "span-7 last sidebar">
+        <div class="padding">
             <div class="sidebar-info border">
-                <div class="prepend-2 span-4 append-2 last">
-                    <a href="/${currentUsername}">
-                        @${currentUsername}
-                        <img src='/photos/${currentUserId}.jpg' height="80" width="80"/>
-                    </a>
+                <div class="span-6 last">
+
+                    <div class="span-3" >
+                        <a href="/${currentUsername}">
+                            <div  style="padding-left:20px; padding-top:10px">
+                                <img src='/photos/${currentUserId}.jpg' class="span-2" height="70" width="70"/>
+                                <span class="span-2 as-link" style="text-align:center">@${currentUsername}</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="span-3 last" style="text-align: center">
+                        <div class="span-3 last" style="height:30px"></div>
+                        <a class="as-link" href="/${currentUsername}">${tweetCount}<br>Tweets</a>
+                    </div>
+                </div>
+
+                <div class="span-6 last">
+
+                    <div class="span-3" style="text-align:center">
+                        <div class="span-3 last" style="height:30px"></div>
+                        <a class="as-link" href="/${currentUsername}">${followerCount}<br>Followers</a>
+                    </div>
+
+                    <div class="span-3 last" style="text-align:center">
+                        <div class="span-3 last" style="height:30px"></div>
+                        <a class="as-link" href="/${currentUsername}">${followingCount}<br>Following</a>
+                    </div>
 
                 </div>
-                <br>
 
-                    <div class="span-2">
-                        <a href="/${currentUsername}">&nbsp;&nbsp;&nbsp;&nbsp;${tweetCount}<br>Tweets</a>
+                    <div class="span-6 last padding">
+                        About ${currentUsername} : ${aboutCurrentUser}
                     </div>
-
-                    <div class="span-2">
-                        <a href="/${currentUsername}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${followerCount} <br>Followers</a>
-                    </div>
-
-                    <div class="span-2 last">
-                        <a href="/${currentUsername}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${followingCount}<br>Following</a>
-                    </div>
-                About ${currentUsername} : ${aboutCurrentUser}
             </div>
             <br>
             <ul class = "border">
