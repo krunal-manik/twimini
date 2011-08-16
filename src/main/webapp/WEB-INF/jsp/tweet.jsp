@@ -34,11 +34,11 @@
         <div class = "body">
         <div class = "container">
             <div class = "span-24">
-                <div class = "span-16">
+                <div class = "span-15">
                         <form name = "tweet_form">
                             <div style = "position:relative">
                                 <textarea id = "tweet" onkeypress ="return imposeMaxLength(event, this, 140, dojo.byId('tagging_dropdown'));"
-                                name = "tweetContent" value = "" class="span-16" placeholder="tweet !!!"
+                                name = "tweetContent" value = "" class="span-15" placeholder="tweet !!!"
                                 style="resize:none; height:60px;"
                                 onkeydown="suggestionDivChange(event, this, dojo.byId('tagging_dropdown'))"
                                 onkeyup = "givesuggestions(event, this, dojo.byId('tagging_dropdown'));"></textarea>

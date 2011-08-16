@@ -377,3 +377,10 @@ a{
     font-size:10px;
     color:#AAAAAA;
 }
+
+.sidebar-info {
+    padding:10px;
+    background-color:#FFFFFF;
+    background: url("../images/bg_comment.gif") repeat-x scroll left bottom #FFFFFF;
+    overflow: hidden;
+}

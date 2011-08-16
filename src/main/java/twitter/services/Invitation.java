@@ -26,8 +26,8 @@ public class Invitation {
     public static SimpleJdbcTemplate db;
 
     @Autowired
-    public Invitation(SimpleJdbcTemplate db) {
-        this.db = db;
+    public Invitation(SimpleJdbcTemplate simpleJdbcTemplate) {
+        db = simpleJdbcTemplate;
     }
 
     private static String getInvitationTemplate(String senderName,String senderUsername,String receiverName) {

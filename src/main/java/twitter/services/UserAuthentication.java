@@ -25,8 +25,8 @@ public class UserAuthentication {
     private static SimpleJdbcTemplate db;
 
     @Autowired
-    public UserAuthentication(SimpleJdbcTemplate db) {
-        this.db = db;
+    public UserAuthentication(SimpleJdbcTemplate simpleJdbcTemplate) {
+        db = simpleJdbcTemplate;
     }
 
     public static User authenticateUser(String username, String password) {

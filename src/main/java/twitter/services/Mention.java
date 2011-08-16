@@ -34,8 +34,8 @@ public class Mention {
     };
 
     @Autowired
-    public Mention(SimpleJdbcTemplate db) {
-        this.db = db;
+    public Mention(SimpleJdbcTemplate simpleJdbcTemplate) {
+        db = simpleJdbcTemplate;
     }
 
     public static List<User> mentionedList(String tweetId) {

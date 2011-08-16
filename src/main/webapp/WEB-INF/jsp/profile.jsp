@@ -25,7 +25,7 @@
         <div class = "body">
             <div class = "container">
                 <div class = "span-24">
-                    <div class = "span-16">
+                    <div class = "span-15">
                         <% if (session.getAttribute("username") == null) {%>
                         <% } else if((session.getAttribute("username").equals(request.getAttribute("currentUsername")))) { %>
                             <div class="topbox" style="padding:17px; border:1px #AAAAAA solid">

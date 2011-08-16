@@ -40,10 +40,18 @@ function filterEscapeCharacters(str) {
     str = str.replace(/[&]/g, '&amp;');
     str = str.replace(/[<]/g, '&lt;');
     str = str.replace(/[>]/g, '&gt;');
-    str = str.replace(/[']/g, '&#39;');
-    str = str.replace(/["]/g, '&quot;');
+   // str = str.replace(/["]/g, '&quot;');
     str = str.replace(/[\n]/g, '<br>');
-    return str;
+
+    var ret = '';
+    for(var i=0;i<str.length;i++)
+        if( str[i] == '\"' )
+            ret += '&quot;';
+        else if( str[i] == '\\' )
+            ret += '';
+        else
+        ret += str[i];
+    return ret;
 }
 function unEscapeCharacters(str) {
 

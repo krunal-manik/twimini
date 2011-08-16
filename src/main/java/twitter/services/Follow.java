@@ -37,8 +37,8 @@ public class Follow {
     };
 
     @Autowired
-    public Follow(SimpleJdbcTemplate db) {
-        this.db = db;
+    public Follow(SimpleJdbcTemplate simpleJdbcTemplate) {
+        db = simpleJdbcTemplate;
     }
 
     public static Boolean ifFollow(String followed, String follower) {

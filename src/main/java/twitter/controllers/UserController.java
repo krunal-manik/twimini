@@ -190,14 +190,17 @@ public class UserController {
         if (session.getAttribute("username") == null)
             return new ModelAndView("/login");
         ModelAndView mv = new ModelAndView("/tweet");
+        String username = session.getAttribute("username").toString();
         String userId = session.getAttribute("userId").toString();
+        mv.addObject("tweetCount",UserTweetList.getUserTweetsCount(userId));
         mv.addObject("followerList", Follow.getFollowerListLimited(userId));
         mv.addObject("followedList", Follow.getFollowedListLimited(userId));
         mv.addObject("followerCount", Follow.getFollowerList(userId).size());
         mv.addObject("followingCount", Follow.getFollowedList(userId).size());
         mv.addObject("allUserList", Follow.allUsersList(userId));
-        mv.addObject("currentUsername",session.getAttribute("username").toString());
+        mv.addObject("currentUsername",username);
         mv.addObject("currentUserId",userId);
+        mv.addObject("aboutCurrentUser",UserAuthentication.getUserByUsername(username).getAboutMe());
        return mv;
     }
 
@@ -359,13 +362,14 @@ public class UserController {
                 mv.addObject("followStatus", "Unfollow");
             }
         }
-
+        mv.addObject("tweetCount",UserTweetList.getUserTweetsCount(userId));
         mv.addObject("followerList", Follow.getFollowerListLimited(userId));
         mv.addObject("followedList", Follow.getFollowedListLimited(userId));
         mv.addObject("followerCount", Follow.getFollowerList(userId).size());
         mv.addObject("followingCount", Follow.getFollowedList(userId).size());
         mv.addObject("currentUsername", username);
         mv.addObject("currentUserId", userId);
+        mv.addObject("aboutCurrentUser",UserAuthentication.getUserByUsername(username).getAboutMe());
         return mv;
     }
 

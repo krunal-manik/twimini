@@ -26,8 +26,8 @@ public class EmailService {
     public static SimpleJdbcTemplate db;
 
     @Autowired
-    public EmailService(SimpleJdbcTemplate db) {
-        this.db = db;
+    public EmailService(SimpleJdbcTemplate simpleJdbcTemplate) {
+        db = simpleJdbcTemplate;
     }
 
     public static final RowMapper<Mail> rowMapper = new RowMapper<Mail>() {
