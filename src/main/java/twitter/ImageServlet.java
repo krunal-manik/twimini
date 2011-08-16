@@ -20,7 +20,7 @@ public class ImageServlet extends HttpServlet {
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 5;
 
     public void init() throws ServletException {
-        imagePath = "C:\\Users\\krunal.ma\\Desktop\\photos\\";
+        imagePath = System.getProperty("user.home") + "\\Desktop\\photos\\";
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
