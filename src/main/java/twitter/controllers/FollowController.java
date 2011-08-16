@@ -70,6 +70,7 @@ public class FollowController {
     @ResponseBody
     public List<User> firstFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower) {
         List<User> followings = Follow.nFollowedInLimits(user, follower, null, "10");
+        System.out.println("size of following is " + followings.size());
         return followings;
     }
 
@@ -83,8 +84,9 @@ public class FollowController {
     @RequestMapping("/first_follower")
     @ResponseBody
     public List<User> firstFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower) {
-        List<User> followings = Follow.nFollowingInLimits(user, follower, null, "10");
-        return followings;
+        List<User> followers = Follow.nFollowingInLimits(user, follower, null, "10");
+        System.out.println("size of followers is " + followers.size());
+        return followers;
     }
 
     @RequestMapping("/more_follower")

@@ -19,8 +19,30 @@ dojo.declare("js.userBoxContainer",
                 this.moreURL = "/more_" + this.args.title;
                 this.args.user = this.args.user.toString();
                 var domNode = this;
+                dojo.connect( dijit.byId(this.args.id), "onShow", function() {
+                    domNode.first(domNode);
+                });
+                dojo.connect(this.moreNode, "onclick", function() {
+                        var x = domNode.containerNode;
+                        var lastId = x.children[x.children.length - 1].id;
+                        domNode.more( 2, domNode);
+                    }
+                );
+            },
+            getAttribute : function() {
+                return this.args;
+            },
+            appendChild : function() {
+                alert(' in append child here');
+                dojo.parser.parse(this);
+            },
+            getSelf : function() {
+                return this;
+            },
+            first: function(domNode) {
+                dijit.byId(domNode.containerNode).innerHTML = '';
                 dojo.xhrGet({
-                    url : this.firstURL.toString() + "?user=" + this.args.user + "&follower=" + this.args.loggedInUser,
+                    url : domNode.firstURL.toString() + "?user=" + domNode.args.user + "&follower=" + domNode.args.loggedInUser,
                     handleAs : 'json',
                     load : function(data) {
                         for (var i =0; i < data.length; i++) {
@@ -38,35 +60,16 @@ dojo.declare("js.userBoxContainer",
                        alert( 'error ' + data );
                     }
                 });
-                dojo.connect(this.moreNode, "onclick", function() {
-//                        var x = domNode.containerNode;
-//                        var lastId = x.children[x.children.length - 1].id;
-//                        domNode.more(dijit.byId(lastId).getTimestamp(), 2, domNode);
-                    }
-                );
             },
-            getAttribute : function() {
-                return this.args;
-            },
-            appendChild : function() {
-                alert(' in append child here');
-                dojo.parser.parse(this);
-            },
-            getSelf : function() {
-                return this;
-            },
-            more : function(timestamp, n, domNode) {
+            more : function(n, domNode) {
                 dojo.xhrGet({
-                    url : domNode.moreURL + "?timestamp=" + timestamp + "&n=" + n + "&favoriter=" + this.args.favoriter,
+                    url : this.moreURL.toString() + "?user=" + this.args.user + "&follower=" + this.args.loggedInUser + "&from=" + domNode.containerNode.children.length,
                     handleAs : 'json',
                     load : function(data) {
-                        if (data.length < n) {
-                            //dojo.byId("more_newsfeed").hide();
-                        }
                         for (var i =0; i < data.length; i++) {
-                            data[i].tweet = unEscapeCharacters(data[i].tweet);
-                            data[i].tweetOptions = "true";
-                            var widget = new js.tweetContainer(data[i]);
+                            //  data[i].tweet = unEscapeCharacters(data[i].tweet);
+                            data[i].loggedInUser = domNode.args.loggedInUser;
+                            var widget = new js.userContainer(data[i]);
                             widget.placeAt( domNode.containerNode , "last" );
                         }
                     },
@@ -74,13 +77,6 @@ dojo.declare("js.userBoxContainer",
                        alert( 'error ' + data );
                     }
                 });
-            },
-            moreTweets : function(container) {
-                var x = dojo.byId(container);
-                var firstId = x.children[0].id;
-                var lastId = x.children[x.children.length - 1].id;
-                var ts = dijit.byId(lastId).getTimestamp();
-                nTweetsBeforeTimestamp(ts, 2);
             }
         }
 );

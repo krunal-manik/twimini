@@ -169,8 +169,8 @@ public class Follow {
 
     public static List<User> nFollowedInLimits(String userId, String loggedInUser, String from, String n) {
         String numLimiter = "";
-        if (n.equals(null) || n == null || n.equals("null")) {
-            if (from != null) {
+        if ( !(n.equals(null) || n == null || n.equals("null")) ) {
+            if (from == null) {
                 numLimiter = " LIMIT 0, " + n + " ";
             } else {
                 System.out.println(from + " " + n);
@@ -190,12 +190,13 @@ public class Follow {
             followedList = db.query(query, Follow.rowMapperForFollow, userId);
             query = "SELECT user_id, username, name, about_me from user                " +
                     "where user_id in (SELECT followed from follower_followed " +
-                    "where follower = ? AND last_followed IS NULL)" +
-                    numLimiter;
+                    "where follower = ? AND last_followed IS NULL)";
 
             if (loggedInUser != null) {
                 loggedInFollowedList = db.query(query, Follow.rowMapperForFollow, loggedInUser);
                 if (followedList == null) return new ArrayList<User>();
+                System.out.println("logged " + loggedInFollowedList.size());
+                System.out.println("followed " + followedList.size());
                 for (int i = 0; i < followedList.size(); i++) {
                     if (loggedInFollowedList.contains(followedList.get(i))) {
                         followedList.get(i).setFollowStatus("Following");
@@ -210,9 +211,10 @@ public class Follow {
     }
 
     public static List<User> nFollowingInLimits(String userId, String loggedInUser, String from, String n) {
+        System.out.println( "n is " + n );
         String numLimiter = "";
-        if (n.equals(null) || n == null || n.equals("null")) {
-            if (from != null) {
+        if ( !(n.equals(null) || n == null || n.equals("null")) ) {
+            if (from == null) {
                 numLimiter = " LIMIT 0, " + n + " ";
             } else {
                 System.out.println(from + " " + n);
@@ -220,7 +222,7 @@ public class Follow {
                 numLimiter = " LIMIT " + from + ", " + to + " ";
             }
         }
-
+        System.out.println("numLimiter is " + numLimiter);
         List<User> followedList = null;
         List<User> loggedInFollowedList = null;
         try {
@@ -232,8 +234,7 @@ public class Follow {
             followedList = db.query(query, Follow.rowMapperForFollow, userId);
             query = "SELECT user_id, username, name, about_me from user                 " +
                     "where user_id in (SELECT followed from follower_followed " +
-                    "where follower = ? AND last_followed IS NULL)" +
-                    numLimiter;
+                    "where follower = ? AND last_followed IS NULL)";
             if (loggedInUser != null) {
                 loggedInFollowedList = db.query(query, Follow.rowMapperForFollow, loggedInUser);
                 if (followedList == null) return new ArrayList<User>();

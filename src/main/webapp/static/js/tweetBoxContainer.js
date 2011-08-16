@@ -20,28 +20,8 @@ dojo.declare("js.tweetBoxContainer",
                 this.moreURL = "/more_" + this.args.title;
                 this.args.user = this.args.user.toString();
                 var domNode = this;
-                dojo.xhrGet({
-                    url : this.firstURL.toString() + "?user=" + this.args.user + "&favoriter=" + this.args.favoriter,
-                    handleAs : 'json',
-                    load : function(data) {
-                        for (var i =0; i < data.length; i++) {
-                            data[i].tweet = unEscapeCharacters(data[i].tweet);
-                            if (domNode.args.favoriter != "null") {
-                                data[i].tweetOptions = "true";
-                            } else {
-                                data[i].tweetOptions = "false";
-                            }
-                            var widget = new js.tweetContainer(data[i]);
-                            widget.placeAt( domNode.containerNode , "last" );
-                        }
-                        if (data.length == 10) {
-                            dojo.removeClass( domNode.moreNode , "display-none" );
-                            dojo.addClass( domNode.moreNode , "display-inline" );
-                        }
-                    },
-                    error: function(data) {
-                       alert( 'error ' + data );
-                    }
+                dojo.connect( dijit.byId(this.args.id), "onShow", function() {
+                    domNode.first(domNode);
                 });
                 dojo.connect(this.moreNode, "onclick", function() {
                         var x = domNode.containerNode;
@@ -65,6 +45,32 @@ dojo.declare("js.tweetBoxContainer",
             },
             getSelf : function() {
                 return this;
+            },
+            first : function(domNode) {
+                dijit.byId(domNode.containerNode).innerHTML = '';
+                dojo.xhrGet({
+                    url : this.firstURL.toString() + "?user=" + domNode.args.user + "&favoriter=" + domNode.args.favoriter,
+                    handleAs : 'json',
+                    load : function(data) {
+                        for (var i =0; i < data.length; i++) {
+                            data[i].tweet = unEscapeCharacters(data[i].tweet);
+                            if (domNode.args.favoriter != "null") {
+                                data[i].tweetOptions = "true";
+                            } else {
+                                data[i].tweetOptions = "false";
+                            }
+                            var widget = new js.tweetContainer(data[i]);
+                            widget.placeAt( domNode.containerNode , "last" );
+                        }
+                        if (data.length == 10) {
+                            dojo.removeClass( domNode.moreNode , "display-none" );
+                            dojo.addClass( domNode.moreNode , "display-inline" );
+                        }
+                    },
+                    error: function(data) {
+                       alert( 'error ' + data );
+                    }
+                });
             },
             latest: function(timestamp, domNode) {
                 dojo.xhrGet({

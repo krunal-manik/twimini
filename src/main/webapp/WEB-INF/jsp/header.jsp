@@ -11,7 +11,7 @@
                         SEARCH
                     </div>
                     <div class="span-6 last" style="position:relative">
-                        <input  type="text" name="pattern" id = "pattern" onkeyup="getSearchResults()"/>
+                        <input  type="text" name="pattern" id = "pattern"/>
                         <!--select id="search_dropdown" style="display:none" class="dropdown_select"> </select-->
                     </div>
                 </form>

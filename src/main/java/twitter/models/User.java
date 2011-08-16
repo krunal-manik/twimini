@@ -95,4 +95,15 @@ public class User {
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        User u = (User) o;
+        return (this.userId == u.getUserId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }

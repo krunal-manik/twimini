@@ -92,15 +92,15 @@
                         </div>
                         -->
 
-                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id:'newsfeed', title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'mentions', title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="title:'favorites', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'favorites', title:'favorites', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer" data-dojo-props="title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.userBoxContainer"  data-dojo-props="id: 'follower' , title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer" data-dojo-props="title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.userBoxContainer" data-dojo-props="id: 'following', title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
 
                     </div>
