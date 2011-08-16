@@ -48,14 +48,6 @@ public class FollowController {
         Follow.removeFollowing(userId, session.getAttribute("userId").toString());
     }
 
-    @RequestMapping("/followed")
-    public ModelAndView followedList(HttpSession session) {
-        List<User> followedList = Follow.getFollowedList(session.getAttribute("userId").toString());
-        ModelAndView mv = new ModelAndView();
-        mv.addObject("followedList", followedList);
-        return mv;
-    }
-
     /*
     @RequestMapping("{username}/followers")
     public ModelAndView firstFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower) {
@@ -101,22 +93,6 @@ public class FollowController {
         List<User> followerList = Follow.getFollowerList(session.getAttribute("userId").toString());
         ModelAndView mv = new ModelAndView();
         mv.addObject("followerList", followerList);
-        return mv;
-    }
-
-    @RequestMapping("/profile/follower")
-    public ModelAndView getSpecificUsersFollowers(String userId) {
-        List<User> ret = Follow.getFollowerList(userId);
-        ModelAndView mv = new ModelAndView("/follower");
-        mv.addObject("followerList", ret);
-        return mv;
-    }
-
-    @RequestMapping("/profile/followed")
-    public ModelAndView getSpecificUsersFollowed(String userId) {
-        List<User> ret = Follow.getFollowedList(userId);
-        ModelAndView mv = new ModelAndView("/followed");
-        mv.addObject("followedList", ret);
         return mv;
     }
 

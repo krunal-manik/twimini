@@ -15,7 +15,7 @@ function updateTimestamps() {
     setTimeout( function() {
         jQuery('abbr.tweet-time').timeago();
         updateTimestamps();
-    } , 2000 );
+    } , 500 );
 }
 function addTags(tweetContent) {
    var parts = tweetContent.split("@");

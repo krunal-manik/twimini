@@ -8,16 +8,18 @@ package twitter.models;
  * To change this template use File | Settings | File Templates.
  */
 public class UserProfile {
-    int userId;
-    String name;
-    String username;
-    String email;
+    private int userId;
+    private String name;
+    private String username;
+    private String email;
+    private String aboutMe;
 
     public UserProfile(User user) {
         userId = user.getUserId();
         name = user.getName();
         username = user.getUsername();
         email = user.getEmail();
+        aboutMe = user.getAboutMe();
     }
 
     public UserProfile() {
@@ -54,5 +56,13 @@ public class UserProfile {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
     }
 }

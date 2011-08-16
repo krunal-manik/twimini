@@ -63,8 +63,8 @@ public class UserTweetList {
     };
 
     @Autowired
-    public UserTweetList(SimpleJdbcTemplate db) {
-        this.db = db;
+    public UserTweetList(SimpleJdbcTemplate simpleJdbcTemplate) {
+        db = simpleJdbcTemplate;
     }
 
     public static Tweet addTweet(String tweet, String userId) {
@@ -344,7 +344,7 @@ public class UserTweetList {
         return ret;
     }
 
-    public static List<Tweet> nTweetsOfNewsfeedByTimestamp(String userId, String timestamp, String n, Boolean after) {
+    public static List<Tweet> nTweetsOfNewsfeedByTimestamp(String userId, String timestamp, String n, boolean after) {
         List<Tweet> ret = null;
         String tsLimiter = "";
         String whereTsLimiter = "";

@@ -189,7 +189,16 @@ public class UserController {
     public ModelAndView landingPageGet(HttpSession session) {
         if (session.getAttribute("username") == null)
             return new ModelAndView("/login");
-        return TweetController.tweetsList(session);
+        ModelAndView mv = new ModelAndView("/tweet");
+        String userId = session.getAttribute("userId").toString();
+        mv.addObject("followerList", Follow.getFollowerListLimited(userId));
+        mv.addObject("followedList", Follow.getFollowedListLimited(userId));
+        mv.addObject("followerCount", Follow.getFollowerList(userId).size());
+        mv.addObject("followingCount", Follow.getFollowedList(userId).size());
+        mv.addObject("allUserList", Follow.allUsersList(userId));
+        mv.addObject("currentUsername",session.getAttribute("username").toString());
+        mv.addObject("currentUserId",userId);
+       return mv;
     }
 
     @RequestMapping( value = "/login" )
@@ -223,13 +232,16 @@ public class UserController {
 
 
     }
+
     @RequestMapping(value ="/", method = RequestMethod.POST)
     public ModelAndView landingPage(@RequestParam("username") String username,
                               @RequestParam("password") String password,
                               HttpSession session) {
 
         if (session.getAttribute("username") != null) {
-            return TweetController.tweetsList(session);
+            return new ModelAndView(){{
+                setViewName("redirect:/");
+            }};
         }
 
         ModelAndView mv = new ModelAndView("/login");
@@ -296,6 +308,8 @@ public class UserController {
         mv.addObject("message","An activation mail has been sent to your account.Please click on the link in the mail to activate your account. Your account will be activated once you click that link.Please wait for a while if you don't receive the mail instantly.");
         return mv;
     }
+
+
     @RequestMapping(value = "/activateAccount", method = RequestMethod.GET)
     public ModelAndView activateAccount(String token, HttpSession session) {
         User user = UserAuthentication.makeUserPermanent(token);
@@ -345,26 +359,13 @@ public class UserController {
                 mv.addObject("followStatus", "Unfollow");
             }
         }
-        List<Tweet> userTweetList = UserTweetList.userTweetList(userId, session_userId);
-        for (Tweet tweet : userTweetList)
-            tweet.setTweet(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(tweet.getTweet())));
-        List<Tweet> userMentionList = UserTweetList.mentionFeed(userId, session_userId);
-        for (Tweet tweet : userMentionList)
-            tweet.setTweet(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(tweet.getTweet())));
-        List<Tweet> userFavoriteList = UserTweetList.favoritesFeed(userId, session_userId);
-        for (Tweet tweet : userFavoriteList)
-            tweet.setTweet(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(tweet.getTweet())));
-        mv.addObject("userTweets", userTweetList);
-        mv.addObject("userMentionList", userMentionList);
-        mv.addObject("userFavoriteList", userFavoriteList);
+
         mv.addObject("followerList", Follow.getFollowerListLimited(userId));
         mv.addObject("followedList", Follow.getFollowedListLimited(userId));
         mv.addObject("followerCount", Follow.getFollowerList(userId).size());
         mv.addObject("followingCount", Follow.getFollowedList(userId).size());
         mv.addObject("currentUsername", username);
         mv.addObject("currentUserId", userId);
-        mv.addObject("currentEmail", urlMappedUser.getEmail());
-        mv.addObject("currentName", urlMappedUser.getName());
         return mv;
     }
 
@@ -467,7 +468,7 @@ public class UserController {
 
         if (reCaptchaResponse.isValid()) {
             System.out.println("VALID !!!!!!!!!!");
-            User user = UserAuthentication.getPassword(email);
+            User user = UserAuthentication.getUserByEmail(email);
             if (user == null) {
                 return new ModelAndView("/reset-password"){{
                     addObject( "errorMessage" , "No user registered with this email id" );

@@ -3,6 +3,7 @@ package twitter.api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import twitter.models.Tweet;
 import twitter.models.User;
@@ -25,65 +26,117 @@ import java.util.List;
 @Controller
 public class TweetAPI {
 
-    @RequestMapping("/api/tweets/{username}")
+    @RequestMapping("/api/{username}/tweets")
     @ResponseBody
-    public static Hashtable<String, Object> getUserTweets(@PathVariable String username) {
+    public static Hashtable<String, Object> getUserTweets(@PathVariable String username,String timestamp,String count,String password) {
         System.out.println(username);
         Hashtable<String, Object> userTweets = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
-            List<Tweet> tweetsList = UserTweetList.userTweetList(String.valueOf(user.getUserId()), null);
+            List<Tweet> tweetsList = null;
+            if( password != null ) {
+                if( timestamp == null && count == null ) {
+                    User user = UserAuthentication.authenticateUser(username,password);
+                    if( user == null ) {
+                        userTweets.put("error", "User Authentication failed");
+                        userTweets.put("success", "false");
+                        return userTweets;
+                    }
+                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , String.valueOf(user.getUserId()) , null , "10" , true );
+                }
+                else if (timestamp != null && count != null ) {
+                    User user = UserAuthentication.authenticateUser(username,password);
+                    if( user == null ) {
+                        userTweets.put("error", "User Authentication failed");
+                        userTweets.put("success", "false");
+                        return userTweets;
+                    }
+                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , String.valueOf(user.getUserId()) , timestamp , count , false );
+                }
+                else {
+                    userTweets.put("success","false");
+                    userTweets.put("error","Bad request");
+                    return userTweets;
+                }
+            }
+            else {
+                if( timestamp == null && count == null ) {
+                    User user = UserAuthentication.getUserByUsername(username);
+                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , null , null , "10" , true );
+                }
+                else if( timestamp != null && count != null ) {
+                    User user = UserAuthentication.getUserByUsername(username);
+                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , null , timestamp , count , false );
+                }
+                else {
+                    userTweets.put("success","false");
+                    userTweets.put("error","Bad request");
+                    return userTweets;
+                }
+            }
             userTweets.put("tweets", tweetsList);
             userTweets.put("success", "true");
-            userTweets.put("status code", "200 OK");
+            userTweets.put("error", "none");
         } catch (NullPointerException ex) {
-            userTweets.put("Error", "No such user exists");
-            userTweets.put("status code", "401 User not found");
+            userTweets.put("error", "User " + username + " does not exist");
+            userTweets.put("success", "false");
         } catch (Exception ex) {
-            userTweets.put("Error", "Server error");
-            userTweets.put("status code", "500 Internal server error");
+            userTweets.put("error", "Server error");
+            userTweets.put("success", "false");
         }
 
         return userTweets;
     }
 
-    @RequestMapping("/api/newsfeed/{username}")
+    @RequestMapping("/api/{username}/newsfeed")
     @ResponseBody
-    public static Hashtable<String, Object> getUsersNewsFeed(@PathVariable String username, String token) {
+    public static Hashtable<String, Object> getUsersNewsFeed(@PathVariable String username,@RequestParam String password,String timestamp,String count) {
         Hashtable<String, Object> userTweets = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
-            List<Tweet> newsFeed = UserTweetList.newsFeed(String.valueOf(user.getUserId()));
+            User user = UserAuthentication.authenticateUser(username,password);
+            List<Tweet> newsFeed = null;
+
+            if( timestamp == null && count == null ) {
+                newsFeed = UserTweetList.nTweetsOfNewsfeedByTimestamp(String.valueOf(user.getUserId())  , null , "10" , true );
+            }
+            else if( timestamp != null && count != null ) {
+                newsFeed = UserTweetList.nTweetsOfNewsfeedByTimestamp(String.valueOf(user.getUserId()) , timestamp , count , false );
+            }
+            else {
+                userTweets.put("success","false");
+                userTweets.put("error","Bad request");
+                return userTweets;
+            }
+
             userTweets.put("tweets", newsFeed);
             userTweets.put("success", "true");
-            userTweets.put("status code", "200 OK");
+            userTweets.put("error", "none");
         } catch (NullPointerException ex) {
-            userTweets.put("Error", "No such user exists");
-            userTweets.put("status code", "401 User not found");
+            userTweets.put("error", "User Authentication failed");
+            userTweets.put("success", "false");
         } catch (Exception ex) {
-            userTweets.put("Error", "Server error");
-            userTweets.put("status code", "500 Internal server error");
+            userTweets.put("error", "Server error");
+            userTweets.put("success", "false");
         }
 
         return userTweets;
     }
 
-    @RequestMapping("/api/publish-tweet/{username}")
+    @RequestMapping("/api/{username}/publish-tweet")
     @ResponseBody
-    public static Hashtable<String, Object> publistTweet(@PathVariable String username, String token, String tweetContent) {
+    public static Hashtable<String, Object> publistTweet(@PathVariable String username, @RequestParam String password,@RequestParam String tweetContent) {
         Hashtable<String, Object> userTweet = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
+            User user = UserAuthentication.authenticateUser(username,password);
             Tweet tweet = UserTweetList.addTweet(tweetContent, String.valueOf(user.getUserId()));
             userTweet.put("tweetInformation", tweet);
             userTweet.put("success", "true");
-            userTweet.put("status code", "200 OK");
+            userTweet.put("error", "none");
         } catch (NullPointerException ex) {
-            userTweet.put("Error", "No such user exists");
-            userTweet.put("status code", "401 User not found");
+            userTweet.put("error", "User Authentication failed");
+            userTweet.put("success", "false");
         } catch (Exception ex) {
-            userTweet.put("Error", "Server error");
-            userTweet.put("status code", "500 Internal server error");
+            userTweet.put("error", "Server error");
+            userTweet.put("success", "false");
         }
 
         return userTweet;
@@ -91,21 +144,21 @@ public class TweetAPI {
 
     @RequestMapping("/api/{username}/favorite")
     @ResponseBody
-    public static Hashtable<String, Object> markFavorite(@PathVariable String username, String tweetId, String token) {
+    public static Hashtable<String, Object> markFavorite(@PathVariable String username, @RequestParam String password, @RequestParam String tweetId) {
         Hashtable<String, Object> favoriteStatus = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
+            User user = UserAuthentication.authenticateUser(username,password);
             boolean success = UserTweetList.markFavorite(tweetId, String.valueOf(user.getUserId()));
             if (!success)
                 throw new Exception();
             favoriteStatus.put("success", "true");
-            favoriteStatus.put("status code", "200 OK");
+            favoriteStatus.put("error", "none");
         } catch (NullPointerException ex) {
-            favoriteStatus.put("Error", "No such user exists");
-            favoriteStatus.put("status code", "401 User not found");
+            favoriteStatus.put("error", "User Authentication failed");
+            favoriteStatus.put("success", "false");
         } catch (Exception ex) {
-            favoriteStatus.put("Error", "Server error");
-            favoriteStatus.put("status code", "500 Internal server error");
+            favoriteStatus.put("error", "Server error");
+            favoriteStatus.put("success", "false");
         }
 
         return favoriteStatus;
@@ -113,21 +166,21 @@ public class TweetAPI {
 
     @RequestMapping("/api/{username}/unfavorite")
     @ResponseBody
-    public static Hashtable<String, Object> markUnfavorite(@PathVariable String username, String tweetId, String token) {
+    public static Hashtable<String, Object> markUnfavorite(@PathVariable String username, @RequestParam String password, @RequestParam String tweetId) {
         Hashtable<String, Object> unFavoriteStatus = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
+            User user = UserAuthentication.authenticateUser(username,password);
             boolean success = UserTweetList.deleteFavorite(tweetId, String.valueOf(user.getUserId()));
             if (!success)
                 throw new Exception();
             unFavoriteStatus.put("success", "true");
-            unFavoriteStatus.put("status code", "200 OK");
+            unFavoriteStatus.put("error", "none");
         } catch (NullPointerException ex) {
-            unFavoriteStatus.put("Error", "No such user exists");
-            unFavoriteStatus.put("status code", "401 User not found");
+            unFavoriteStatus.put("error", "No such user exists");
+            unFavoriteStatus.put("success", "false");
         } catch (Exception ex) {
-            unFavoriteStatus.put("Error", "Server error");
-            unFavoriteStatus.put("status code", "500 Internal server error");
+            unFavoriteStatus.put("error", "Server error");
+            unFavoriteStatus.put("success", "false");
         }
 
         return unFavoriteStatus;

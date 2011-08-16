@@ -40,13 +40,13 @@ public class UserAPI {
             userInformation.put("followers", followerCount);
             userInformation.put("tweetCount", tweetCount);
             userInformation.put("success", "true");
-            userInformation.put("status code", "200 OK");
+            userInformation.put("error", "none");
         } catch (NullPointerException ex) {
-            userInformation.put("Error", "No such user exists");
-            userInformation.put("status code", "401 User not found");
+            userInformation.put("error", "No such user exists");
+            userInformation.put("success", "false");
         } catch (Exception ex) {
-            userInformation.put("Error", "Server error");
-            userInformation.put("status code", "500 Internal server error");
+            userInformation.put("error", "Server error");
+            userInformation.put("success", "false");
         }
 
         return userInformation;

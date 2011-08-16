@@ -3,6 +3,7 @@ package twitter.api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import twitter.models.Tweet;
 import twitter.models.User;
@@ -27,24 +28,34 @@ public class FollowAPI {
 
     @RequestMapping("/api/{username}/followers")
     @ResponseBody
-    public static Hashtable<String, Object> getFollowerList(@PathVariable String username) {
+    public static Hashtable<String, Object> getFollowerList(@PathVariable String username,String password,String currentUsername,String from,String count) {
         Hashtable<String, Object> followers = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
-            List<User> userList = Follow.getFollowerList(String.valueOf(user.getUserId()));
-            List<UserProfile> followerList = new ArrayList<UserProfile>();
-            for (User u : userList) {
-                followerList.add(new UserProfile(u));
+            List<User> followerList;
+            if( currentUsername != null && password != null ) {
+                User user = UserAuthentication.authenticateUser(currentUsername,password);
+                User urlMappedUser = UserAuthentication.getUserByUsername(username);
+                if( user == null ) {
+                    followers.put("success","false");
+                    followers.put("error","User Authentication failed");
+                    return followers;
+                }
+                followerList = Follow.nFollowedInLimits(String.valueOf(urlMappedUser.getUserId()),String.valueOf(user.getUserId()),from, count == null ? "10" : count );
             }
+            else {
+                User urlMappedUser = UserAuthentication.getUserByUsername(username);
+                followerList = Follow.nFollowedInLimits(String.valueOf(urlMappedUser.getUserId()),null,from,count == null ? "10" : count );
+            }
+
             followers.put("followers", followerList);
             followers.put("success", "true");
-            followers.put("status code", "200 OK");
+            followers.put("error", "none");
         } catch (NullPointerException ex) {
-            followers.put("Error", "No such user exists");
-            followers.put("status code", "401 User not found");
+            followers.put("error", "User " + username + " does not exist");
+            followers.put("success", "false");
         } catch (Exception ex) {
-            followers.put("Error", "Server error");
-            followers.put("status code", "500 Internal server error");
+            followers.put("error", "Server error");
+            followers.put("success", "false");
         }
 
         return followers;
@@ -52,48 +63,62 @@ public class FollowAPI {
 
     @RequestMapping("/api/{username}/following")
     @ResponseBody
-    public static Hashtable<String, Object> getFollowingList(@PathVariable String username) {
-        Hashtable<String, Object> following = new Hashtable<String, Object>();
+    public static Hashtable<String, Object> getFollowingList(@PathVariable String username,String password,String currentUsername,String from,String count) {
+        Hashtable<String, Object> followings = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
-            List<User> userList = Follow.getFollowedList(String.valueOf(user.getUserId()));
-            List<UserProfile> followingList = new ArrayList<UserProfile>();
-            for (User u : userList) {
-                followingList.add(new UserProfile(u));
+            List<User> followingList;
+            if( currentUsername != null && password != null ) {
+                User user = UserAuthentication.authenticateUser(currentUsername,password);
+                User urlMappeduser = UserAuthentication.getUserByUsername(username);
+                if( user == null ) {
+                    followings.put("success","false");
+                    followings.put("error","User Authentication failed");
+                    return followings;
+                }
+                followingList = Follow.nFollowingInLimits(String.valueOf(urlMappeduser.getUserId()),String.valueOf(user.getUserId()),from, count == null ? "10" : count );
             }
-            following.put("followers", followingList);
-            following.put("success", "true");
-            following.put("status code", "200 OK");
-        } catch (NullPointerException ex) {
-            following.put("Error", "No such user exists");
-            following.put("status code", "401 User not found");
-        } catch (Exception ex) {
-            following.put("Error", "Server error");
-            following.put("status code", "500 Internal server error");
-        }
+            else {
+                User urlMappedUser = UserAuthentication.getUserByUsername(username);
+                followingList = Follow.nFollowingInLimits(String.valueOf(urlMappedUser.getUserId()),null,from,count == null ? "10" : count );
+            }
 
-        return following;
+            followings.put("followings", followingList);
+            followings.put("success", "true");
+            followings.put("error", "none");
+        } catch (NullPointerException ex) {
+            followings.put("error", "User " + username + " does not exist");
+            followings.put("success", "false");
+        } catch (Exception ex) {
+            followings.put("error", "Server error");
+            followings.put("success", "false");
+        }
+        return followings;
     }
 
     @RequestMapping("/api/{username}/follow")
     @ResponseBody
-    public static Hashtable<String, Object> followUser(@PathVariable String username, String toFollow, String token) {
+    public static Hashtable<String, Object> followUser(@PathVariable String username, @RequestParam String toFollow, @RequestParam String password) {
         Hashtable<String, Object> followStatus = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
+            User user = UserAuthentication.authenticateUser(username,password);
+            if( user == null ) {
+                followStatus.put("success","false");
+                followStatus.put("error","User Authentication failed");
+                return followStatus;
+            }
             User userToFollow = UserAuthentication.getUserByUsername(toFollow);
             boolean success = Follow.addFollowing(String.valueOf(userToFollow.getUserId()),
                     String.valueOf(user.getUserId()));
             if (!success)
                 throw new Exception();
             followStatus.put("success", "true");
-            followStatus.put("status code", "200 OK");
+            followStatus.put("error", "none");
         } catch (NullPointerException ex) {
-            followStatus.put("Error", "No such user exists");
-            followStatus.put("status code", "401 User not found");
+            followStatus.put("error", "User " + username + " does not exist");
+            followStatus.put("success", "false");
         } catch (Exception ex) {
-            followStatus.put("Error", "Server error");
-            followStatus.put("status code", "500 Internal server error");
+            followStatus.put("error", "Server error");
+            followStatus.put("success", "false");
         }
 
         return followStatus;
@@ -101,28 +126,31 @@ public class FollowAPI {
 
     @RequestMapping("/api/{username}/unfollow")
     @ResponseBody
-    public static Hashtable<String, Object> unFollowUser(@PathVariable String username, String toUnFollow, String token) {
+    public static Hashtable<String, Object> unFollowUser(@PathVariable String username, @RequestParam String toUnFollow, @RequestParam String password) {
         Hashtable<String, Object> unfollowStatus = new Hashtable<String, Object>();
         try {
-            User user = UserAuthentication.getUserByUsername(username);
+            User user = UserAuthentication.authenticateUser(username,password);
+            if( user == null ) {
+                unfollowStatus.put("success","false");
+                unfollowStatus.put("error","User Authentication failed");
+                return unfollowStatus;
+            }
             User userToFollow = UserAuthentication.getUserByUsername(toUnFollow);
             boolean success = Follow.removeFollowing(String.valueOf(userToFollow.getUserId()),
                     String.valueOf(user.getUserId()));
             if (!success)
                 throw new Exception();
             unfollowStatus.put("success", "true");
-            unfollowStatus.put("status code", "200 OK");
+            unfollowStatus.put("error", "none");
         } catch (NullPointerException ex) {
-            unfollowStatus.put("Error", "No such user exists");
-            unfollowStatus.put("status code", "401 User not found");
+            unfollowStatus.put("error", "User " + username + " does not exist");
+            unfollowStatus.put("success", "false");
         } catch (Exception ex) {
-            unfollowStatus.put("Error", "Server error");
-            unfollowStatus.put("status code", "500 Internal server error");
+            unfollowStatus.put("error", "Server error");
+            unfollowStatus.put("success", "false");
         }
 
         return unfollowStatus;
     }
 
-
 }
-
