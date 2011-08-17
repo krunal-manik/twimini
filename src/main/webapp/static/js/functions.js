@@ -154,7 +154,8 @@ function addTweet(){
                content : {tweetContent:tweetContent},
                handleAs : 'json',
                load : function(data) {
-                   prependTweetsToNewsFeedContainer(data);
+                   dijit.byId('newsfeed').latest(dijit.byId('newsfeed'));
+                   //prependTweetsToNewsFeedContainer(data);
                    document.getElementById("tweet").value = '';
                },
                error: function(data) {

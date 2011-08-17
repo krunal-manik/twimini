@@ -24,6 +24,7 @@ public class TweetController {
     @RequestMapping(value = "/first_newsfeed")
     @ResponseBody // Ajax call
     public List<Tweet> firstNewsfeed(HttpSession session, @RequestParam String user, @RequestParam String favoriter) {
+        if( session.getAttribute("userId") == null ) return new ArrayList<Tweet>();
         List<Tweet> ret = UserTweetList.nTweetsOfNewsfeedByTimestamp(user, null, "10", true);
         return ret;
     }
@@ -31,6 +32,7 @@ public class TweetController {
     @RequestMapping(value = "/more_newsfeed")
     @ResponseBody // Ajax call
     public List<Tweet> moreNewsfeed(HttpSession session, @RequestParam String timestamp, @RequestParam String n, @RequestParam String favoriter) {
+        if( session.getAttribute("userId") == null ) return new ArrayList<Tweet>();
         List<Tweet> ret = UserTweetList.nTweetsOfNewsfeedByTimestamp(session.getAttribute("userId").toString(), timestamp, n, false);
         return ret;
     }
@@ -38,6 +40,7 @@ public class TweetController {
     @RequestMapping(value = "/latest_newsfeed")
     @ResponseBody // Ajax call
     public List<Tweet> latestNewsfeed(HttpSession session, @RequestParam String timestamp, @RequestParam String favoriter) {
+        if( session.getAttribute("userId") == null ) return new ArrayList<Tweet>();
         List<Tweet> ret = UserTweetList.nTweetsOfNewsfeedByTimestamp(session.getAttribute("userId").toString(), timestamp, null, true);
         return ret;
     }
@@ -59,6 +62,7 @@ public class TweetController {
     @RequestMapping(value = "/latest_mentions")
     @ResponseBody // Ajax call
     public List<Tweet> latestMentions(HttpSession session, @RequestParam String favoriter, @RequestParam String timestamp) {
+        if( session.getAttribute("userId") == null ) return new ArrayList<Tweet>();
         List<Tweet> ret = UserTweetList.nTweetsOfMentionsByTimestamp(session.getAttribute("userId").toString(), favoriter, timestamp, null, true);
         return ret;
     }
@@ -80,6 +84,7 @@ public class TweetController {
     @RequestMapping(value = "/latest_favorites")
     @ResponseBody // Ajax call
     public List<Tweet> latestFavorites(HttpSession session, @RequestParam String favoriter, @RequestParam String timestamp) {
+        if( session.getAttribute("userId") == null ) return new ArrayList<Tweet>();
         List<Tweet> ret = UserTweetList.nTweetsOfFavoritesByTimestamp(session.getAttribute("userId").toString(), favoriter, timestamp, null, true);
         return ret;
     }

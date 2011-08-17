@@ -1,7 +1,9 @@
 <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="${title}">
     <div id="latest_${title}" style="cursor:pointer; margin-bottom:5px; margin-top:8px; padding:3px; text-align:center; width:584px"
          class="border display-none" data-dojo-attach-point="latestNode">
-    <div class="as-link">LATEST</div></div>
+        <div class="as-link">LATEST <span data-dojo-attach-point="latestValueNode">0</span>
+        </div>
+    </div>
 
     <div id="${title}Container" style="display:inline-block;" data-dojo-attach-point="containerNode">
 

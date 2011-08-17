@@ -16,7 +16,7 @@ dojo.declare("js.tweetBoxContainer",
                 this.inherited(arguments);
                 this.args.title = this.args.title.toString();
                 this.firstURL = "/first_" + this.args.title;
-                this.latestURL = "/latest_" + this.args.title;
+                //this.latestURL = "/latest_" + this.args.title;
                 this.moreURL = "/more_" + this.args.title;
                 this.args.user = this.args.user.toString();
                 var domNode = this;
@@ -29,12 +29,25 @@ dojo.declare("js.tweetBoxContainer",
                         domNode.more(dijit.byId(lastId).getTimestamp(), 2, domNode);
                     }
                 );
-                dojo.connect(this.latestNode, "onclick", function() {
-                        var x = domNode.containerNode;
-                        var firstId = x.children[0].id;
-                        domNode.more(dijit.byId(firstId).getTimestamp(), domNode);
-                    }
-                );
+                if (this.args.title == 'newsfeed') {
+                    dojo.connect(this.latestNode, "onclick", function() {
+                            var x = domNode.containerNode;
+                            var firstId = x.children[0].id;
+                            domNode.latest(domNode);
+                        }
+                    );
+                    setInterval(function(){
+                            var x = domNode.containerNode;
+                            var firstId = x.children[0].id;
+                            domNode.latestValue(domNode);
+                        },
+                    30000);
+                }
+            },
+            getLatestTimestamp: function(domNode) {
+                var x = domNode.containerNode;
+                var firstId = x.children[0].id;
+                return dijit.byId(firstId).getTimestamp();
             },
             getAttribute : function() {
                 return this.args;
@@ -73,15 +86,16 @@ dojo.declare("js.tweetBoxContainer",
                     }
                 });
             },
-            latest: function(timestamp, domNode) {
+            latest: function(domNode) {
+                var latestURL = "/latest_" + this.args.title;
                 dojo.xhrGet({
-                    url : domNode.latestURL + "?timestamp=" + timestamp + "&favoriter=" + this.args.favoriter,
+                    url : latestURL + "?timestamp=" + domNode.getLatestTimestamp(domNode) + "&favoriter=" + this.args.favoriter,
                     handleAs : 'json',
                     load : function(data) {
-                        if (data.length < n) {
-                            //dojo.byId("more_newsfeed").hide();
-                        }
-                        for (var i =0; i < data.length; i++) {
+                        dojo.removeClass(domNode.latestNode, "display-inline");
+                        dojo.addClass(domNode.latestNode, "display-none");
+
+                        for (var i =data.length-1; i>=0; i--) {
                             data[i].tweet = unEscapeCharacters(data[i].tweet);
                             data[i].tweetOptions = "true";
                             var widget = new js.tweetContainer(data[i]);
@@ -99,7 +113,8 @@ dojo.declare("js.tweetBoxContainer",
                     handleAs : 'json',
                     load : function(data) {
                         if (data.length < n) {
-                            //dojo.byId("more_newsfeed").hide();
+                            dojo.removeClass(domNode.moreNode, "display-inline");
+                            dojo.addClass(domNode.moreNode, "display-none");
                         }
                         for (var i =0; i < data.length; i++) {
                             data[i].tweet = unEscapeCharacters(data[i].tweet);
@@ -113,20 +128,17 @@ dojo.declare("js.tweetBoxContainer",
                     }
                 });
             },
-            latest : function(domNode) {
+            latestValue : function(domNode) {
+                var latestURL = "/latest_" + domNode.args.title;
                 dojo.xhrGet({
-                    url : domNode.latestURL + "?timestamp=" + timestamp + "&n=" + n + "&favoriter=" + this.args.favoriter,
+                    url : latestURL + "?timestamp=" + domNode.getLatestTimestamp(domNode) + "&favoriter=" + this.args.favoriter,
                     handleAs : 'json',
                     load : function(data) {
-                        if (data.length < n) {
-                            //dojo.byId("more_newsfeed").hide();
+                        if (data.length > 0) {
+                            dojo.removeClass(domNode.latestNode, "display-none");
+                            dojo.addClass(domNode.latestNode, "display-inline");
                         }
-                        for (var i =0; i < data.length; i++) {
-                            data[i].tweet = unEscapeCharacters(data[i].tweet);
-                            data[i].tweetOptions = "true";
-                            var widget = new js.tweetContainer(data[i]);
-                            widget.placeAt( domNode.containerNode , "last" );
-                        }
+                        domNode.latestValueNode.innerHTML = data.length;
                     },
                     error: function(data) {
                        alert( 'error ' + data );
