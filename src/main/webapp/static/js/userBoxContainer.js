@@ -40,6 +40,7 @@ dojo.declare("js.userBoxContainer",
                 return this;
             },
             first: function(domNode) {
+                document.location = domNode.args.href;
                 dijit.byId(domNode.containerNode).innerHTML = '';
                 dojo.xhrGet({
                     url : domNode.firstURL.toString() + "?user=" + domNode.args.user + "&follower=" + domNode.args.loggedInUser,

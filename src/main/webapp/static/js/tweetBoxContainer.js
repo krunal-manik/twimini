@@ -47,6 +47,7 @@ dojo.declare("js.tweetBoxContainer",
                 return this;
             },
             first : function(domNode) {
+                document.location = domNode.args.href;
                 dijit.byId(domNode.containerNode).innerHTML = '';
                 dojo.xhrGet({
                     url : this.firstURL.toString() + "?user=" + domNode.args.user + "&favoriter=" + domNode.args.favoriter,

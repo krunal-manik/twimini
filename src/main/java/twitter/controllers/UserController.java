@@ -378,28 +378,30 @@ public class UserController {
         String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
         User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
-        if (urlMappedUser == null) {
-            ModelAndView mv = new ModelAndView("/error404");
-            return mv;
-        }
-
+//        if (urlMappedUser == null) {
+//            ModelAndView mv = new ModelAndView("/error404");
+//            return mv;
+//        }
+//        ModelAndView mv = new ModelAndView("/user-list");
+//        String userId = String.valueOf(urlMappedUser.getUserId());
+//        List<User> followerList = Follow.getFollowerList(userId);
+//        List<User> loggedInUsersFollowingList = new ArrayList<User>();
+//        if (loggedInUser != null)
+//            loggedInUsersFollowingList = Follow.getFollowedList("" + loggedInUser.getUserId());
+//        for (User user : followerList) {
+//            for (User loggedInUserIsFollowing : loggedInUsersFollowingList) {
+//                if (user.getUserId() == loggedInUserIsFollowing.getUserId()) {
+//                    user.setFollowStatus("Following");
+//                    break;
+//                }
+//            }
+//        }
+//        mv.addObject("userList", followerList);
+//        mv.addObject("username", username);
+//        mv.addObject("message", username + "\'s follower list");
         ModelAndView mv = new ModelAndView("/user-list");
-        String userId = String.valueOf(urlMappedUser.getUserId());
-        List<User> followerList = Follow.getFollowerList(userId);
-        List<User> loggedInUsersFollowingList = new ArrayList<User>();
-        if (loggedInUser != null)
-            loggedInUsersFollowingList = Follow.getFollowedList("" + loggedInUser.getUserId());
-        for (User user : followerList) {
-            for (User loggedInUserIsFollowing : loggedInUsersFollowingList) {
-                if (user.getUserId() == loggedInUserIsFollowing.getUserId()) {
-                    user.setFollowStatus("Following");
-                    break;
-                }
-            }
-        }
-        mv.addObject("userList", followerList);
-        mv.addObject("username", username);
-        mv.addObject("message", username + "\'s follower list");
+        mv.addObject("title", "follower");
+        mv.addObject("currentUserId", urlMappedUser.getUserId());
         System.out.println("done");
         return mv;
     }
@@ -409,30 +411,33 @@ public class UserController {
         String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
         User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
-        if (urlMappedUser == null) {
-            ModelAndView mv = new ModelAndView("/error404");
-            return mv;
-        }
+//        if (urlMappedUser == null) {
+//            ModelAndView mv = new ModelAndView("/error404");
+//            return mv;
+//        }
 
         ModelAndView mv = new ModelAndView("/user-list");
 
-        String userId = String.valueOf(urlMappedUser.getUserId());
-        List<User> followedList = Follow.getFollowedList(userId);
-        List<User> loggedInUsersFollowingList = new ArrayList<User>();
-        if (loggedInUser != null)
-            loggedInUsersFollowingList = Follow.getFollowedList("" + loggedInUser.getUserId());
-        for (User user : followedList) {
-            for (User loggedInUserIsFollowing : loggedInUsersFollowingList) {
-                if (user.getUserId() == loggedInUserIsFollowing.getUserId()) {
-                    user.setFollowStatus("Following");
-                    break;
-                }
-            }
-        }
+//        String userId = String.valueOf(urlMappedUser.getUserId());
+//        List<User> followedList = Follow.getFollowedList(userId);
+//        List<User> loggedInUsersFollowingList = new ArrayList<User>();
+//        if (loggedInUser != null)
+//            loggedInUsersFollowingList = Follow.getFollowedList("" + loggedInUser.getUserId());
+//        for (User user : followedList) {
+//            for (User loggedInUserIsFollowing : loggedInUsersFollowingList) {
+//                if (user.getUserId() == loggedInUserIsFollowing.getUserId()) {
+//                    user.setFollowStatus("Following");
+//                    break;
+//                }
+//            }
+//        }
+//
+//        mv.addObject("userList", followedList);
+//        mv.addObject("username", username);
+//        mv.addObject("message", username + "\'s following list");
 
-        mv.addObject("userList", followedList);
-        mv.addObject("username", username);
-        mv.addObject("message", username + "\'s following list");
+        mv.addObject("title", "following");
+        mv.addObject("currentUserId", urlMappedUser.getUserId());
         return mv;
     }
 

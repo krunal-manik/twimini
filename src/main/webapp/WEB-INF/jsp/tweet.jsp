@@ -5,6 +5,7 @@
     <head>
         <%@include file="/static/includes.html" %>
         <script type="text/javascript">
+            var selected = location.hash.split("/")[1];
             dojo.require("dijit.form.MultiSelect");
             dojo.require("dijit.Dialog");
             dojo.require("dijit.layout.TabContainer");
@@ -20,6 +21,7 @@
                     },
                     dojo.byId("tagging_dropdown_dialog")
                 );
+                dijit.byId("tabContainer").selectChild(dijit.byId(selected));
             });
         </script>
 
@@ -49,7 +51,7 @@
                             </div>
                             <input type = "button" value = "Tweet" onclick="addTweet()"/>
                         </form>
-                    <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false" widgetsInTemplate="true">
+                    <div id="tabContainer" dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false" widgetsInTemplate="true">
 
                         <!--
                         <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="newsFeed" selected="true">
@@ -92,17 +94,17 @@
                         </div>
                         -->
 
-                        <div data-dojo-type="js.tweetBoxContainer" href="#newsfeed" data-dojo-props="id:'newsfeed', title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id:'newsfeed', href:'#!/newsfeed', title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.tweetBoxContainer" href="#mentions" data-dojo-props="id: 'mentions', title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'mentions', href:'#!/mentions', title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.tweetBoxContainer" href="#favorites" data-dojo-props="id: 'favorites', title:'favorites', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'favorites', href:'#!/favorites', title:'favorites', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.tweetBoxContainer" href="#following" data-dojo-props="id: 'retweets', title:'retweets', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'retweets', href:'#!/retweets', title:'retweets', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer" href="#follower"  data-dojo-props="id: 'follower' , title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.userBoxContainer" href="#follower"  data-dojo-props="id: 'follower', href:'#!/follower', title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer" href="#following" data-dojo-props="id: 'following', title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.userBoxContainer" href="#following" data-dojo-props="id: 'following', href:'#!/following', title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
 
                     </div>

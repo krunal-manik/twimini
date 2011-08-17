@@ -38,7 +38,7 @@
                             </div>
                             -->
                             <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false" widgetsInTemplate="true">
-                                <div data-dojo-type="js.userBoxContainer" data-dojo-props="title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                                <div data-dojo-type="js.userBoxContainer" data-dojo-props="id:'${title}', title:'${title}', user:'${currentUserId}', loggedInUser:'<%=session.getAttribute("userId")%>'">
                                 </div>
                             </div>
                         </div>
