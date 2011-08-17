@@ -39,7 +39,6 @@ public class ContactImporterController {
         }};
     }
 
-
     @RequestMapping(value = "/gmail")
     @ResponseBody
     public List<Contact> contactImporter(String access_token, String token_type, String expires_in, HttpSession session) throws Exception {

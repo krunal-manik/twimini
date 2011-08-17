@@ -90,6 +90,7 @@ public class UserTweetList {
         }
         return ret;
     }
+
     public static boolean mentionUserInTweet(int userId, int tweetId) {
         boolean b = false;
         try {

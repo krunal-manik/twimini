@@ -220,6 +220,22 @@ public class UserController {
         return mv;
     }
 
+    private static boolean checkForInactiveUsers(String username,String password) {
+            User temporaryUser = UserAuthentication.isInactiveUser(username,password);
+            if( temporaryUser == null )
+                return false;
+
+            ModelAndView message = new ModelAndView("/message");
+            message.addObject("message","You are already registered with us.The activation mail has been resent to you");
+            String token = UserAuthentication.getInactiveUsersToken(username);
+            String body = String.format("Hi %s!\n" +
+                            "To start tweeting, just click on the link below to activate your account: " +
+                            "http://localhost:8080/activateAccount?token=%s\n" +
+                            "Regards,\nTeam Twitter", temporaryUser.getName() , token);
+            EmailService.sendEMail( "manikkrunal@gmail.com" , temporaryUser.getEmail() , "Twitter Activation Mail" , body );
+            return true;
+    }
+
     @RequestMapping( value = "/login" , method = RequestMethod.POST )
     public ModelAndView login(@RequestParam String username , @RequestParam String password , HttpSession session) {
         if( session.getAttribute("username") != null ) {
@@ -233,11 +249,20 @@ public class UserController {
         User user = UserAuthentication.authenticateUser(username,password);
         if( user != null && usernameError.equals(" ") ) {
             session.setAttribute("userId" , user.getUserId());
-            session.setAttribute("username",user.getUsername());
+            session.setAttribute("username", user.getUsername());
             mv.setViewName("redirect:/");
-        } else {
-            mv.addObject("usernameError",usernameError);
-            mv.addObject("loginError","Invalid username/password combination");
+        }
+        else {
+
+            if( !checkForInactiveUsers(username,password) ) {
+                mv.addObject("usernameError",usernameError);
+                mv.addObject("loginError","Invalid username/password combination");
+                return mv;
+            }
+            ModelAndView message = new ModelAndView("/message");
+            message.addObject("message","You are already registered with us.The activation mail has been resent to you");
+            return message;
+
         }
         return mv;
 
@@ -258,9 +283,16 @@ public class UserController {
         ModelAndView mv = new ModelAndView("/login");
         User currentUser = UserAuthentication.authenticateUser(username, password);
         if (currentUser == null) {
+            if( checkForInactiveUsers(username,password) ) {
+                ModelAndView message = new ModelAndView("/message");
+                message.addObject("message","You are already registered with us.The activation mail has been resent to you");
+                return message;
+            }
+
             mv.addObject("message", "Invalid password");
             return mv;
         }
+
         session.setAttribute("username", currentUser.getUsername());
         session.setAttribute("userId", currentUser.getUserId());
         mv.setViewName("redirect:/");
@@ -473,7 +505,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
-    public ModelAndView test(@RequestParam String email,
+    public ModelAndView resetPasswordPost(@RequestParam String email,
                              @RequestParam("recaptcha_challenge_field") String challenge,
                              @RequestParam("recaptcha_response_field") String response,
                              HttpSession session) {
@@ -513,7 +545,7 @@ public class UserController {
                     "Team Twitter\n", user.getUsername(), user.getUsername(), token);
 
             UserAuthentication.insertToken(user, token);
-            EmailService.sendResetPasswordMail( "manikkrunal@gmail.com" , email , "Twitter Password recovery" , message );
+            EmailService.sendEMail( "manikkrunal@gmail.com" , email , "Twitter Password recovery" , message );
             ModelAndView mv = new ModelAndView("/message");
             mv.addObject( "message", "Reset password instructions have been mailed to you.Please check your inbox for the mail.Please wait for a while if you don't receive the mail instantly." );
             return mv;

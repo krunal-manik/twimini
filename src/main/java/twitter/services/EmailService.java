@@ -46,14 +46,6 @@ public class EmailService {
             if( mailList == null )
                 mailList = new ArrayList<Mail>();
 
-            List<Mail> inactiveUsersList = db.query( "SELECT * from inactive_users" , rowMapper );
-            if( inactiveUsersList == null )
-                inactiveUsersList = new ArrayList<Mail>();
-
-            for( Mail mail : inactiveUsersList ) {
-                mailList.add(mail);
-            }
-
         } catch (EmptyResultDataAccessException ex) {
 
         } catch (Exception ex) {
@@ -64,7 +56,7 @@ public class EmailService {
         return mailList;
     }
 
-    public static void sendResetPasswordMail(String sender, String receiver, String subject, String body) {
+    public static void sendEMail(String sender, String receiver, String subject, String body) {
         try{
             db.update( "INSERT INTO emails(sender,receiver,subject,body) VALUES(?,?,?,?)" ,
                     sender , receiver , subject , body );

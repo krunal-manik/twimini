@@ -37,13 +37,13 @@ public class FollowController {
     }
 
     @RequestMapping(value = "/all_users/addFollowing", method = RequestMethod.POST)
-    @ResponseBody // Ajax call
+    @ResponseBody
     public void addFollowing(HttpSession session, @RequestParam String userId) {
         Follow.addFollowing(userId, session.getAttribute("userId").toString());
     }
 
     @RequestMapping(value = "/all_users/removeFollowing", method = RequestMethod.POST)
-    @ResponseBody // Ajax call
+    @ResponseBody
     public void removeFollowingPost(HttpSession session, @RequestParam String userId) {
         Follow.removeFollowing(userId, session.getAttribute("userId").toString());
     }

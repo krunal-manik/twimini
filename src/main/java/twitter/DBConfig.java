@@ -32,8 +32,6 @@ public class DBConfig {
         return db;
     }
 
-
-
     private static DataSource getDataSource() {
         //
         // Creates a new instance of DriverManagerDataSource and sets

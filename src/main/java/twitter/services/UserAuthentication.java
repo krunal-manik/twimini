@@ -225,4 +225,44 @@ public class UserAuthentication {
         }
         return available;
     }
+
+    public static User isInactiveUser(String username, String password) {
+        User user = null;
+        try {
+            user = db.queryForObject("SELECT * from temp_user where username = ? and password = ?",
+                    new RowMapper<User>() {
+                        @Override
+                        public User mapRow(ResultSet rs, int i) throws SQLException {
+                            User ret = new User();
+                            ret.setUsername(rs.getString("username"));
+                            ret.setPassword(rs.getString("password"));
+                            ret.setName(rs.getString("name"));
+                            ret.setEmail(rs.getString("email"));
+                            return ret;
+                        }
+                    } ,
+                    username,password );
+
+        }
+        catch (EmptyResultDataAccessException ex){
+            return null;
+        }catch (Exception ex) {
+            System.out.println("Bug in inactive availabilty :((");
+            ex.printStackTrace();
+        }
+        return user;
+    }
+
+    public static String getInactiveUsersToken(String username) {
+        String token = null;
+        try {
+            token = db.queryForMap("SELECT token from temp_user where username = ? ",
+                    username ).get("token").toString();
+
+        }catch (Exception ex) {
+            System.out.println("Bug in inactive users token :((");
+            ex.printStackTrace();
+        }
+        return token;
+    }
 }
