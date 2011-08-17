@@ -206,7 +206,9 @@ public class UserController {
         mv.addObject("allUserList", Follow.allUsersList(userId));
         mv.addObject("currentUsername",username);
         mv.addObject("currentUserId",userId);
-        mv.addObject("aboutCurrentUser",UserAuthentication.getUserByUsername(username).getAboutMe());
+        User currentUser = UserAuthentication.getUserByUsername(username);
+        mv.addObject("aboutCurrentUser",currentUser.getAboutMe());
+        mv.addObject("name",currentUser.getName());
        return mv;
     }
 
@@ -386,7 +388,9 @@ public class UserController {
         mv.addObject("followingCount", Follow.getFollowingCount(userId));
         mv.addObject("currentUsername", username);
         mv.addObject("currentUserId", userId);
-        mv.addObject("aboutCurrentUser",UserAuthentication.getUserByUsername(username).getAboutMe());
+        User currentUser = UserAuthentication.getUserByUsername(username);
+        mv.addObject("aboutCurrentUser",currentUser.getAboutMe());
+        mv.addObject("name",currentUser.getName());
         return mv;
     }
 

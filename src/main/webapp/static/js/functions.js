@@ -12,9 +12,8 @@ function getISO8601formattedTime(timeStamp) {
 }
 
 function updateTimestamps() {
-    setTimeout( function() {
+    setInterval( function() {
         jQuery('abbr.tweet-time').timeago();
-        updateTimestamps();
     } , 500 );
 }
 
@@ -83,17 +82,14 @@ function prependTweetsToNewsFeedContainer(data) {
 
 function changeFollowStatus(userId) {
     var buttonName = document.getElementById("follow" + userId);
-    var button_Name = document.getElementById("follow_" + userId);
-    if( button_Name.value == "Follow" ){
+    //var button_Name = document.getElementById("follow_" + userId);
+    if( buttonName.value == "Follow" ){
         $.ajax({
            type : "POST",
            url : "/all_users/addFollowing",
            data : "userId=" + userId ,
            success : function() {
-                button_Name.value = "Following";
-                if (buttonName != null) {
-                    buttonName.value = "Following";
-                }
+                buttonName.value = "Following";
            }
         });
     }
@@ -103,10 +99,7 @@ function changeFollowStatus(userId) {
             url : "/all_users/removeFollowing",
             data : "userId=" + userId ,
             success : function() {
-                button_Name.value = "Follow";
-                if (buttonName != null) {
-                    buttonName.value = "Follow";
-                }
+                buttonName.value = "Follow";
             }
         });
     }

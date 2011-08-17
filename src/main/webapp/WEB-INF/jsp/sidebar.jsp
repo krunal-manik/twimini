@@ -23,19 +23,16 @@
 
                     <div class="span-3" style="text-align:center">
                         <div class="span-3 last" style="height:30px"></div>
-                        <a class="as-link" href="/${currentUsername}">${followerCount}<br>Followers</a>
+                        <a class="as-link" href="/${currentUsername}/followers">${followerCount}<br>Followers</a>
                     </div>
 
                     <div class="span-3 last" style="text-align:center">
                         <div class="span-3 last" style="height:30px"></div>
-                        <a class="as-link" href="/${currentUsername}">${followingCount}<br>Following</a>
+                        <a class="as-link" href="/${currentUsername}/followings">${followingCount}<br>Following</a>
                     </div>
 
                 </div>
 
-                    <div class="span-6 last padding">
-                        About ${currentUsername} : ${aboutCurrentUser}
-                    </div>
             </div>
             <br>
             <ul class = "border">
@@ -52,18 +49,9 @@
             </ul>
 
             <% if( session.getAttribute("username") != null ) { %>
-
-                <ul class = "border">
-                    <div class = "tweeter-name"> ALL USERS: </div>
-                    <c:forEach var='item' items='${allUserList}'>
-                        <li>
-                            <a href = "/${item.username}"> ${item.name} </a>
-                            <input type = "button" id = 'follow_${item.userId}' class = "btn border"
-                            value = ${item.followStatus} onclick="changeFollowStatus(${item.userId})" />
-                        </li>
-
-                    </c:forEach>
-                </ul>
+                <a href="/import_contacts" class="as-link">
+                    Import Your Gmail Contacts
+                </a>
             <% } %>
 
         </div>

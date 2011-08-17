@@ -36,11 +36,6 @@
                     <div class = "span-16">
                         <% if (session.getAttribute("username") == null) {%>
                         <% } else if((session.getAttribute("username").equals(request.getAttribute("currentUsername")))) { %>
-                            <div class="topbox prepend-1 span-15" style="padding:17px; border:1px #AAAAAA solid; margin-bottom: 5px;">
-                                <a href="/edit_profile" class="as-link">Edit your profile</a>
-                                <br>
-                                <a href="/import_contacts" class="as-link">Import Your Gmail Contacts</a>
-                            </div>
                         <% } else { %>
                             <input type = "button" id = 'follow${currentUserId}' class = "btn border"
                             value = '${followStatus}' onclick='changeFollowStatus(${currentUserId})' />
@@ -49,7 +44,23 @@
                         <div class="topbox prepend-1 span-15" style="padding:17px; border:1px #AAAAAA solid; margin-bottom: 5px; diplay:block">
                             <img src="/photos/${currentUserId}.jpg" height="100" width="100" class="span-3" style="border-color:#000000; border-width:2px; border-style:solid; margin:2px"/>
                             <div class="span-10 last" style="margin-left:20px; padding:10px">
-                                <div class="span-4">NAME</div> <div class="span-5">${currentUsername}</div>
+                                <div class="span-5">
+                                    NAME
+                                </div>
+                                <div class="span-5 last">
+                                    ${name}
+                                </div>
+
+                                <div class="span-5" style="padding-top: 10px;">
+                                    About <a href="/${currentUsername}" class="as-link">@${currentUsername}</a>
+                                </div>
+                                <div class="span-5 last" style="overflow:hidden;padding-top: 10px;">
+                                    ${aboutCurrentUser}
+                                </div>
+
+                                <% if( session.getAttribute("username") != null && (session.getAttribute("username").toString()).equals(request.getAttribute("currentUsername"))) { %>
+                                    <a href="/edit_profile" class="as-link">Edit your profile</a>
+                                <% } %>
                             </div>
                         </div>
 
