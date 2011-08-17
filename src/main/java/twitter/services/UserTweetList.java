@@ -301,7 +301,7 @@ public class UserTweetList {
             ret = db.queryForObject(
                     "SELECT T.tweet_id as tweet_id,T.tweeted_by as tweeted_by ,T.tweet as tweet,                 " +
                     "T.timestamp as timestamp, U.name as name ,U.username as username, U.user_id as user_id ,    " +
-                    "T.in_reply_to_user_id as in_reply_to, T.in_reply_to_tweet_id as in_reply_to_tweet_id        " +
+                    "T.in_reply_to_user_id as in_reply_to_user_id, T.in_reply_to_tweet_id as in_reply_to_tweet_id        " +
                     "FROM tweets as T INNER JOIN user as U                                                       " +
                     "ON T.tweeted_by = U.user_id WHERE T.tweeted_by = ? AND T.tweet_id = ?                       ",
                     UserTweetList.newsFeedMapper, userId, tweetId);
