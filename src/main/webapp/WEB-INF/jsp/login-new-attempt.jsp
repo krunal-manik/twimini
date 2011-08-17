@@ -39,6 +39,9 @@
                             <input type="password" name="password" class="textbox" />
                         </div>
                         <div class="span-5 prepend-3 append-6 last" style="padding-top:10px">
+                            <a href="/forgot_password" class="as-link">Forgot Password ?</a>
+                        </div>
+                        <div class="span-5 prepend-3 append-6 last" style="padding-top:10px">
                             <input type="Submit" value="Login" class="signup_button"/>
                         </div>
                     </form>
@@ -46,6 +49,5 @@
         </div>
     </div>
 
-    <%@include file="/WEB-INF/jsp/footer.jsp" %>
     </body>
 </html>

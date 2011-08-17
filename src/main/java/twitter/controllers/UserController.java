@@ -190,7 +190,6 @@ public class UserController {
         return "Invalid email address";
     }
 
-
     @RequestMapping(value = "/" )
     public ModelAndView landingPageGet(HttpSession session) {
         if (session.getAttribute("username") == null)
@@ -220,10 +219,10 @@ public class UserController {
         return mv;
     }
 
-    private static boolean checkForInactiveUsers(String username,String password) {
+    private static String checkForInactiveUsers(String username,String password) {
             User temporaryUser = UserAuthentication.isInactiveUser(username,password);
             if( temporaryUser == null )
-                return false;
+                return null;
 
             ModelAndView message = new ModelAndView("/message");
             message.addObject("message","You are already registered with us.The activation mail has been resent to you");
@@ -233,7 +232,7 @@ public class UserController {
                             "http://localhost:8080/activateAccount?token=%s\n" +
                             "Regards,\nTeam Twitter", temporaryUser.getName() , token);
             EmailService.sendEMail( "manikkrunal@gmail.com" , temporaryUser.getEmail() , "Twitter Activation Mail" , body );
-            return true;
+            return temporaryUser.getEmail();
     }
 
     @RequestMapping( value = "/login" , method = RequestMethod.POST )
@@ -253,14 +252,14 @@ public class UserController {
             mv.setViewName("redirect:/");
         }
         else {
-
-            if( !checkForInactiveUsers(username,password) ) {
+            String email = checkForInactiveUsers(username,password);
+            if( email == null ) {
                 mv.addObject("usernameError",usernameError);
                 mv.addObject("loginError","Invalid username/password combination");
                 return mv;
             }
             ModelAndView message = new ModelAndView("/message");
-            message.addObject("message","You are already registered with us.The activation mail has been resent to you");
+            message.addObject("message","You are already registered with us.The activation mail has been resent to you at " + email );
             return message;
 
         }
@@ -283,9 +282,10 @@ public class UserController {
         ModelAndView mv = new ModelAndView("/login");
         User currentUser = UserAuthentication.authenticateUser(username, password);
         if (currentUser == null) {
-            if( checkForInactiveUsers(username,password) ) {
+            String email = checkForInactiveUsers(username,password);
+            if( email != null ) {
                 ModelAndView message = new ModelAndView("/message");
-                message.addObject("message","You are already registered with us.The activation mail has been resent to you");
+                message.addObject("message","You are already registered with us.The activation mail has been resent to you at "+email);
                 return message;
             }
 
@@ -430,7 +430,6 @@ public class UserController {
     public ModelAndView getUserFollowers(@PathVariable final String username, HttpSession session) {
         String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
-        User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
         if (urlMappedUser == null) {
             ModelAndView mv = new ModelAndView("/error404");
             return mv;
@@ -445,7 +444,6 @@ public class UserController {
     public ModelAndView getUserFollowings(@PathVariable final String username, HttpSession session) {
         String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
-        User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
         if (urlMappedUser == null) {
             ModelAndView mv = new ModelAndView("/error404");
             return mv;
@@ -454,31 +452,6 @@ public class UserController {
         return new ModelAndView(){{
             setViewName("redirect:/"+username+"#!/following");
         }};
-
-
-//        ModelAndView mv = new ModelAndView("/user-list");
-
-//        String userId = String.valueOf(urlMappedUser.getUserId());
-//        List<User> followedList = Follow.getFollowedList(userId);
-//        List<User> loggedInUsersFollowingList = new ArrayList<User>();
-//        if (loggedInUser != null)
-//            loggedInUsersFollowingList = Follow.getFollowedList("" + loggedInUser.getUserId());
-//        for (User user : followedList) {
-//            for (User loggedInUserIsFollowing : loggedInUsersFollowingList) {
-//                if (user.getUserId() == loggedInUserIsFollowing.getUserId()) {
-//                    user.setFollowStatus("Following");
-//                    break;
-//                }
-//            }
-//        }
-//
-//        mv.addObject("userList", followedList);
-//        mv.addObject("username", username);
-//        mv.addObject("message", username + "\'s following list");
-
-//        mv.addObject("title", "following");
-//        mv.addObject("currentUserId", urlMappedUser.getUserId());
-//        return mv;
     }
 
     @RequestMapping(value = "/reset_password")

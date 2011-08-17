@@ -210,7 +210,6 @@ public class Follow {
         return followedList;
     }
 
-
     public static List<User> nSearchedInLimits(String pattern, String loggedInUser, String from, String n) {
         if ((pattern == null) || (pattern == "")) {
             return new ArrayList<User>();
@@ -253,8 +252,6 @@ public class Follow {
         }
         return followedList;
     }
-
-
 
     public static List<User> nFollowingInLimits(String userId, String loggedInUser, String from, String n) {
         System.out.println( "n is " + n );
@@ -315,7 +312,6 @@ public class Follow {
         return followerList;
     }
 
-    //Redundant functions, clean this up later
     public static List<User> getFollowedListLimited(String userId) {
         List<User> followedList = null;
         try {
@@ -331,7 +327,6 @@ public class Follow {
         return followedList;
     }
 
-    //Redundant functions, clean this up later
     public static List<User> getFollowerListLimited(String userId) {
         List<User> followerList = null;
         try {
