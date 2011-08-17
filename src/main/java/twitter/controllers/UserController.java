@@ -427,49 +427,36 @@ public class UserController {
     }
 
     @RequestMapping("/{username}/followers")
-    public ModelAndView getUserFollowers(@PathVariable String username, HttpSession session) {
+    public ModelAndView getUserFollowers(@PathVariable final String username, HttpSession session) {
         String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
         User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
-//        if (urlMappedUser == null) {
-//            ModelAndView mv = new ModelAndView("/error404");
-//            return mv;
-//        }
-//        ModelAndView mv = new ModelAndView("/user-list");
-//        String userId = String.valueOf(urlMappedUser.getUserId());
-//        List<User> followerList = Follow.getFollowerList(userId);
-//        List<User> loggedInUsersFollowingList = new ArrayList<User>();
-//        if (loggedInUser != null)
-//            loggedInUsersFollowingList = Follow.getFollowedList("" + loggedInUser.getUserId());
-//        for (User user : followerList) {
-//            for (User loggedInUserIsFollowing : loggedInUsersFollowingList) {
-//                if (user.getUserId() == loggedInUserIsFollowing.getUserId()) {
-//                    user.setFollowStatus("Following");
-//                    break;
-//                }
-//            }
-//        }
-//        mv.addObject("userList", followerList);
-//        mv.addObject("username", username);
-//        mv.addObject("message", username + "\'s follower list");
-        ModelAndView mv = new ModelAndView("/user-list");
-        mv.addObject("title", "follower");
-        mv.addObject("currentUserId", urlMappedUser.getUserId());
-        System.out.println("done");
-        return mv;
+        if (urlMappedUser == null) {
+            ModelAndView mv = new ModelAndView("/error404");
+            return mv;
+        }
+
+        return new ModelAndView(){{
+            setViewName("redirect:/" + username + "#!/follower");
+        }};
     }
 
     @RequestMapping("/{username}/followings")
-    public ModelAndView getUserFollowings(@PathVariable String username, HttpSession session) {
+    public ModelAndView getUserFollowings(@PathVariable final String username, HttpSession session) {
         String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
         User urlMappedUser = UserAuthentication.getUserByUsername(username);
         User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
-//        if (urlMappedUser == null) {
-//            ModelAndView mv = new ModelAndView("/error404");
-//            return mv;
-//        }
+        if (urlMappedUser == null) {
+            ModelAndView mv = new ModelAndView("/error404");
+            return mv;
+        }
 
-        ModelAndView mv = new ModelAndView("/user-list");
+        return new ModelAndView(){{
+            setViewName("redirect:/"+username+"#!/following");
+        }};
+
+
+//        ModelAndView mv = new ModelAndView("/user-list");
 
 //        String userId = String.valueOf(urlMappedUser.getUserId());
 //        List<User> followedList = Follow.getFollowedList(userId);
@@ -489,9 +476,9 @@ public class UserController {
 //        mv.addObject("username", username);
 //        mv.addObject("message", username + "\'s following list");
 
-        mv.addObject("title", "following");
-        mv.addObject("currentUserId", urlMappedUser.getUserId());
-        return mv;
+//        mv.addObject("title", "following");
+//        mv.addObject("currentUserId", urlMappedUser.getUserId());
+//        return mv;
     }
 
     @RequestMapping(value = "/reset_password")

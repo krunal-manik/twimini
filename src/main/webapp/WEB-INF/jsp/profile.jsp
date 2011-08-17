@@ -70,9 +70,11 @@
 
                                 <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id:'userfeed', href:'#!/userfeed', title:'userfeed', user:'${currentUserId}', favoriter:'<%=session.getAttribute("userId")%>'">
                                 </div>
-                                <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id:'mentions', href:'#!/mentions', title:'mentions', user:'${currentUserId}', favoriter:'<%=session.getAttribute("userId")%>'">
-                                </div>
                                 <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id:'favorites', href:'#!/favorites', title:'favorites', user:'${currentUserId}', favoriter:'<%=session.getAttribute("userId")%>'">
+                                </div>
+                                <div data-dojo-type="js.userBoxContainer" data-dojo-props="id: 'follower', href:'#!/follower', title:'follower', user:'${currentUserId}', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                                </div>
+                                <div data-dojo-type="js.userBoxContainer" data-dojo-props="id: 'following', href:'#!/following', title:'following', user:'${currentUserId}', loggedInUser:'<%=session.getAttribute("userId")%>'">
                                 </div>
                             </div>
                         </div>

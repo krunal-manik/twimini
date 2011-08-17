@@ -71,47 +71,6 @@
                         </form>
                     <div id="tabContainer" dojoType="dijit.layout.TabContainer" data-dojo-props="id:'tabContainer'" style="width:100%" doLayout="false" widgetsInTemplate="true">
 
-                        <!--
-                        <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="newsFeed" selected="true">
-                            <div id="more_newsfeed" style="cursor:pointer; margin-bottom:5px; padding:3px; width:584px"
-                                 onclick="moreTweets('newsFeedContainer')" class="border">
-                            MORE </div>
-                            <div id="newsFeedContainer">
-                                <c:forEach var='item' items='${newsFeed}'>
-                                    <div data-dojo-type="js.tweetContainer" data-dojo-props="id:'tweet_${item.tweetId}', tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',timestamp: '${item.timestamp}',
-                                     name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}', retweetedBy: '${item.retweetedBy}', tweetOptions:'true'">
-                                    </div>
-                                </c:forEach>
-                            </div>
-                        </div>
-
-                        <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="Mentions" selected="true">
-                            <div id="more_mentions" style="cursor:pointer; margin-bottom:5px; padding:3px; width:584px"
-                                 onclick="more_tweets('mentionContainer')" class="border">
-                            MORE </div>
-                            <div id="mentionContainer">
-                                <c:forEach var='item' items='${mentionFeed}'>
-                                    <div data-dojo-type="js.tweetContainer" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',timestamp: '${item.timestamp}',
-                                     name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}', retweetedBy: '0', tweetOptions:'true'">
-                                    </div>
-                                </c:forEach>
-                            </div>
-                        </div>
-
-                        <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="Favorites" selected="true">
-                            <div id="more_favorites" style="cursor:pointer; margin-bottom:5px; padding:3px; width:584px"
-                                 onclick="more_tweets('favoriteContainer')" class="border">
-                            MORE </div>
-                            <div id="favoriteContainer">
-                                <c:forEach var='item' items='${favoritesFeed}'>
-                                    <div data-dojo-type="js.tweetContainer" data-dojo-props="tweetId: '${item.tweetId}', tweetedBy: '${item.tweetedBy}', tweet: '${item.tweet}',timestamp: '${item.timestamp}',
-                                     name: '${item.name}', username: '${item.username}', isFavorite: '${item.isFavorite}', retweetedBy: '0', tweetOptions:'true'">
-                                    </div>
-                                </c:forEach>
-                            </div>
-                        </div>
-                        -->
-
                         <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id:'newsfeed', href:'#!/newsfeed', title:'newsfeed', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
                         <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'mentions', href:'#!/mentions', title:'mentions', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
@@ -120,9 +79,9 @@
                         </div>
                         <div data-dojo-type="js.tweetBoxContainer" data-dojo-props="id: 'retweets', href:'#!/retweets', title:'retweets', user:'<%=session.getAttribute("userId")%>', favoriter:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer" href="#follower"  data-dojo-props="id: 'follower', href:'#!/follower', title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.userBoxContainer"  data-dojo-props="id: 'follower', href:'#!/follower', title:'follower', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
-                        <div data-dojo-type="js.userBoxContainer" href="#following" data-dojo-props="id: 'following', href:'#!/following', title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
+                        <div data-dojo-type="js.userBoxContainer" data-dojo-props="id: 'following', href:'#!/following', title:'following', user:'<%=session.getAttribute("userId")%>', loggedInUser:'<%=session.getAttribute("userId")%>'">
                         </div>
 
                     </div>

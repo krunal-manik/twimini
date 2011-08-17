@@ -93,4 +93,18 @@ public class FollowController {
         return searches;
     }
 
+//    @RequestMapping("/first_search")
+//    @ResponseBody
+//    public List<User> firstSearch(HttpSession session, @RequestParam String pattern, @RequestParam String follower) {
+//        List<User> searches = Follow.nSearchedInLimits(pattern, follower, null, "10");
+//        return searches;
+//    }
+//
+//    @RequestMapping("/more_search")
+//    @ResponseBody
+//    public List<User> moreSearch(HttpSession session, @RequestParam String pattern, @RequestParam String follower, @RequestParam String from) {
+//        List<User> searches = Follow.nSearchedInLimits(pattern, follower, from, "10");
+//        return searches;
+//    }
+
 }
