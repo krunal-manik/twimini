@@ -294,8 +294,8 @@ public class UserTweetList {
     public static Tweet replyToTweet(String tweetContent, String inReplyToTweetId, String userId) {
         Tweet ret = new Tweet();
         try {
-            int inReplyToUserId = db.queryForInt("SELECT tweeted_by WHERE tweet_id = ?" , inReplyToTweetId );
-            db.update("INSERT into Tweets(tweeted_by,tweet,timestamp,in_reply_to_tweet_id,in_reply_to_user_id) VALUES ( ? , ? , NOW() , ? )",
+            int inReplyToUserId = db.queryForInt("SELECT tweeted_by from tweets WHERE tweet_id = ?" , inReplyToTweetId );
+            db.update("INSERT into tweets(tweeted_by,tweet,timestamp,in_reply_to_tweet_id,in_reply_to_user_id) VALUES ( ? , ? , NOW() , ? , ? )",
                     userId, tweetContent, inReplyToTweetId, inReplyToUserId);
             int tweetId = db.queryForInt("SELECT max(tweet_id) FROM tweets WHERE tweeted_by = ?" , userId );
             ret = db.queryForObject(

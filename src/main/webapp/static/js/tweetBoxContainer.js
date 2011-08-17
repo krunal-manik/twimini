@@ -109,7 +109,7 @@ dojo.declare("js.tweetBoxContainer",
             },
             more : function(timestamp, n, domNode) {
                 dojo.xhrGet({
-                    url : domNode.moreURL + "?timestamp=" + timestamp + "&n=" + n + "&favoriter=" + this.args.favoriter,
+                    url : domNode.moreURL + "?timestamp=" + timestamp + "&n=" + n + "&favoriter=" + this.args.favoriter + "&user=" + this.args.user,
                     handleAs : 'json',
                     load : function(data) {
                         if (data.length < n) {

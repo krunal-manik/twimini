@@ -385,7 +385,8 @@ function replyToTweet(replyTo) {
            url : "tweet/replyToTweet",
            data : { "tweetContent" : tweetContent ,  "replyTo" : replyTo } ,
            success : function( data ){
-               preendTweetsToNewsFeedContainer(data);
+               //prependTweetsToNewsFeedContainer(data);
+               dijit.byId('newsfeed').latest(dijit.byId('newsfeed'));
                dijit.byId("replyPopUp").hide();
            }
     });

@@ -214,7 +214,6 @@ public class Follow {
         if ((pattern == null) || (pattern == "")) {
             return new ArrayList<User>();
         }
-        System.out.println( "n is " + n );
         String numLimiter = "";
         if ( !(n.equals(null) || n == null || n.equals("null")) ) {
             if (from == null) {
@@ -225,7 +224,6 @@ public class Follow {
                 numLimiter = " LIMIT " + from + ", " + to + " ";
             }
         }
-        System.out.println("numLimiter is " + numLimiter);
         List<User> followedList = null;
         List<User> loggedInFollowedList = null;
         try {
@@ -254,18 +252,15 @@ public class Follow {
     }
 
     public static List<User> nFollowingInLimits(String userId, String loggedInUser, String from, String n) {
-        System.out.println( "n is " + n );
         String numLimiter = "";
         if ( !(n.equals(null) || n == null || n.equals("null")) ) {
             if (from == null) {
                 numLimiter = " LIMIT 0, " + n + " ";
             } else {
-                System.out.println(from + " " + n);
                 int to = Integer.parseInt(from) + Integer.parseInt(n);
                 numLimiter = " LIMIT " + from + ", " + to + " ";
             }
         }
-        System.out.println("numLimiter is " + numLimiter);
         List<User> followedList = null;
         List<User> loggedInFollowedList = null;
         try {
