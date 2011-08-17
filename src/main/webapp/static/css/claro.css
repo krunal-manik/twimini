@@ -1926,7 +1926,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   color: #818181;
 }
 .claro .dijitComboBox .dijitArrowButtonInner {
-  background-image: url(form//static/images/commonFormArrows.png);
+  background-image: url(/static/images/commonFormArrows.png);
   background-position: -35px 53%;
   background-repeat: no-repeat;
   margin: 0;
@@ -1944,7 +1944,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 }
 .claro .dijitComboBox .dijitButtonNode {
   background-color: #efefef;
-  background-image: url(form//static/images/formHighlight.png);
+  background-image: url(/static/images/formHighlight.png);
   background-repeat: repeat-x;
 }
 .claro .dijitComboBoxOpenOnClickHover .dijitButtonNode, .claro .dijitComboBox .dijitDownArrowButtonHover {
@@ -2016,7 +2016,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   width: 15px;
   height: 15px;
   margin: 0 auto;
-  background-image: url(form//static/images/buttonArrows.png);
+  background-image: url(/static/images/buttonArrows.png);
   background-repeat: no-repeat;
   background-position: -51px 53%;
 }
@@ -2222,7 +2222,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   background-repeat: repeat-x;
 }
 .claro .dijitSelect .dijitArrowButton .dijitArrowButtonInner {
-  background-image: url(form//static/images/commonFormArrows.png);
+  background-image: url(/static/images/commonFormArrows.png);
   background-position: -35px 70%;
   background-repeat: no-repeat;
   width: 16px;
@@ -2231,7 +2231,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSelectHover {
   border: 1px solid #769dc0;
   background-color: #e9f4fe;
-  background-image: url(form//static/images/textBox_back.png);
+  background-image: url(/static/images/textBox_back.png);
   background-repeat: repeat-x;
 }
 .claro .dijitSelectHover .dijitButtonContents {
@@ -3420,7 +3420,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitSliderIncrementIconH,
 .claro .dijitSliderDecrementIconV,
 .claro .dijitSliderIncrementIconV {
-  background-image: url(form//static/images/commonFormArrows.png);
+  background-image: url(/static/images/commonFormArrows.png);
   background-repeat: no-repeat;
   background-color: #efefef;
   -moz-border-radius: 2px;
@@ -3658,7 +3658,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
 .claro .dijitTimePicker .dijitArrowButtonInner {
   height: 100%;
   
-  background-image: url(form//static/images/commonFormArrows.png);
+  background-image: url(/static/images/commonFormArrows.png);
   background-repeat: no-repeat;
   background-position: -140px 45%;
 }
@@ -4135,7 +4135,7 @@ DIV.dijitTabDisabled, .dj_ie DIV.dijitTabDisabled {
   border: solid 1px #ffffff;
   border-bottom-width: 0;
   
-  background-image: url(form//static/images/commonFormArrows.png);
+  background-image: url(/static/images/commonFormArrows.png);
   background-repeat: no-repeat;
   height: 100%;
   width: 15px;

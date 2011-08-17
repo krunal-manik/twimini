@@ -25,18 +25,6 @@
                     <div class = "span-16">
                         <div id="userListContainer">
                             ${message}
-                            <!--
-                            <div id="userList">
-                                <c:forEach var='item' items='${userList}'>
-                                    <div data-dojo-type="js.userContainer"
-                                    data-dojo-props="name : '${item.name}' , username : '${item.username}',
-                                    followStatus: '${item.followStatus}' ,
-                                    userId: '${item.userId}',
-                                    loggedInUser : '<%= session.getAttribute("userId") != null ? session.getAttribute("userId").toString() : null %>'">
-                                    </div>
-                                </c:forEach>
-                            </div>
-                            -->
                             <div dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false" widgetsInTemplate="true">
                                 <div data-dojo-type="js.userBoxContainer" data-dojo-props="id:'${title}', title:'${title}', user:'${currentUserId}', loggedInUser:'<%=session.getAttribute("userId")%>'">
                                 </div>

@@ -113,12 +113,25 @@ dojo.declare("js.tweetBoxContainer",
                     }
                 });
             },
-            moreTweets : function(container) {
-                var x = dojo.byId(container);
-                var firstId = x.children[0].id;
-                var lastId = x.children[x.children.length - 1].id;
-                var ts = dijit.byId(lastId).getTimestamp();
-                nTweetsBeforeTimestamp(ts, 2);
+            latest : function(domNode) {
+                dojo.xhrGet({
+                    url : domNode.latestURL + "?timestamp=" + timestamp + "&n=" + n + "&favoriter=" + this.args.favoriter,
+                    handleAs : 'json',
+                    load : function(data) {
+                        if (data.length < n) {
+                            //dojo.byId("more_newsfeed").hide();
+                        }
+                        for (var i =0; i < data.length; i++) {
+                            data[i].tweet = unEscapeCharacters(data[i].tweet);
+                            data[i].tweetOptions = "true";
+                            var widget = new js.tweetContainer(data[i]);
+                            widget.placeAt( domNode.containerNode , "last" );
+                        }
+                    },
+                    error: function(data) {
+                       alert( 'error ' + data );
+                    }
+                });
             }
         }
 );

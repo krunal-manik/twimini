@@ -6,7 +6,9 @@
     <head>
     <%@include file="/static/includes.html" %>
     <script type="text/javascript">
-        var selected = location.hash.split("/")[1];
+        if (location.hash) {
+            var selected = location.hash.split("/")[1];
+        }
         dojo.require("dijit.form.MultiSelect");
         dojo.require("dijit.Dialog");
         dojo.require("dijit.layout.TabContainer");

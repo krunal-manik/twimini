@@ -337,7 +337,6 @@ public class UserController {
     @RequestMapping("/search_user")
     @ResponseBody
     public List<User> search_user(HttpSession session, @RequestParam String pattern) {
-        System.out.println("session userId is null -> " + session.getAttribute("userId") == null);
         List<User> userList = Follow.allUsersListbyPattern(pattern, session.getAttribute("userId").toString());
         return userList;
     }
@@ -554,31 +553,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ModelAndView search(String pattern, HttpSession session) {
+    public ModelAndView search(@RequestParam String pattern) {
         if (pattern == null || pattern.equals("")) {
             ModelAndView mv = new ModelAndView();
             mv.setViewName("redirect:/");
             return mv;
         }
-        String loggedInUserId = session.getAttribute("username") != null ? session.getAttribute("username").toString() : null;
-        User loggedInUser = UserAuthentication.getUserByUsername(loggedInUserId);
-        List<User> userList = Follow.allUsersListContainingSubstring(pattern, session.getAttribute("userId").toString());
-
-        List<User> loggedInUsersFollowingList = new ArrayList<User>();
-        if (loggedInUser != null)
-            loggedInUsersFollowingList = Follow.getFollowedList("" + loggedInUser.getUserId());
-        for (User user : userList) {
-            for (User loggedInUserIsFollowing : loggedInUsersFollowingList) {
-                if (user.getUserId() == loggedInUserIsFollowing.getUserId()) {
-                    user.setFollowStatus("Following");
-                    break;
-                }
-            }
-        }
 
         ModelAndView mv = new ModelAndView("/user-list");
-        mv.addObject("userList", userList);
         mv.addObject("message", "Search results for " + pattern);
+        mv.addObject("title", "search");
+        mv.addObject("currentUserId", pattern);
+        //mv.addObject("loggedInUser", follower);
         return mv;
     }
 

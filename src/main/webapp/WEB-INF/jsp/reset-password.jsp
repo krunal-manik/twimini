@@ -30,7 +30,7 @@
                             </div>
                             <div class="span-5 last">
                                 <div class="span-5 last">
-                                    <input type="text" name = "email" value = "" />
+                                    <input type="email" name = "email" value = "" />
                                 </div>
                             </div>
                             <div class="span-8">

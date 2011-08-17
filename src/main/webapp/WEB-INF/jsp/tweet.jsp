@@ -5,7 +5,11 @@
     <head>
         <%@include file="/static/includes.html" %>
         <script type="text/javascript">
-            var selected = location.hash.split("/")[1];
+            if (location.hash) {
+                var selected = location.hash.split("/")[1];
+            }
+            dojo.require("dijit.form.ComboBox");
+            dojo.require("dojo.data.ItemFileReadStore");
             dojo.require("dijit.form.MultiSelect");
             dojo.require("dijit.Dialog");
             dojo.require("dijit.layout.TabContainer");
@@ -24,6 +28,18 @@
                 if (selected) {
                     dijit.byId("tabContainer").selectChild(dijit.byId(selected));
                 }
+
+                var peopleStore = new dojo.data.ItemFileReadStore({
+                    url: "/first_search?pattern=a&follower=2"
+                });
+                var filteringSelect = new dijit.form.ComboBox({
+                    id: "peopleSelect",
+                    name: "people",
+                    value: "",
+                    store: peopleStore,
+                    searchAttr: "username"
+                },
+                "peopleSelect");
             });
         </script>
 

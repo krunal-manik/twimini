@@ -450,3 +450,27 @@ function getSearchResults() {
          }
     });
 }
+
+dojo.require("js.userDropdown");
+
+var clear_search = function() {
+    dojo.byId("search_dropdown").innerHTML = '';
+}
+
+var show_search = function(follower) {
+    dojo.xhrGet({
+         url : "/first_search?follower=" + follower,
+         content:{user:dojo.byId('pattern').value},
+         handleAs:'json',
+         load : function(data) {
+             dojo.byId("search_dropdown").innerHTML = '';
+             for(var i=0;i<data.length;i++) {
+                var widget = new js.userDropdown(data[i]);
+                widget.placeAt(dojo.byId("search_dropdown"), "last");
+             }
+         },
+         error : function(data) {
+           alert( 'error ' + data );
+         }
+    });
+}

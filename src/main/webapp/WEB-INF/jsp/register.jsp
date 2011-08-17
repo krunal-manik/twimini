@@ -12,7 +12,7 @@
 
     <div class="container body">
         <div class="prepend-8 span-14 append-2 last">
-                <div class="empty_box" style="height:100px; width=100%"></div>
+                <div class="empty_box" style="height:100px; width:100%"></div>
                 <div>
                     Want to Tweet? Join us.<br>
                     <form action="/signup" method="post" style="padding-top: 10px">
