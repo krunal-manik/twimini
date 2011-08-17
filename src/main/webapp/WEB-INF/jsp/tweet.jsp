@@ -21,7 +21,9 @@
                     },
                     dojo.byId("tagging_dropdown_dialog")
                 );
-                dijit.byId("tabContainer").selectChild(dijit.byId(selected));
+                if (selected) {
+                    dijit.byId("tabContainer").selectChild(dijit.byId(selected));
+                }
             });
         </script>
 
@@ -51,7 +53,7 @@
                             </div>
                             <input type = "button" value = "Tweet" onclick="addTweet()"/>
                         </form>
-                    <div id="tabContainer" dojoType="dijit.layout.TabContainer" style="width:100%" doLayout="false" widgetsInTemplate="true">
+                    <div id="tabContainer" dojoType="dijit.layout.TabContainer" data-dojo-props="id:'tabContainer'" style="width:100%" doLayout="false" widgetsInTemplate="true">
 
                         <!--
                         <div dojoType="dijit.layout.ContentPane" style="padding:17px; background-color:#eaeaea;" title="newsFeed" selected="true">
