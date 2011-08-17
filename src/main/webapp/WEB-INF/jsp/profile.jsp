@@ -34,7 +34,7 @@
                     <div class = "span-16">
                         <% if (session.getAttribute("username") == null) {%>
                         <% } else if((session.getAttribute("username").equals(request.getAttribute("currentUsername")))) { %>
-                            <div class="topbox span-15" style="padding:17px; border:1px #AAAAAA solid; margin-bottom: 5px;">
+                            <div class="topbox prepend-1 span-15" style="padding:17px; border:1px #AAAAAA solid; margin-bottom: 5px;">
                                 <a href="/edit_profile" class="as-link">Edit your profile</a>
                                 <br>
                                 <a href="/import_contacts" class="as-link">Import Your Gmail Contacts</a>
@@ -44,7 +44,7 @@
                             value = '${followStatus}' onclick='changeFollowStatus(${currentUserId})' />
                         <% } %>
 
-                        <div class="topbox span-15" style="padding:17px; border:1px #AAAAAA solid; margin-bottom: 5px; diplay:block">
+                        <div class="topbox prepend-1 span-15" style="padding:17px; border:1px #AAAAAA solid; margin-bottom: 5px; diplay:block">
                             <img src="/photos/${currentUserId}.jpg" height="100" width="100" class="span-3" style="border-color:#000000; border-width:2px; border-style:solid; margin:2px"/>
                             <div class="span-10 last" style="margin-left:20px; padding:10px">
                                 <div class="span-4">NAME</div> <div class="span-5">${currentUsername}</div>

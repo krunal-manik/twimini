@@ -19,43 +19,43 @@
 
         <!-- jQuery script -->
 
-        <!--<script type="text/javascript" src="/static/js/jquery.min.js"></script>-->
-        <!--<script type="text/javascript" src="/static/js/jquery.timeago.js"></script>-->
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.timeago.js"></script>
         <script type="text/javascript">
             dojo.ready( function() {
                dojo.parser.parse();
             });
         </script>
-        <!--<script type="text/javascript">-->
+        <script type="text/javascript">
 
-            <!--$(document).ready( function() {-->
-                <!--updateTimestamps();-->
-                <!--var queryString = window.location.hash.substr( 1 );-->
-                <!--if( queryString != '' && queryString != null ) {-->
-                    <!--dojo.byId('contactList').innerHTML = "<img src='/static/images/loader.gif' height='66' width='66'  class='prepend-9 span-3 append-13 last' alt='Loading contacts...'/>"-->
-                    <!--$.ajax({-->
-                       <!--type : "GET",-->
-                       <!--url :  "/gmail" ,-->
-                       <!--data : queryString ,-->
-                       <!--success : function(data) {-->
-                           <!--dojo.byId('contactList').innerHTML = "";-->
-                           <!--var n = data.length;-->
-                           <!--for( var i=0 ; i < n ;i++ ) {-->
-                                <!--var c = JSON.parse( JSON.stringify(data[i]) );-->
-                                <!--var contact = new js.contactContainer(c);-->
-                                <!--contact.placeAt( dojo.byId('contactList') , "last" );-->
-                                <!--//$('#contactList').append( '<li>Name :' + c.name + '   Email: ' + c.email + ' Status : ' + c.status + '</li>' );-->
-                           <!--}-->
-                       <!--}-->
-                    <!--});-->
-                <!--}-->
-                <!--window.location.hash = "";-->
-            <!--});-->
+            $(document).ready( function() {
+                updateTimestamps();
+                var queryString = window.location.hash.substr( 1 );
+                if( queryString != '' && queryString != null && queryString[0] != '!' && queryString[0] != ' ' ) {
+                    dojo.byId('contactList').innerHTML = "<img src='/static/images/loader.gif' height='66' width='66'  class='prepend-9 span-3 append-13 last' alt='Loading contacts...'/>"
+                    $.ajax({
+                       type : "GET",
+                       url :  "/gmail" ,
+                       data : queryString ,
+                       success : function(data) {
+                           dojo.byId('contactList').innerHTML = "";
+                           var n = data.length;
+                           for( var i=0 ; i < n ;i++ ) {
+                                var c = JSON.parse( JSON.stringify(data[i]) );
+                                var contact = new js.contactContainer(c);
+                                contact.placeAt( dojo.byId('contactList') , "last" );
+                                //$('#contactList').append( '<li>Name :' + c.name + '   Email: ' + c.email + ' Status : ' + c.status + '</li>' );
+                           }
+                       }
+                    });
+                }
+                window.location.hash = "";
+            });
 
-        <!--</script>-->
+        </script>
 
-        <!--<script type="text/javascript">-->
-            <!--jQuery(document).ready(function() {-->
-              <!--jQuery("abbr.tweet_time").timeago();-->
-            <!--});-->
-        <!--</script>-->
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+              jQuery("abbr.tweet_time").timeago();
+            });
+        </script>
