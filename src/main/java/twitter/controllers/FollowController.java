@@ -48,16 +48,6 @@ public class FollowController {
         Follow.removeFollowing(userId, session.getAttribute("userId").toString());
     }
 
-    /*
-    @RequestMapping("{username}/followers")
-    public ModelAndView firstFollowers(HttpSession session, @RequestParam String user, @RequestParam String follower) {
-        List<User> followedList = Follow.getFollowedList( user );
-        ModelAndView mv = new ModelAndView();
-        mv.addObject("followedList", followedList );
-        return mv;
-    }
-    */
-
     @RequestMapping("/first_following")
     @ResponseBody
     public List<User> firstFollowing(HttpSession session, @RequestParam String user, @RequestParam String follower) {
@@ -88,13 +78,6 @@ public class FollowController {
         return followings;
     }
 
-    @RequestMapping("/follower")
-    public ModelAndView followerList(HttpSession session) {
-        List<User> followerList = Follow.getFollowerList(session.getAttribute("userId").toString());
-        ModelAndView mv = new ModelAndView();
-        mv.addObject("followerList", followerList);
-        return mv;
-    }
 
     @RequestMapping("/first_search")
     @ResponseBody

@@ -45,20 +45,19 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 @Controller
-public class FileUploadController {
+public class EditProfileController {
 
     final SimpleJdbcTemplate db;
     public static final String prefixPath = System.getProperty("user.home") + "\\Desktop\\photos\\";
 
     @Autowired
-    public FileUploadController(SimpleJdbcTemplate db) {
+    public EditProfileController(SimpleJdbcTemplate db) {
         this.db = db;
     }
 
     private static String validateName( String name ) {
-        if( name.equals("") || name == null )
-            return "Name cannot be empty";
-
+        if( name == null || name.equals("") )
+            return "Name cannot be blank";
         for(int i=0;i<name.length();i++)
             if( !(Character.isLetter(name.charAt(i)) || name.charAt(i) == ' ') )
                 return "Name should only contain charcters a-z,' ',A-Z";
@@ -66,9 +65,10 @@ public class FileUploadController {
     }
 
     private static String validateUsername( String username ) {
-        if( username.equals("") || username == null )
-            return "Username cannot be empty";
-
+        if( username == null || username.equals("") )
+            return "Username cannot be blank";
+        if( !Character.isLowerCase(username.charAt(0)))
+            return "Username should start with a lower case letter";
         for(int i=0;i<username.length();i++)
             if( !(Character.isLowerCase(username.charAt(i)) ||
                     username.charAt(i) == '-' ||
@@ -78,7 +78,7 @@ public class FileUploadController {
     }
 
     @RequestMapping(value = {"/edit_profile"})
-    public ModelAndView editProfileGet(String nameError,String usernameError,HttpSession session) {
+    public ModelAndView editProfileGet(String nameError,String usernameError,String saveMessage,HttpSession session) {
         if (session.getAttribute("username") == null) {
             return new ModelAndView("/error404");
         } else {
@@ -91,6 +91,7 @@ public class FileUploadController {
             mv.addObject("username",user.getUsername());
             mv.addObject( "nameError" , nameError );
             mv.addObject( "usernameError" , usernameError );
+            mv.addObject("saveMessage",saveMessage);
             return mv;
         }
     }
@@ -141,102 +142,13 @@ public class FileUploadController {
         else {
             UserAuthentication.updateUserInformation( loggedInusername , username , name , aboutMe );
             session.setAttribute("username",username);
+            mv.addObject("saveMessage","Profile saved successfully");
         }
         mv.setViewName("redirect:/edit_profile");
         return mv;
     }
 
 
-    @RequestMapping(value = "/import_contacts")
-    public ModelAndView contactImporterGet(HttpSession session) {
-        if( session.getAttribute("userId") != null ) {
-            return new ModelAndView("/contact-import");
-        }
-        return new ModelAndView(){{
-            setViewName("redirect:/");
-        }};
-    }
 
-
-    @RequestMapping(value = "/gmail")
-    @ResponseBody
-    public List<Contact> contactImporter(String access_token, String token_type, String expires_in, HttpSession session) throws Exception {
-        if( session.getAttribute("userId") == null ) {
-            return new ArrayList<Contact>();
-        }
-
-        System.out.println(access_token);
-        if (access_token == null) {
-            return new ArrayList<Contact>();
-        }
-
-        URL url = new URL(String.format("https://www.google.com/m8/feeds/contacts/default/full?oauth_token=%s&max-results=500&alt=json", access_token));
-        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-        StringBuffer json = new StringBuffer("");
-        String s = "";
-        while ((s = br.readLine()) != null) {
-            json.append(s);
-        }
-
-        ArrayList<String> names = new ArrayList<String>();
-        ArrayList<String> emails = new ArrayList<String>();
-
-        Object obj = JSONValue.parse(json.toString());
-        JSONObject jsonObject = (JSONObject) obj;
-        obj = jsonObject.get("feed");
-        obj = ((JSONObject) obj).get("entry");
-        JSONArray array = (JSONArray) obj;
-        for (int i = 0; i < array.size(); i++) {
-            JSONObject entryObject = (JSONObject) array.get(i);
-            entryObject = (JSONObject) entryObject.get("title");
-            String contactName = entryObject.get("$t").toString();
-
-            JSONObject emailObject = (JSONObject) array.get(i);
-            JSONArray arr = (JSONArray) emailObject.get("gd$email");
-            if (arr != null && arr.size() > 0) {
-                JSONObject emailIdObject = (JSONObject) arr.get(0);
-                String email = emailIdObject.get("address").toString();
-                if (contactName.equals("")) contactName = email;
-
-                names.add(contactName);
-                emails.add(email);
-            }
-        }
-
-
-        List<User> followingList = Follow.getFollowedList(session.getAttribute("userId").toString());
-
-        ArrayList<Contact> contactList = new ArrayList<Contact>();
-        for (int i = 0; i < emails.size(); i++) {
-            User user = UserAuthentication.getUserByEmail(emails.get(i));
-            Contact contact = new Contact();
-            contact.setEmail(emails.get(i));
-            contact.setName(names.get(i));
-
-            if (user == null) {
-                contact.setStatus("Invite");
-                contact.setUsername("");
-                contact.setBio("");
-            } else {
-                contact.setUsername(user.getUsername());
-                contact.setBio(user.getAboutMe());
-                contact.setUserId(user.getUserId());
-                for (User u : followingList) {
-                    if (emails.get(i).equals(u.getEmail())) {
-                        contact.setStatus("Following");
-                        break;
-                    }
-                }
-            }
-            contactList.add(contact);
-        }
-
-        return contactList;
-    }
-
-    @RequestMapping("/test")
-    public ModelAndView tp(){
-        return new ModelAndView("/testing");
-    }
 
 }

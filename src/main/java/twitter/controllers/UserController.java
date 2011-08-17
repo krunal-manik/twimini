@@ -22,6 +22,7 @@ import twitter.services.*;
 
 import javax.annotation.PostConstruct;
 import javax.mail.Message;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.swing.plaf.multi.MultiViewportUI;
 import javax.xml.transform.Source;
@@ -152,6 +153,8 @@ public class UserController {
 	}
 
     private static String validateName( String name ) {
+        if( name == null || name.equals("") )
+            return "Name cannot be blank";
         for(int i=0;i<name.length();i++)
             if( !(Character.isLetter(name.charAt(i)) || name.charAt(i) == ' ') )
                 return "Name should only contain charcters a-z,' ',A-Z";
@@ -159,7 +162,10 @@ public class UserController {
     }
 
     private static String validateUsername( String username ) {
-        System.out.println( username );
+        if( username == null || username.equals("") )
+            return "Username cannot be blank";
+        if( !Character.isLowerCase(username.charAt(0)))
+            return "Username should start with a lower case letter";
         for(int i=0;i<username.length();i++)
             if( !(Character.isLowerCase(username.charAt(i)) ||
                     username.charAt(i) == '-' ||
@@ -195,8 +201,8 @@ public class UserController {
         mv.addObject("tweetCount",UserTweetList.getUserTweetsCount(userId));
         mv.addObject("followerList", Follow.getFollowerListLimited(userId));
         mv.addObject("followedList", Follow.getFollowedListLimited(userId));
-        mv.addObject("followerCount", Follow.getFollowerList(userId).size());
-        mv.addObject("followingCount", Follow.getFollowedList(userId).size());
+        mv.addObject("followerCount", Follow.getFollowerCount(userId));
+        mv.addObject("followingCount", Follow.getFollowingCount(userId));
         mv.addObject("allUserList", Follow.allUsersList(userId));
         mv.addObject("currentUsername",username);
         mv.addObject("currentUserId",userId);
@@ -285,18 +291,30 @@ public class UserController {
         String emailError = validateEmailAddress(email);
         String passwordsError = password.equals(confirmPassword) ? " " : "Passwords don't match";
         boolean noErrors = usernameError.equals(" ") && nameError.equals(" ") && passwordError.equals(" ") && emailError.equals( " " ) && passwordsError.equals(" ");
-        if( !noErrors ) {
+        boolean usernameAvailable = UserAuthentication.checkUsernameAvailabiltyForSignUp(username);
+        boolean emailExists = UserAuthentication.getUserByEmail(email) != null ;
+        System.out.println( "Username Available : " + usernameAvailable  );
+        System.out.println( "Email exists : " + emailExists );
+
+        if( !noErrors || !usernameAvailable || emailExists ) {
             ModelAndView mv = new ModelAndView("/register");
-            mv.addObject("usernameError" , usernameError);
-            mv.addObject("emailError" , emailError);
+            if( !usernameError.equals(" ") )
+                mv.addObject("usernameError" , usernameError);
+            if( !emailError.equals(" ") )
+                mv.addObject("emailError" , emailError);
             mv.addObject("passwordError" , passwordError);
             mv.addObject("nameError" , nameError);
             mv.addObject("passwordsError" , passwordsError);
             mv.addObject("name",name);
             mv.addObject("username",username);
             mv.addObject("email",email);
+            if( !usernameAvailable && usernameError.equals(" ") )
+                mv.addObject("usernameError","Username not available");
+            if( emailExists && emailError.equals(" ") )
+                mv.addObject("emailError","Email already exists");
             return mv;
         }
+
         String registerToken = getRandomToken();
         String message = String.format("Hi %s!\n" +
                         "To start tweeting, just click on the link below to activate your account: " +
@@ -364,8 +382,8 @@ public class UserController {
         mv.addObject("tweetCount",UserTweetList.getUserTweetsCount(userId));
         mv.addObject("followerList", Follow.getFollowerListLimited(userId));
         mv.addObject("followedList", Follow.getFollowedListLimited(userId));
-        mv.addObject("followerCount", Follow.getFollowerList(userId).size());
-        mv.addObject("followingCount", Follow.getFollowedList(userId).size());
+        mv.addObject("followerCount", Follow.getFollowerCount(userId));
+        mv.addObject("followingCount", Follow.getFollowingCount(userId));
         mv.addObject("currentUsername", username);
         mv.addObject("currentUserId", userId);
         mv.addObject("aboutCurrentUser",UserAuthentication.getUserByUsername(username).getAboutMe());
@@ -568,7 +586,7 @@ public class UserController {
         return mv;
     }
 
-    public static String getRandomToken() {
+    private static String getRandomToken() {
         char a[] = new char[62];
         int c = 0;
         for (char i = 'a'; i <= 'z'; i++) a[c++] = i;
@@ -584,7 +602,7 @@ public class UserController {
         return new String(a);
     }
 
-    public static void swap(char a[], int i, int j) {
+    private static void swap(char a[], int i, int j) {
         char c = a[i];
         a[i] = a[j];
         a[j] = c;

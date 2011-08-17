@@ -4,24 +4,6 @@
 <html>
     <head>
         <%@include file="/static/includes.html" %>
-        <script>
-        dojo.addOnLoad(sendform);
-        function sendform() {
-//            dojo.connect(dojo.byId("image_form"), "onsubmit", function(event) {
-//                dojo.stopEvent(event);
-//                dojo.xhrPost({
-//                    form : dojo.byId("image_form"),
-//                    handleAs : "text",
-//                    load : function(data) {
-//                       alert('hi');
-//                    },
-//                    error: function(data) {
-//                        alert('dsadsa');
-//                    }
-//                });
-//            });
-        }
-        </script>
     </head>
 
     <body class=" claro ">
@@ -70,10 +52,13 @@
                         <textarea rows="4" cols="10" name="aboutMe">${aboutMe}</textarea>
                    </div>
                     <div class="span-4 last">
-                        ${aboutMeError}
+
                     </div>
-                   <div class="span-3 prepend-5 last">
+                   <div class="span-2 prepend-4 last">
                         <input type="Submit" value="SAVE" class="signup_button"/>
+                   </div>
+                   <div class="span-2 last error-field">
+                       ${saveMessage}
                    </div>
                 </form>
             </div>

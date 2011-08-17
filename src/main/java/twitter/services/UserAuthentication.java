@@ -53,15 +53,6 @@ public class UserAuthentication {
         return data.getPassword().equals(password) ? data : null;
     }
 
-    public static void registerUser(String username, String password, String name, String email) {
-        try {
-            db.update("INSERT INTO User(username,password,name,email) VALUES ( ? , ? , ? , ? )", username, password, name, email);
-        } catch (Exception ex) {
-            System.out.println("Register User Exception :((((((");
-            ex.printStackTrace();
-        }
-    }
-
     public static User getUserByUsername(String username) {
         if (username == null)
             return null;
@@ -205,8 +196,27 @@ public class UserAuthentication {
         boolean available = true;
         try {
             int count = db.queryForInt("SELECT COUNT(username) FROM user WHERE username = ? AND username != ?" , username ,loggedInusername);
+            System.out.println(count);
             available &= count == 0;
             count = db.queryForInt("SELECT COUNT(username) FROM temp_user WHERE username = ? AND username != ?" , username,loggedInusername);
+            System.out.println(count);
+            available &= count == 0;
+        }catch (Exception ex) {
+            System.out.println("Bug in username availabilty :((");
+            ex.printStackTrace();
+            return false;
+        }
+        return available;
+    }
+
+    public static boolean checkUsernameAvailabiltyForSignUp(String username) {
+        boolean available = true;
+        try {
+            int count = db.queryForInt("SELECT COUNT(username) FROM user WHERE username = ?" , username );
+            System.out.println(count);
+            available &= count == 0;
+            count = db.queryForInt("SELECT COUNT(username) FROM temp_user WHERE username = ?" , username);
+            System.out.println(count);
             available &= count == 0;
         }catch (Exception ex) {
             System.out.println("Bug in username availabilty :((");

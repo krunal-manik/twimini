@@ -1,17 +1,8 @@
 package twitter.controllers;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.hsqldb.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import twitter.models.Tweet;
-import twitter.models.User;
-import twitter.services.Follow;
-import twitter.services.Mention;
-import twitter.services.UserAuthentication;
 import twitter.services.UserTweetList;
 
 import javax.servlet.http.HttpSession;
@@ -141,31 +132,6 @@ public class TweetController {
     public Tweet addTweet(@RequestParam String tweetContent, HttpSession session) {
         Tweet t = UserTweetList.addTweet(tweetContent, session.getAttribute("userId").toString());
         return t;
-    }
-
-    @RequestMapping("/tweet")
-    public static ModelAndView tweetsList(HttpSession session) {
-        ModelAndView mv = new ModelAndView("/tweet");
-        String userId = session.getAttribute("userId").toString();
-        List<Tweet> tweetList = UserTweetList.newsFeed(userId);
-        for (Tweet tweet : tweetList)
-            tweet.setTweet(StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())));
-        List<Tweet> mentionList = UserTweetList.mentionFeed(userId, userId);
-        for (Tweet tweet : mentionList)
-            tweet.setTweet(StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())));
-        List<Tweet> favoritesList = UserTweetList.favoritesFeed(userId, userId);
-        for (Tweet tweet : favoritesList)
-            tweet.setTweet(StringEscapeUtils.escapeJavaScript(UserTweetList.escapeHTML(tweet.getTweet())));
-        mv.addObject("newsFeed", tweetList);
-        mv.addObject("favoritesFeed", favoritesList);
-        mv.addObject("mentionFeed", mentionList);
-        mv.addObject("followerList", Follow.getFollowerListLimited(userId));
-        mv.addObject("followedList", Follow.getFollowedListLimited(userId));
-        mv.addObject("followerCount", Follow.getFollowerList(userId).size());
-        mv.addObject("followingCount", Follow.getFollowedList(userId).size());
-        mv.addObject("allUserList", Follow.allUsersList(userId));
-        mv.addObject("currentUsername", session.getAttribute("username").toString());
-        return mv;
     }
 
     @RequestMapping(value = "/tweet/markFavorite", method = RequestMethod.POST)

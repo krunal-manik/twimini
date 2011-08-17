@@ -1,10 +1,7 @@
 package twitter.api;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import twitter.models.Tweet;
 import twitter.models.User;
 import twitter.models.UserProfile;
@@ -34,44 +31,17 @@ public class TweetAPI {
         try {
             List<Tweet> tweetsList = null;
             if( password != null ) {
-                if( timestamp == null && count == null ) {
                     User user = UserAuthentication.authenticateUser(username,password);
                     if( user == null ) {
                         userTweets.put("error", "User Authentication failed");
                         userTweets.put("success", "false");
                         return userTweets;
                     }
-                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , String.valueOf(user.getUserId()) , null , "10" , true );
-                }
-                else if (timestamp != null && count != null ) {
-                    User user = UserAuthentication.authenticateUser(username,password);
-                    if( user == null ) {
-                        userTweets.put("error", "User Authentication failed");
-                        userTweets.put("success", "false");
-                        return userTweets;
-                    }
-                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , String.valueOf(user.getUserId()) , timestamp , count , false );
-                }
-                else {
-                    userTweets.put("success","false");
-                    userTweets.put("error","Bad request");
-                    return userTweets;
-                }
+                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , String.valueOf(user.getUserId()) , timestamp , count == null ? "10" : count , true );
             }
             else {
-                if( timestamp == null && count == null ) {
-                    User user = UserAuthentication.getUserByUsername(username);
-                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , null , null , "10" , true );
-                }
-                else if( timestamp != null && count != null ) {
-                    User user = UserAuthentication.getUserByUsername(username);
-                    tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , null , timestamp , count , false );
-                }
-                else {
-                    userTweets.put("success","false");
-                    userTweets.put("error","Bad request");
-                    return userTweets;
-                }
+                User user = UserAuthentication.getUserByUsername(username);
+                tweetsList = UserTweetList.nTweetsOfUserfeedByTimestamp( String.valueOf(user.getUserId()) , String.valueOf(user.getUserId()) , timestamp , count == null ? "10" : count , false );
             }
             userTweets.put("tweets", tweetsList);
             userTweets.put("success", "true");
@@ -93,20 +63,7 @@ public class TweetAPI {
         Hashtable<String, Object> userTweets = new Hashtable<String, Object>();
         try {
             User user = UserAuthentication.authenticateUser(username,password);
-            List<Tweet> newsFeed = null;
-
-            if( timestamp == null && count == null ) {
-                newsFeed = UserTweetList.nTweetsOfNewsfeedByTimestamp(String.valueOf(user.getUserId())  , null , "10" , true );
-            }
-            else if( timestamp != null && count != null ) {
-                newsFeed = UserTweetList.nTweetsOfNewsfeedByTimestamp(String.valueOf(user.getUserId()) , timestamp , count , false );
-            }
-            else {
-                userTweets.put("success","false");
-                userTweets.put("error","Bad request");
-                return userTweets;
-            }
-
+            List<Tweet> newsFeed = UserTweetList.nTweetsOfNewsfeedByTimestamp(String.valueOf(user.getUserId()),timestamp , count == null ? "10" : count , timestamp == null );
             userTweets.put("tweets", newsFeed);
             userTweets.put("success", "true");
             userTweets.put("error", "none");
@@ -121,7 +78,7 @@ public class TweetAPI {
         return userTweets;
     }
 
-    @RequestMapping("/api/{username}/publish-tweet")
+    @RequestMapping(value = "/api/{username}/publish-tweet", method = RequestMethod.POST )
     @ResponseBody
     public static Hashtable<String, Object> publistTweet(@PathVariable String username, @RequestParam String password,@RequestParam String tweetContent) {
         Hashtable<String, Object> userTweet = new Hashtable<String, Object>();
@@ -142,7 +99,7 @@ public class TweetAPI {
         return userTweet;
     }
 
-    @RequestMapping("/api/{username}/favorite")
+    @RequestMapping("/api/{username}/favoriteTweet")
     @ResponseBody
     public static Hashtable<String, Object> markFavorite(@PathVariable String username, @RequestParam String password, @RequestParam String tweetId) {
         Hashtable<String, Object> favoriteStatus = new Hashtable<String, Object>();
@@ -164,7 +121,7 @@ public class TweetAPI {
         return favoriteStatus;
     }
 
-    @RequestMapping("/api/{username}/unfavorite")
+    @RequestMapping("/api/{username}/unfavoriteTweet")
     @ResponseBody
     public static Hashtable<String, Object> markUnfavorite(@PathVariable String username, @RequestParam String password, @RequestParam String tweetId) {
         Hashtable<String, Object> unFavoriteStatus = new Hashtable<String, Object>();
@@ -184,5 +141,101 @@ public class TweetAPI {
         }
 
         return unFavoriteStatus;
+    }
+
+    @RequestMapping("/api/{username}/favorites")
+    @ResponseBody
+    public static Hashtable<String,Object> getFavoriteTweets(@PathVariable String username,@RequestParam String currentUsername,@RequestParam String password,String timestamp,String count) {
+        Hashtable<String,Object> favorites = new Hashtable<String, Object>();
+        try {
+            List<Tweet> tweetList;
+            if( currentUsername != null && password != null ) {
+                User user = UserAuthentication.authenticateUser(currentUsername,password);
+                User urlMappedUser = UserAuthentication.getUserByUsername(username);
+                if( user == null ) {
+                    favorites.put("success","false");
+                    favorites.put("error","User Authentication failed");
+                    return favorites;
+                }
+                tweetList = UserTweetList.nTweetsOfFavoritesByTimestamp(String.valueOf(urlMappedUser.getUserId()), String.valueOf(user.getUserId()), timestamp, count == null ? "10" : count, timestamp == null);
+            }
+            else {
+                User urlMappedUser = UserAuthentication.getUserByUsername(username);
+                tweetList = UserTweetList.nTweetsOfFavoritesByTimestamp(String.valueOf(urlMappedUser.getUserId()),null,timestamp, count == null ? "10" : count , timestamp == null );
+            }
+            favorites.put("favorites",tweetList);
+            favorites.put("success", "true");
+            favorites.put("error", "none");
+        } catch (NullPointerException ex) {
+            favorites.put("error", "User " + username + " does not exist");
+            favorites.put("success", "false");
+        } catch (Exception ex) {
+            favorites.put("error", "Server error");
+            favorites.put("success", "false");
+        }
+        return favorites;
+    }
+
+    @RequestMapping("/api/{username}/mentions")
+    @ResponseBody
+    public static Hashtable<String, Object> getUsersMentions(@PathVariable String username,@RequestParam String password,String timestamp,String count) {
+        Hashtable<String, Object> mentionTweets = new Hashtable<String, Object>();
+        try {
+            User user = UserAuthentication.authenticateUser(username,password);
+            List<Tweet> mentions = UserTweetList.nTweetsOfNewsfeedByTimestamp(String.valueOf(user.getUserId()),timestamp , count == null ? "10" : count , timestamp == null );
+            mentionTweets.put("mentions", mentions);
+            mentionTweets.put("success", "true");
+            mentionTweets.put("error", "none");
+        } catch (NullPointerException ex) {
+            mentionTweets.put("error", "User Authentication failed");
+            mentionTweets.put("success", "false");
+        } catch (Exception ex) {
+            mentionTweets.put("error", "Server error");
+            mentionTweets.put("success", "false");
+        }
+
+        return mentionTweets;
+    }
+
+    @RequestMapping("/api/{username}/retweets")
+    @ResponseBody
+    public static Hashtable<String, Object> getUsersRetweets(@PathVariable String username,@RequestParam String password,String timestamp,String count) {
+        Hashtable<String, Object> retweetedTweets = new Hashtable<String, Object>();
+        try {
+            User user = UserAuthentication.authenticateUser(username,password);
+            List<Tweet> retweets = UserTweetList.nTweetsOfNewsfeedByTimestamp(String.valueOf(user.getUserId()),timestamp , count == null ? "10" : count , timestamp == null );
+            retweetedTweets.put("retweets", retweets);
+            retweetedTweets.put("success", "true");
+            retweetedTweets.put("error", "none");
+        } catch (NullPointerException ex) {
+            retweetedTweets.put("error", "User Authentication failed");
+            retweetedTweets.put("success", "false");
+        } catch (Exception ex) {
+            retweetedTweets.put("error", "Server error");
+            retweetedTweets.put("success", "false");
+        }
+
+        return retweetedTweets;
+    }
+
+    @RequestMapping(value ="/api/{username}/replyToTweet", method = RequestMethod.POST )
+    @ResponseBody
+    public static Hashtable<String, Object> replyToTweet(@PathVariable String username,@RequestParam String password,@RequestParam String tweet,@RequestParam String tweetId) {
+        Hashtable<String,Object> userTweet = new Hashtable<String, Object>();
+        try {
+            User user = UserAuthentication.authenticateUser(username,password);
+            Tweet reply = UserTweetList.replyToTweet(tweet, tweetId, String.valueOf(user.getUserId()));
+            userTweet.put("reply", reply);
+            userTweet.put("success", "true");
+            userTweet.put("error", "none");
+        } catch (NullPointerException ex) {
+            userTweet.put("error", "User Authentication failed");
+            userTweet.put("success", "false");
+        } catch (Exception ex) {
+            userTweet.put("error", "Server error");
+            userTweet.put("success", "false");
+        }
+
+        return userTweet;
     }
 }

@@ -7,7 +7,6 @@
         <div class="span-19 last" style="padding-top:6;" >
             <div class="span-10">
                 <div class="span-8">
-                    <div class="span-8 last" style="height:20px"></div>
                     <form method="get" action="/search">
                         <div class="span-2">
                             SEARCH
